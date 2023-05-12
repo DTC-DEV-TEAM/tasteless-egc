@@ -1,0 +1,286 @@
+
+/* Scan QR */
+.panel_body_section{
+    height: 67vh;
+    position: relative;
+}
+
+.qr_code{
+    display: flex;
+    height: 100%;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px;
+}
+
+.qr_code_content, .qr_code_img{
+    width: 50%;
+}
+
+.qr_code_content{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.qr_code_img{
+    height: 100%;
+
+}
+
+.scan_qr_img{
+    width: 100%;
+    height: 100%;
+}
+
+.qr_code_box{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0 60px;
+    height: 250px;
+    background-color: #ffffff;
+    border-radius: 10%;
+    border: 1px solid #ddd;
+    box-shadow: 10px 10px 0px #666666;
+    position: relative;
+}
+
+.qr_code_box{
+    font-size: 17px;
+}
+
+.qr_code_box span {
+    position: absolute;
+    overflow: hidden;
+    width: 150px;
+    height: 150px;
+    top: -10px;
+    left: -10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.qr_code_box span::before {
+    content: 'Steps';
+    position: absolute;
+    width: 150%;
+    height: 40px;
+    background-image: linear-gradient(45deg, #47ffff 0%, #44abff  51%, #53bdff  100%);
+    transform: rotate(-45deg) translateY(-20px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.23);
+}
+
+.qr_code_box span::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    bottom: 0;
+    left: 0;
+    height: 10px;
+    z-index: -1;
+    box-shadow: 140px -140px #cc3f47;
+    background-image: linear-gradient(45deg, #FF512F 0%, #F09819  51%, #FF512F  100%);
+}
+
+/* Show QR SCANNER */
+.show_scanner_content{
+    margin-top: 25px;
+}
+
+.show_qr_code_scanner{
+    border: none;
+    outline: none;
+    background-color: #6c5ce7;
+    padding: 10px 20px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    border-radius: 5px;
+    transition: all ease 0.1s;
+    box-shadow: 0px 5px 0px 0px #a29bfe;
+}
+
+.show_qr_code_scanner:active{
+    transform: translateY(5px);
+    box-shadow: 0px 0px 0px 0px #a29bfe;
+}
+
+.show_qr_code_scanner:hover{
+    opacity: 0.9;
+}
+
+/* End of Qr Scanner */
+
+.camera{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 999;
+    display: none;
+}
+
+.camera_card{
+    text-align: center;
+    width: 700px;
+    height: 500px;
+    background: rgb(236, 236, 236);
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+}
+
+video{
+    position: absolute;
+    top: -100px;
+    left: 50px;
+}
+
+/* End of Scan QR */
+
+/* User Edit */
+.qr_redeem_section{
+    display: flex;
+    justify-content: center;
+    /* background-color: rgb(240, 240, 240); */
+    
+}
+
+.qr-reference-card{
+    height: 300px;
+    width: calc(100% - 120px);
+    background-color: #243962;
+    position: absolute;
+    top: 50%;
+    right: 50%;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    
+}
+
+.close-icon{
+    display: grid;
+    place-items: center;
+    right: 10px;
+    top: 8px;
+    position: absolute;
+}
+
+.check-icon{
+    height: 80px;
+    width: 80px;
+    border-radius: 50%;
+    background-color: #b4f6d1;
+    display: grid;
+    place-items: center;
+}
+
+.check-icon span{
+    
+    color: rgb(31, 32, 49);
+    font-size: 50px;
+}
+
+.redeem_layout{
+    height: 100%;
+    width: 100%;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 50px;
+    box-shadow: 4px 4px  #323232;
+    border: 2px solid #323232;
+    position: relative;
+    /* text-align: center; */
+
+}
+
+.user-info{
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.user-info-content{
+    margin-bottom: 9px;
+}
+.user-element{
+    width: 300px;
+    text-align: center;
+}
+
+.user-element label{
+    text-align: left;
+    padding-left: 25px;
+    display: block;
+    font-size: 15px;
+}
+
+.user-element input{
+    min-width: 260px;
+    height: 35px;
+    border-radius: 5px;
+    border: 1px solid #c1c0c0;
+    text-align: center;
+    font-size: 15px;
+    outline: none;
+    padding: 0 10px;
+}
+
+.user-element select{
+    display: block;
+    min-width: 260px;
+    height: 35px;
+    border-radius: 5px;
+    border: 1px solid #c1c0c0;
+    text-align: center;
+    font-size: 15px;
+    margin-left: 20px;
+}
+
+.user-element input[readonly]{
+    background-color: #eeeeee;
+}
+
+.required{
+    color: red;
+}
+
+.redeem-btn{
+    text-align: right;
+}
+.redeem-code{
+    border: none;
+    outline: none;
+    background-color: #3C8DBC;
+    padding: 10px 20px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    border-radius: 5px;
+    transition: all ease 0.1s;
+    box-shadow: 0px 5px 0px 0px #243962;
+}
+
+.redeem-code:active{
+    transform: translateY(5px);
+    box-shadow: 0px 0px 0px 0px #a29bfe;
+}
+
+.redeem-code:hover{
+    opacity: 0.9;
+}
+
+/* Sweet alert Modal */
+
+/* End of  Sweeet alert */
+/* End of User Edit */
