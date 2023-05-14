@@ -167,6 +167,7 @@ video{
     padding: 20px;
     border-radius: 10px;
     background-color: #174b69d9;
+    z-index: 999;
 }
 
 .close-icon{
@@ -246,6 +247,7 @@ video{
     text-align: center;
     font-size: 15px;
     margin-left: 20px;
+    padding: 0 20px;
 }
 
 .user-element input[readonly]{
@@ -279,6 +281,10 @@ video{
 
 .redeem-code:hover{
     opacity: 0.9;
+}
+
+.redeem-code:disabled{
+    opacity: 0.7;
 }
 
 /* Sweet alert Modal */

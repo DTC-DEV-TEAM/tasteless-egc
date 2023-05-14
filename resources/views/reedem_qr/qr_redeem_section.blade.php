@@ -154,6 +154,12 @@
         $('.qr-reference-card').hide();
       });
 
+      $('#show-reference-number').click(function(){
+        $('.qr-reference-card').show();
+        
+      })
+      
+
       $('#id-type').on('change', function(){
         const id_type_value = $(this).val();
 
@@ -167,7 +173,7 @@
       })
 
       // Redeem Code Button
-      $('#show-reference-number').css({'box-shadow': 'none', 'transform': 'translateY(5px)'});
+      // $('#show-reference-number').css({'box-shadow': 'none', 'transform': 'translateY(5px)'});
 
       $('#redeem-code').click(function(event){
 
@@ -198,6 +204,7 @@
           return
 
         }
+            
 
         $.ajax({
           url: "{{ route('redeem_code') }}",
@@ -212,10 +219,10 @@
           success: function(response){
 
             console.log(response);
-            $('#show-reference-number').css({'box-shadow': '0px 5px 0px 0px #243962', 'transform': 'none'});
             $('#redeem-code').css({'box-shadow': 'none', 'transform': 'translateY(5px)', 'opacity': '0.9'});
             $('#redeem-code').attr('disabled', true);
-
+            $('#show-reference-number').attr('disabled', false)
+            
             $('#id-type').attr('disabled', true);
             $('#id-type').css({'background-color': '#eeeeee'});
             $('#id_number').attr('readonly', true);
