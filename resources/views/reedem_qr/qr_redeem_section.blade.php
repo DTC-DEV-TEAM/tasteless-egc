@@ -28,22 +28,43 @@
   <div class='panel panel-default'>
     <div class='panel-heading' style="background-color: #fff;">Redeem Form</div>
     <div class='panel-body qr_redeem_section'>
-      <input class="hidden" type="text" name="user_id" id="user_id" value="{{ $row->id }}" >
       <form method='post' action='{{ route('redeem_code') }}' autocomplete="off">
         @csrf
+        <input class="hidden" type="text" name="user_id" id="user_id" value="{{ $row->id }}" >
+
         <div class="redeem_layout">
-          <div class="qr-reference-card">
+
+          <div class="qr-reference-card" style="display: none;">
             <div class="close-icon">
-              <button type="button" id="close-qr-referece-code"><i class="fa fa-close"></i></button>
+              <button type="button" id="close-qr-reference-code"><i class="fa fa-close"></i></button>
             </div>
             <div class="check-icon">
               <span><i class="fa fa-check"></i></span>
             </div>
+            <div class="redemption-success">
+              <span>REDEMPTION SUCCESS</span>
+            </div>
             <div class="qr-reference-content">
-
+              <span id="qr-reference-number"></span>
             </div>
           </div>
-          
+
+          <div class="qr-invoice-number-card" style="display: none;">
+            <div class="invoice-number-close-icon">
+              <button type="button" id="close-qr-invoice_number"><i class="fa fa-close"></i></button>
+            </div>
+            <div class="invoice-number-check-icon">
+              <span><i class="fa fa-pencil-square-o"></i></span>
+            </div>
+            <div class="redemption-success">
+              <span>INPUT INVOICE #</span>
+            </div>
+            <div class="input-invoice">
+              <input type="text" placeholder="INVOICE#" name="invoice_number" required>
+              <button type="button" id="submit-invoice-btn">Save</button>
+            </div>
+          </div>
+
           <div class="user-info-content">
             <div class="user-info">
               <div class="user-element">
@@ -123,19 +144,21 @@
           </div>
         
           <br>
-          @php
+          {{-- @php
           $qrCodeUrl = route('scan_qr', ['data' => 'your-data-goes-here']);
+          $qrCodeURL = url()->current();
+          dd($qrCodeURL);
           @endphp
-      
+          {!! QrCode::size(200)->generate(url()->current()); !!} --}}
           <div class="text-center">
-              {{-- {!! QrCode::size(120)->generate($qrCodeUrl); !!} --}}
+              
               <img style="height: 130px; width: 130px;" src="{{ asset('img/scan-women.jpg') }}" alt="">
               <p style="font-weight: bold; font-size: 15px;">Redeem code here and unlock exclusive benefits and rewards.</p>
           </div>
         
           <div class="redeem-btn">
-            {{-- <input type='submit' class='redeem-code' value='Redeem Code'/> --}}
-            <button type='button' class='redeem-code' id="show-reference-number" disabled><i class='fa fa-sticky-note-o '></i> Show QR Reference#</button>
+            <button type='button' class='redeem-code' id="show-input-invoice" disabled><i class='fa fa-pencil '></i> Input Invoice #</button>
+            <button type='button' class='redeem-code' id="show-reference-number" disabled><i class='fa fa-sticky-note-o '></i> Show QR Reference #</button>
             <button type='submit' class='redeem-code' id="redeem-code"><i class='fa fa-credit-card-alt '></i> Redeem Code</button>
           </div>
         </div>
@@ -147,18 +170,41 @@
 
   <script>
 
-    // In your Javascript (external .js resource or <script> tag)
     $(document).ready(function() {
 
-      $('#close-qr-referece-code').click(function(){
-        $('.qr-reference-card').hide();
+      // Toggle QR Reference Card
+      $('#show-reference-number').click(function(event) {
+        $('.qr-reference-card').fadeToggle();
       });
-
-      $('#show-reference-number').click(function(){
-        $('.qr-reference-card').show();
-        
+      
+      // QR Reference Card Close button
+      $('#close-qr-reference-code').click(function(){
+        $('.qr-reference-card').hide();
       })
       
+      // Close QR Reference Card
+      $(document).click(function(event){
+        if (!$(event.target).closest('.qr-reference-card').length && !$('#show-reference-number').is(event.target)){
+          $('.qr-reference-card').hide();
+        }
+
+      })
+      // Input Invoice Number
+      $('#show-input-invoice').click(function(event) {
+        $('.qr-invoice-number-card').fadeToggle();
+      });
+      
+      // Input Invoice Number Close buttonn
+      $('#close-qr-invoice_number').click(function(){
+        $('.qr-invoice-number-card').hide();
+      })
+
+      // Close QR Reference Card
+      $(document).click(function(event){
+        if (!$(event.target).closest('.qr-invoice-number-card').length && !$('#show-input-invoice').is(event.target)){
+          $('.qr-invoice-number-card').hide();
+        }
+      })
 
       $('#id-type').on('change', function(){
         const id_type_value = $(this).val();
@@ -173,8 +219,6 @@
       })
 
       // Redeem Code Button
-      // $('#show-reference-number').css({'box-shadow': 'none', 'transform': 'translateY(5px)'});
-
       $('#redeem-code').click(function(event){
 
         const id_type = $('#id-type').val();
@@ -218,14 +262,18 @@
           },
           success: function(response){
 
-            console.log(response);
+            console.log(response.test.qr_reference_number);
+            
+            $('#qr-reference-number').text(`QR REFERENCE #: ${response.test.qr_reference_number}`)
             $('#redeem-code').css({'box-shadow': 'none', 'transform': 'translateY(5px)', 'opacity': '0.9'});
             $('#redeem-code').attr('disabled', true);
             $('#show-reference-number').attr('disabled', false)
+            $('#show-input-invoice').attr('disabled', false)
             
             $('#id-type').attr('disabled', true);
             $('#id-type').css({'background-color': '#eeeeee'});
             $('#id_number').attr('readonly', true);
+            $('#other_id_type').attr('readonly', true);
 
             const Toast = Swal.mixin({
               toast: true,
@@ -252,6 +300,16 @@
         })
 
       })
+      // End of Redeem Button
+
+      // Invoice Submit Button
+      $('#submit-invoice-btn').click(function(){
+        
+        $(this).parents('form').attr("action", "{{ route('input_invoice') }}")
+        $(this).attr('type', 'submit');
+
+      })
+      // End of Invoice Submit Button
 
       
 

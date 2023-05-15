@@ -262,7 +262,7 @@ use Illuminate\Http\Request as IlluminateRequest;
 			$faker = Factory::create();
 
 
-			// for($i=0; $i<10; $i++){
+			// for($i=0; $i<1000; $i++){
 			// 	GCList::create([
 			// 		'name' => $faker->name,
 			// 		'phone' => $faker->phoneNumber,
@@ -398,13 +398,41 @@ use Illuminate\Http\Request as IlluminateRequest;
 
 		public function redeemCode(IlluminateRequest $request){
 			
-			$return_input = $request->all();
+			$return_inputs = $request->all();
+			$id = $return_inputs['user_id'];
+			$id_number = $return_inputs['id_number'];
+			$id_type = $return_inputs['id_type'];
+			$other_id_type = $return_inputs['other_id_type'];
 
-			// GCList::update([
-			// 	'redeem' => 1
-			// ]);
+			GCList::where('id', $id)->update([
 
-			return response()->json(['test'=>$return_input['user_id']]);
+				'redeem' => 1,
+				'cashier_name' => CRUDBooster::myId(),
+				'cashier_date_transact' => date('Y-m-d H:i:s'),
+				'id_number' => $id_number,
+				'id_type' => $id_type,
+				'other_id_type' => $other_id_type,
+				'qr_reference_number' => 'QRN-'.str_pad($id,6,"0", STR_PAD_LEFT)
+			]);
+
+			$user_information = GCList::find($id);
+
+			
+			return response()->json(['test'=>$user_information]);
+		}
+
+		public function inputInvoice(IlluminateRequest $request){
+
+			$return_inputs = $request->all();
+			$id = $return_inputs['user_id'];
+			$invoice_number = $return_inputs['invoice_number'];
+
+			$user_information = GCList::find($id);
+		
+			GCList::find($id)->update(['invoice_number'=>$invoice_number]);
+
+			CRUDBooster::redirect(CRUDBooster::mainpath(), sprintf('Code redemption succesful, QR Reference Number: %s', $user_information->qr_reference_number),"success");
+
 		}
 
 

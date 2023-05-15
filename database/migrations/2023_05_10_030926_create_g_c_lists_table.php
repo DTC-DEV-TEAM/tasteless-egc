@@ -22,7 +22,14 @@ class CreateGCListsTable extends Migration
             $table->string('redemption_period')->nullable();
             $table->string('gc_description')->nullable();
             $table->string('gc_value')->nullable();
+            $table->string('id_number')->nullable();
+            $table->string('id_type')->nullable();
+            $table->string('other_id_type')->nullable();
+            $table->string('qr_reference_number')->nullable();
+            $table->string('invoice_number')->nullable();
             $table->string('redeem')->nullable();
+            $table->string('cashier_name')->nullable();
+            $table->timestamp('cashier_date_transact')->nullable();
             $table->timestamps();
         });
     }

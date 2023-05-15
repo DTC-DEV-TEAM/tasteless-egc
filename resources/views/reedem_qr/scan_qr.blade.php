@@ -79,7 +79,8 @@
                     const code = jsQR(imageData.data, imageData.width, imageData.height);
                     if (code) {
                         output.innerText = 'Scanned QR code: ' + code.data;
-                        
+                        window.location.href = code.data;
+                        return
                     } else {
                         output.innerText = 'No QR code detected.';
                     }

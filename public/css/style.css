@@ -155,7 +155,7 @@ video{
 
 .qr-reference-card{
     height: 300px;
-    width: calc(100% - 120px);
+    width: calc(100% - 110px);
     box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
     position: absolute;
     top: 50%;
@@ -163,11 +163,13 @@ video{
     transform: translate(-50%, -50%);
     left: 50%;
     display: flex;
-    justify-content: center;
     padding: 20px;
     border-radius: 10px;
     background-color: #174b69d9;
     z-index: 999;
+    flex-direction: column;
+    margin: auto;
+    align-items: center;
 }
 
 .close-icon{
@@ -188,9 +190,32 @@ video{
 }
 
 .check-icon span{
-    
     color: rgb(31, 32, 49);
     font-size: 50px;
+}
+
+/* Redemption Text */
+.redemption-success{
+    font-size: 20px;
+    margin-top: 15px;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+}
+
+/* QR Reference content */
+.qr-reference-content{
+    margin-top: 75px;
+    min-width: 255px;
+    padding: 12px;
+    background-color: rgba(255, 255, 255, 0.87);
+    border-radius: 10px;
+    text-align: center;
+}
+
+.qr-reference-content span{
+    font-size: 17px;
+    font-weight: bold;
+    
 }
 
 .redeem_layout{
@@ -206,10 +231,82 @@ video{
 
 }
 
+/* Input Invoice Number */
+.qr-invoice-number-card{
+    height: 300px;
+    width: calc(100% - 110px);
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+    position: absolute;
+    top: 50%;
+    right: 50%;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    display: flex;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #174b69d9;
+    z-index: 999;
+    flex-direction: column;
+    margin: auto;
+    align-items: center;
+}
+
+.invoice-number-check-icon{
+    height: 80px;
+    width: 80px;
+    border-radius: 50%;
+    background-color: #ecf6f7;
+    display: grid;
+    place-items: center;
+}
+
+.invoice-number-check-icon span{
+    color: rgb(31, 32, 49);
+    font-size: 50px;
+}
+
+.invoice-number-close-icon{
+    display: grid;
+    place-items: center;
+    right: 10px;
+    top: 8px;
+    position: absolute;
+}
+
+.input-invoice{
+    margin-top: 75px;
+}
+
+.input-invoice input{
+    padding: 7px 15px;
+    outline: none;
+    font-size: 15px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    text-align: center;
+
+}
+
+.input-invoice button{
+    padding: 7.7px 14px;
+    background-color: white;
+    border: 1px solid #eee;
+    font-weight: bold;
+    border-radius: 5px;
+
+}
+
+.input-invoice button:hover{
+    opacity: 0.9;
+}
+
+/* End of Input Invoice Number */
+
 .user-info{
     display: flex;
     width: 100%;
     flex-wrap: wrap;
+    justify-content: center;
 }
 
 .user-info-content{
@@ -247,7 +344,7 @@ video{
     text-align: center;
     font-size: 15px;
     margin-left: 20px;
-    padding: 0 20px;
+    
 }
 
 .user-element input[readonly]{
@@ -259,7 +356,13 @@ video{
 }
 
 .redeem-btn{
-    text-align: right;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+}
+
+.redeem-btn > * {
+    margin: 3px;
 }
 .redeem-code{
     border: none;
