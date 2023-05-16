@@ -296,6 +296,10 @@ video{
 
 }
 
+.input-invoice button:disabled{
+    display: none;
+}
+
 .input-invoice button:hover{
     opacity: 0.9;
 }
@@ -347,6 +351,11 @@ video{
     
 }
 
+.user-element select:disabled{
+    background-color: #eeeeee;
+    opacity: 1;
+}
+
 .user-element input[readonly]{
     background-color: #eeeeee;
 }
@@ -390,7 +399,101 @@ video{
     opacity: 0.7;
 }
 
-/* Sweet alert Modal */
 
-/* End of  Sweeet alert */
-/* End of User Edit */
+/* Upload GC List Section */
+
+.csv-instructions p{
+    text-indent: 30px;
+}
+
+.file-upload-content label{
+    font-size: 15px;
+}
+
+.file-upload-content input[type="file"] {
+    position: relative;
+    width: 400px;
+    border: 1px solid #b5b5b5;
+    border-radius: 4px;
+    outline: none;
+}
+
+.file-upload-content input[type="file"]::file-selector-button {
+    width: 175px;
+    color: transparent;
+}
+
+/* Faked label styles and icon */
+.file-upload-content input[type="file"]::before {
+    position: absolute;
+    pointer-events: none;
+    top: 10px;
+    left: 16px;
+    height: 20px;
+    width: 20px;
+    content: "";
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230964B0'%3E%3Cpath d='M18 15v3H6v-3H4v3c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-3h-2zM7 9l1.41 1.41L11 7.83V16h2V7.83l2.59 2.58L17 9l-5-5-5 5z'/%3E%3C/svg%3E");
+}
+
+.file-upload-content input[type="file"]::after {
+    position: absolute;
+    pointer-events: none;
+    top: 11px;
+    left: 40px;
+    color: #0964b0;
+    content: "Choose an Excel File";
+}
+
+/* ------- From Step 1 ------- */
+
+/* file upload button */
+.file-upload-content input[type="file"]::file-selector-button {
+    border-radius: 4px;
+    padding: 0 16px;
+    height: 40px;
+    cursor: pointer;
+    background-color: white;
+    border: 1px solid rgba(0, 0, 0, 0.16);
+    box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.05);
+    margin-right: 16px;
+    transition: background-color 200ms;
+}
+
+/* file upload button hover state */
+.file-upload-content input[type="file"]::file-selector-button:hover {
+    background-color: #f3f4f6;
+}
+
+/* file upload button active state */
+.file-upload-content input[type="file"]::file-selector-button:active {
+    background-color: #e5e7eb;
+}
+
+.excel_file_btn_submit{
+    padding: 10px 24px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, .2));
+}
+
+.download-template{
+    margin-bottom: 10px;
+}
+
+.download-template label{
+    font-size: 15px;
+    display: block;
+}
+
+.download-template button{
+    padding: 10px 24px;
+    border: none;
+    border-radius: 5px;
+    color: black;
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(228, 228, 228);
+    filter: drop-shadow(2px 2px 1px rgba(0, 0, 0, .2));
+}
+
+/* End of Upload GC List Section */

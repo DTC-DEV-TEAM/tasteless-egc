@@ -28,7 +28,7 @@
   <div class='panel panel-default'>
     <div class='panel-heading' style="background-color: #fff;">Redeem Form</div>
     <div class='panel-body qr_redeem_section'>
-      <form method='post' action='{{ route('redeem_code') }}' autocomplete="off">
+      <form method='post' action='{{ route('redeem_code') }}' autocomplete="off" style="display: none;">
         @csrf
         <input class="hidden" type="text" name="user_id" id="user_id" value="{{ $row->id }}" >
 
@@ -45,7 +45,7 @@
               <span>REDEMPTION SUCCESS</span>
             </div>
             <div class="qr-reference-content">
-              <span id="qr-reference-number"></span>
+              <span id="qr-reference-number">QR REFERENCE #: {{ $row->qr_reference_number }}</span>
             </div>
           </div>
 
@@ -57,11 +57,16 @@
               <span><i class="fa fa-pencil-square-o"></i></span>
             </div>
             <div class="redemption-success">
-              <span>INPUT INVOICE #</span>
+              @if ($row->invoice_number)
+                <span>INVOICE NUMBER</span>
+                @else
+                <span>INPUT INVOICE NUMBER</span>
+              @endif
+              
             </div>
             <div class="input-invoice">
-              <input type="text" placeholder="INVOICE#" name="invoice_number" required>
-              <button type="button" id="submit-invoice-btn">Save</button>
+              <input type="text" placeholder="INVOICE#" name="invoice_number" {{ $row->invoice_number ? "readonly value=$row->invoice_number" : '' }} required>
+              <button type="button" id="submit-invoice-btn" {{ $row->invoice_number ? 'disabled' : '' }}>Save</button>
             </div>
           </div>
 
@@ -109,7 +114,9 @@
               </div>
               <div class="user-element">
                 <label for=""><span class="required">*</span> ID#: </label>
-                <input type="text" name="id_number" id="id_number" value="" required>
+                <input type="text" name="id_number" 
+                id="id_number" {{ $row->id_number ? "value=$row->id_number readonly" : '' }} required>
+
               </div>
             </div>
           </div>
@@ -117,23 +124,12 @@
             <div class="user-info">
               <div class="user-element">
                 <label for=""><span class="required">*</span> ID Type: </label>
-                <select name="id_type" id="id-type" required>
-                  <option value="" selected disabled>Select ID Type</option>
-                  <option value="Driver's License">Driver's License</option>
-                  <option value="Passport">Passport</option>
-                  <option value="PRC License">PRC License</option>
-                  <option value="UMID">UMID</option>
-                  <option value="SSS ID">SSS ID</option>
-                  <option value="GSIS ID">GSIS ID</option>
-                  <option value="Voter's ID">Voter's ID</option>
-                  <option value="Postal ID">Postal ID</option>
-                  <option value="TIN ID">TIN ID</option>
-                  <option value="PhilHealth ID">PhilHealth ID</option>
-                  <option value="Senior Citizen ID">Senior Citizen ID</option>
-                  <option value="OFW ID">OFW ID</option>
-                  <option value="School ID">School ID</option>
-                  <option value="Company ID">Company ID</option>
-                  <option value="other">Other</option>
+                {{ $row->id_types }}
+                <select name="id_type" id="id-type" {{ $row->id_type ? 'disabled': '' }} required>
+                  <option value="" disabled selected>Select Valid IDs</option>
+                  @foreach ($valid_ids as $valid_id)
+                    <option {{ $row->id_type == $valid_id->id ? 'selected': '' }} value="{{ $valid_id->id }}">{{ $valid_id->valid_ids }}</option>
+                  @endforeach
                 </select>
               </div>
               <div class="user-element" id="id-type-other" style="display: none;">
@@ -171,6 +167,19 @@
   <script>
 
     $(document).ready(function() {
+      
+      $('form').css('display','block');
+
+      // Transaction 
+      if('{{ $row->redeem }}' && '{{ $row->invoice_number }}'){
+        $('#redeem-code').attr('disabled', true);
+        $('#show-reference-number').attr('disabled', false);
+        $('#show-input-invoice').attr('disabled', false);
+      }else if ('{{ $row->redeem }}' && '{{ !$row->invoice_number }}'){
+        $('#redeem-code').attr('disabled', true);
+        $('#show-reference-number').attr('disabled', false);
+        $('#show-input-invoice').attr('disabled', false);
+      }  
 
       // Toggle QR Reference Card
       $('#show-reference-number').click(function(event) {
@@ -204,12 +213,13 @@
         if (!$(event.target).closest('.qr-invoice-number-card').length && !$('#show-input-invoice').is(event.target)){
           $('.qr-invoice-number-card').hide();
         }
+
       })
 
       $('#id-type').on('change', function(){
         const id_type_value = $(this).val();
 
-        if (id_type_value == 'other'){
+        if (id_type_value == '15'){
           $('#id-type-other').show();
           $('#other_id_type').attr('required', true);
         }else{

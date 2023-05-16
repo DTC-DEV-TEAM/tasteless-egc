@@ -1,21 +1,12 @@
 <?php namespace App\Http\Controllers;
 
-use App\GCList;
 use App\IdType;
 use Session;
-use Request;
-use DB;
-use CRUDBooster;
-use Faker\Factory;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
-use Illuminate\Http\Request as IlluminateRequest;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Imports\GcListImport;
+	use Request;
+	use DB;
+	use CRUDBooster;
 
-
-
-
-	class AdminGCListsController extends \crocodicstudio\crudbooster\controllers\CBController {
+	class AdminGCListsHistoryController extends \crocodicstudio\crudbooster\controllers\CBController {
 
 	    public function cbInit() {
 
@@ -27,51 +18,53 @@ use App\Imports\GcListImport;
 			$this->button_table_action = true;
 			$this->button_bulk_action = true;
 			$this->button_action_style = "button_icon";
-			$this->button_add = true;
-			$this->button_edit = true;
-			$this->button_delete = true;
+			$this->button_add = false;
+			$this->button_edit = false;
+			$this->button_delete = false;
 			$this->button_detail = true;
 			$this->button_show = true;
 			$this->button_filter = true;
-			$this->button_import = true;
+			$this->button_import = false;
 			$this->button_export = false;
 			$this->table = "g_c_lists";
 			# END CONFIGURATION DO NOT REMOVE THIS LINE
 
 			# START COLUMNS DO NOT REMOVE THIS LINE
 			$this->col = [];
-			$this->col[] = ["label"=>"ID","name"=>"id"];
 			$this->col[] = ["label"=>"Name","name"=>"name"];
 			$this->col[] = ["label"=>"Phone","name"=>"phone"];
 			$this->col[] = ["label"=>"Email","name"=>"email"];
 			$this->col[] = ["label"=>"Number Of Gcs","name"=>"number_of_gcs"];
 			$this->col[] = ["label"=>"Redemption Period","name"=>"redemption_period"];
 			$this->col[] = ["label"=>"Gc Description","name"=>"gc_description"];
-			// $this->col[] = ["label"=>"Gc Value","name"=>"gc_value"];
 			# END COLUMNS DO NOT REMOVE THIS LINE
 
 			# START FORM DO NOT REMOVE THIS LINE
 			$this->form = [];
 			$this->form[] = ['label'=>'Name','name'=>'name','type'=>'text','validation'=>'required|string|min:3|max:70','width'=>'col-sm-10','placeholder'=>'You can only enter the letter only'];
-			$this->form[] = ['label'=>'Phone','name'=>'phone','type'=>'number','validation'=>'required|numeric','width'=>'col-sm-10','placeholder'=>'You can only enter the number only'];
 			$this->form[] = ['label'=>'Email','name'=>'email','type'=>'email','validation'=>'required|min:1|max:255|email|unique:g_c_lists','width'=>'col-sm-10','placeholder'=>'Please enter a valid email address'];
 			$this->form[] = ['label'=>'Number Of Gcs','name'=>'number_of_gcs','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
 			$this->form[] = ['label'=>'Redemption Period','name'=>'redemption_period','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
 			$this->form[] = ['label'=>'Gc Description','name'=>'gc_description','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
-			$this->form[] = ['label'=>'Gc Value','name'=>'gc_value','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
-			$this->form[] = ['label'=>'Redeem','name'=>'redeem','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
 			# END FORM DO NOT REMOVE THIS LINE
 
 			# OLD START FORM
 			//$this->form = [];
-			//$this->form[] = ['label'=>'Name','name'=>'name','type'=>'text','validation'=>'required|string|min:3|max:70','width'=>'col-sm-10','placeholder'=>'You can only enter the letter only'];
-			//$this->form[] = ['label'=>'Phone','name'=>'phone','type'=>'number','validation'=>'required|numeric','width'=>'col-sm-10','placeholder'=>'You can only enter the number only'];
-			//$this->form[] = ['label'=>'Email','name'=>'email','type'=>'email','validation'=>'required|min:1|max:255|email|unique:g_c_lists','width'=>'col-sm-10','placeholder'=>'Please enter a valid email address'];
-			//$this->form[] = ['label'=>'Number Of Gcs','name'=>'number_of_gcs','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
-			//$this->form[] = ['label'=>'Redemption Period','name'=>'redemption_period','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
-			//$this->form[] = ['label'=>'Gc Description','name'=>'gc_description','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
-			//$this->form[] = ['label'=>'Gc Value','name'=>'gc_value','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
-			//$this->form[] = ['label'=>'Redeem','name'=>'redeem','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
+			//$this->form[] = ["label"=>"Name","name"=>"name","type"=>"text","required"=>TRUE,"validation"=>"required|string|min:3|max:70","placeholder"=>"You can only enter the letter only"];
+			//$this->form[] = ["label"=>"Phone","name"=>"phone","type"=>"number","required"=>TRUE,"validation"=>"required|numeric","placeholder"=>"You can only enter the number only"];
+			//$this->form[] = ["label"=>"Email","name"=>"email","type"=>"email","required"=>TRUE,"validation"=>"required|min:1|max:255|email|unique:g_c_lists","placeholder"=>"Please enter a valid email address"];
+			//$this->form[] = ["label"=>"Number Of Gcs","name"=>"number_of_gcs","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
+			//$this->form[] = ["label"=>"Redemption Period","name"=>"redemption_period","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
+			//$this->form[] = ["label"=>"Gc Description","name"=>"gc_description","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
+			//$this->form[] = ["label"=>"Gc Value","name"=>"gc_value","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
+			//$this->form[] = ["label"=>"Number","name"=>"id_number","type"=>"select2","required"=>TRUE,"validation"=>"required|min:1|max:255","datatable"=>"number,id"];
+			//$this->form[] = ["label"=>"Type","name"=>"id_type","type"=>"select2","required"=>TRUE,"validation"=>"required|min:1|max:255","datatable"=>"type,id"];
+			//$this->form[] = ["label"=>"Other Type","name"=>"other_id_type","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
+			//$this->form[] = ["label"=>"Qr Reference Number","name"=>"qr_reference_number","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
+			//$this->form[] = ["label"=>"Invoice Number","name"=>"invoice_number","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
+			//$this->form[] = ["label"=>"Redeem","name"=>"redeem","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
+			//$this->form[] = ["label"=>"Cashier Name","name"=>"cashier_name","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
+			//$this->form[] = ["label"=>"Cashier Date Transact","name"=>"cashier_date_transact","type"=>"datetime","required"=>TRUE,"validation"=>"required|date_format:Y-m-d H:i:s"];
 			# OLD END FORM
 
 			/* 
@@ -138,11 +131,6 @@ use App\Imports\GcListImport;
 	        | 
 	        */
 	        $this->index_button = array();
-			if(CRUDBooster::getCurrentMethod() == 'getIndex'){
-
-				$this->index_button[] = ['label'=>'Scan QR','url'=>CRUDBooster::mainpath("scan_qr"),"icon"=>"fa fa-search", 'color'=>'primary'];
-				$this->index_button[] = ['label'=>'Upload GC List','url'=>CRUDBooster::mainpath("upload_gc_list"),"icon"=>"fa fa-plus", 'color'=>'primary'];
-			}
 
 
 
@@ -263,44 +251,8 @@ use App\Imports\GcListImport;
 	    |
 	    */
 	    public function hook_query_index(&$query) {
-
-			$query->where('invoice_number', null);
-			$faker = Factory::create();
-
-			// $options = [
-			// 	"Driver's License",
-			// 	"Passport",
-			// 	"PRC License",
-			// 	"UMID",
-			// 	"SSS ID",
-			// 	"GSIS ID",
-			// 	"Voter's ID",
-			// 	"Postal ID",
-			// 	"TIN ID",
-			// 	"PhilHealth ID",
-			// 	"Senior Citizen ID",
-			// 	"OFW ID",
-			// 	"School ID",
-			// 	"Company ID",
-			// 	"Other",
-			// ];
-			
-			// foreach ($options as $option) {
-			// 	IdType::create(['valid_ids' => strtoupper($option)]);
-			// }
-
-			// for($i=0; $i<1000; $i++){
-			// 	GCList::create([
-			// 		'name' => $faker->name,
-			// 		'phone' => $faker->phoneNumber,
-			// 		'email' => $faker->email,
-			// 		'number_of_gcs' => $faker->randomNumber(2),
-			// 		'redemption_period' => $faker->sentence,
-			// 		'gc_description' => $faker->sentence,
-			// 		'gc_value' => $faker->randomFloat(2, 0, 100),
-			// 	]);
-			// }
-
+	        //Your code here
+	        $query->where('invoice_number', '!=', null);
 	    }
 
 	    /*
@@ -390,48 +342,9 @@ use App\Imports\GcListImport;
 
 	    //By the way, you can still create your own method in here... :) 
 
-		public function getScanQR(IlluminateRequest $request) {
+		public function getDetail($id) {
 			//Create an Auth
-			if(!CRUDBooster::isCreate() && $this->global_privilege==FALSE || $this->button_add==FALSE) {    
-				CRUDBooster::redirect(CRUDBooster::adminPath(),trans("crudbooster.denied_access"));
-			}
-			
-			$data = [];
-			$data['page_title'] = 'Scan QR';
-			$data['scannedData'] = $request->input('data'); 
-
-			
-			//Please use view method instead view method from laravel
-			return $this->view('redeem_qr.scan_qr',$data);
-		}
-
-		public function uploadGCList(IlluminateRequest $request){
-
-			if(!CRUDBooster::isCreate() && $this->global_privilege==FALSE || $this->button_add==FALSE) {    
-				CRUDBooster::redirect(CRUDBooster::adminPath(),trans("crudbooster.denied_access"));
-			}
-			
-			$data = [];
-			$data['page_title'] = 'Upload GC List';
-
-			return $this->view('redeem_qr.upload_gc_list',$data);
-
-		}
-
-		public function uploadGCListPost(IlluminateRequest $request){
-
-			
-			$uploaded_excel = $request->file('excel_file');
-
-			$rows = Excel::import(new GcListImport, $uploaded_excel);
-			// dd($rows);
-
-			return 	CRUDBooster::redirect(CRUDBooster::mainpath(), sprintf('Excel Uploaded Succesfully'),"success");
-
-		}
-
-		public function getEdit($id) {
-			//Create an Auth
+				//Create an Auth
 			if(!CRUDBooster::isUpdate() && $this->global_privilege==FALSE || $this->button_edit==FALSE) {    
 				CRUDBooster::redirect(CRUDBooster::adminPath(),trans("crudbooster.denied_access"));
 			}
@@ -448,50 +361,9 @@ use App\Imports\GcListImport;
 
 			// Generate QR Code
 			$qrCodeData = $data['row']->email.'|'.$data['row']->id;
-
+			
 			//Please use view method instead view method from laravel
 			return $this->view('redeem_qr.qr_redeem_section',$data);
-
-		}
-
-		public function redeemCode(IlluminateRequest $request){
-			
-			$return_inputs = $request->all();
-			$id = $return_inputs['user_id'];
-			$id_number = $return_inputs['id_number'];
-			$id_type = $return_inputs['id_type'];
-			$other_id_type = $return_inputs['other_id_type'];
-
-			GCList::where('id', $id)->update([
-
-				'redeem' => 1,
-				'cashier_name' => CRUDBooster::myId(),
-				'cashier_date_transact' => date('Y-m-d H:i:s'),
-				'id_number' => $id_number,
-				'id_type' => $id_type,
-				'other_id_type' => $other_id_type,
-				'qr_reference_number' => 'QRN-'.str_pad($id,6,"0", STR_PAD_LEFT)
-			]);
-
-			$user_information = GCList::find($id);
-
-			
-			return response()->json(['test'=>$user_information]);
-		}
-
-		public function inputInvoice(IlluminateRequest $request){
-
-			$return_inputs = $request->all();
-			$id = $return_inputs['user_id'];
-			$invoice_number = $return_inputs['invoice_number'];
-
-			$user_information = GCList::find($id);
-		
-			GCList::find($id)->update(['invoice_number'=>$invoice_number]);
-
-			CRUDBooster::redirect(CRUDBooster::mainpath(), sprintf('Code redemption succesful. QR Reference Number: %s', $user_information->qr_reference_number),"success");
-
-		}
-
+		  }
 
 	}
