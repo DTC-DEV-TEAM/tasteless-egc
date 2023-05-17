@@ -412,9 +412,9 @@ video{
 
 .file-upload-content input[type="file"] {
     position: relative;
-    width: 400px;
-    border: 1px solid #b5b5b5;
-    border-radius: 4px;
+    min-width: 400px;
+    /* border: 1px solid #b5b5b5; */
+    /* border-radius: 4px; */
     outline: none;
 }
 
@@ -477,23 +477,44 @@ video{
     filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, .2));
 }
 
+.export-import-section{
+    display: flex;
+    flex-wrap: wrap;
+}
+
 .download-template{
-    margin-bottom: 10px;
+    width: 300px;
+    margin-bottom: 25px;
+}
+
+.file-upload-contet{
+    width: 420px;
 }
 
 .download-template label{
     font-size: 15px;
     display: block;
+    margin-bottom: 5px;
 }
 
-.download-template button{
-    padding: 10px 24px;
+.export-template-section{
+    margin-top: 14px;
+}
+
+.download-template a{
+    padding: 11px 24px;
     border: none;
     border-radius: 5px;
     color: black;
     background-color: rgb(255, 255, 255);
     border: 1px solid rgb(228, 228, 228);
     filter: drop-shadow(2px 2px 1px rgba(0, 0, 0, .2));
+}
+
+.download-template a:hover{
+    background-color: #f3f4f6;
+    color: #0964b0;
+
 }
 
 /* End of Upload GC List Section */

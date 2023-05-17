@@ -5,6 +5,8 @@ namespace App\Imports;
 use App\GCList;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithStartRow;
+use Mail;
+use CRUDBooster;
 
 class GcListImport implements ToModel, WithStartRow
 {
@@ -25,7 +27,7 @@ class GcListImport implements ToModel, WithStartRow
     public function model(array $row)
     {
 
-        return new GCList([
+        $gcList = new GCList([
             'name' => $row[0],
             'phone' => $row[1],
             'email' => $row[2],
@@ -34,5 +36,22 @@ class GcListImport implements ToModel, WithStartRow
             'gc_description' => $row[5],
             'gc_value' => $row[6],
         ]);
+
+        $gcList->save();
+
+        $id = $gcList->id;
+        $name = $gcList->name;
+        $email = $gcList->email;
+
+        $data = array('name'=> $name, 'id' => $id);
+        
+        Mail::send(['html' => 'redeem_qr.sendemail'], $data, function($message) use ($email) {
+            $message->to($email, 'Tutorials Point')->subject('Laravel Basic Testing Mail');
+            $message->from('punzalan2233@gmail.com', 'Patrick Lester Punzalan');
+        });
+        
+
+        // return $gcList;
+        // return 	CRUDBooster::redirect(CRUDBooster::adminPath('g_c_lists'), 'Excel Uploaded Succesfully',"success");
     }
 }

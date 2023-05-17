@@ -7,11 +7,13 @@ use Request;
 use DB;
 use CRUDBooster;
 use Faker\Factory;
+use Illuminate\Support\Facades\Validator;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Http\Request as IlluminateRequest;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\GcListImport;
-
+use App\Exports\GCListTemplateExport;
+use Mail;
 
 
 
@@ -28,12 +30,12 @@ use App\Imports\GcListImport;
 			$this->button_bulk_action = true;
 			$this->button_action_style = "button_icon";
 			$this->button_add = true;
-			$this->button_edit = true;
+			$this->button_edit = false;
 			$this->button_delete = true;
 			$this->button_detail = true;
 			$this->button_show = true;
 			$this->button_filter = true;
-			$this->button_import = true;
+			$this->button_import = false;
 			$this->button_export = false;
 			$this->table = "g_c_lists";
 			# END CONFIGURATION DO NOT REMOVE THIS LINE
@@ -414,20 +416,36 @@ use App\Imports\GcListImport;
 			$data = [];
 			$data['page_title'] = 'Upload GC List';
 
+			$email_data = ['qr_code'=>'Testing'];
+
+			// CRUDBooster::sendEmail([
+			// 	'to' => 'patrickpunzalan@digits.ph',
+			// 	'from' => 'noreply@digits.ph',
+			// 	'data' => $email_data,
+			// 	'template' => 'send_qr',
+			// ]);   
+	
 			return $this->view('redeem_qr.upload_gc_list',$data);
 
 		}
 
 		public function uploadGCListPost(IlluminateRequest $request){
 
-			
+			$validatedData = $request->validate([
+				'excel_file' => 'required|mimes:xls,xlsx',
+			]);
+
 			$uploaded_excel = $request->file('excel_file');
 
 			$rows = Excel::import(new GcListImport, $uploaded_excel);
-			// dd($rows);
 
-			return 	CRUDBooster::redirect(CRUDBooster::mainpath(), sprintf('Excel Uploaded Succesfully'),"success");
+			return 	CRUDBooster::redirect(CRUDBooster::mainpath(), 'Excel Uploaded Succesfully',"success");
 
+		}
+
+		public function exportGCListTemplate(){
+
+			return Excel::download(new GCListTemplateExport, 'gc_list_template.xlsx');
 		}
 
 		public function getEdit($id) {

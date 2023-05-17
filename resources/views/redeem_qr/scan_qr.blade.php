@@ -32,14 +32,11 @@
                     <div class="show_scanner_content">
                         <button class="show_qr_code_scanner" type="button">Show QR Code Scanner</button>
                     </div>
-                 
                 </div>
                 <div class="qr_code_img">
                     <img class="scan_qr_img" src="{{ asset('img/scan_qr.jpg') }}" alt="">
                 </div>
             </div>
-
-
         </div>
     </div>
 
