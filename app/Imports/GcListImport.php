@@ -45,10 +45,10 @@ class GcListImport implements ToModel, WithStartRow
 
         $data = array('name'=> $name, 'id' => $id);
         
-        Mail::send(['html' => 'redeem_qr.sendemail'], $data, function($message) use ($email) {
-            $message->to($email, 'Tutorials Point')->subject('Laravel Basic Testing Mail');
-            $message->from('punzalan2233@gmail.com', 'Patrick Lester Punzalan');
-        });
+        // Mail::send(['html' => 'redeem_qr.sendemail'], $data, function($message) use ($email) {
+        //     $message->to($email, 'Tutorials Point')->subject('Laravel Basic Testing Mail');
+        //     $message->from('punzalan2233@gmail.com', 'Patrick Lester Punzalan');
+        // });
         
 
         // return $gcList;

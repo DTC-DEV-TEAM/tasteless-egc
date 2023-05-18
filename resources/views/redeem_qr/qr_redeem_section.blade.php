@@ -8,6 +8,8 @@
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   {{-- Sweet Alert --}}
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  {{-- Confetti --}}
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <style>
     .swal2-popup {
@@ -47,6 +49,9 @@
             <div class="qr-reference-content">
               <span id="qr-reference-number">QR REFERENCE #: {{ $row->qr_reference_number }}</span>
             </div>
+            <div class="input-invoice-notes">
+              <span style="text-transform: uppercase;">Note: Please copy paste below your POS memo field</span>
+            </div>
           </div>
 
           <div class="qr-invoice-number-card" style="display: none;">
@@ -58,15 +63,33 @@
             </div>
             <div class="redemption-success">
               @if ($row->invoice_number)
-                <span>INVOICE NUMBER</span>
+                <span>POS NUMBER</span>
                 @else
-                <span>INPUT INVOICE NUMBER</span>
+                <span>INPUT POS NUMBER</span>
               @endif
               
             </div>
             <div class="input-invoice">
-              <input type="text" placeholder="INVOICE#" name="invoice_number" {{ $row->invoice_number ? "readonly value=$row->invoice_number" : '' }} required>
+              <input type="text" name="invoice_number" value="{{ $row->invoice_number }}" {{ $row->invoice_number ? "readonly" : '' }} required>
               <button type="button" id="submit-invoice-btn" {{ $row->invoice_number ? 'disabled' : '' }}>Save</button>
+            </div>
+            <div class="input-invoice-notes">
+              <span style="text-transform: uppercase;">Note: Please Input POS# use in the transaction.</span>
+            </div>
+          </div>
+
+          <div class="redemption-period-not-available-card" style="display: none;">
+            <div class="redemption-period-close-icon">
+              <button type="button" id="close-qr-redemption-period"><i class="fa fa-close"></i></button>
+            </div>
+            <div class="redemption-period-check-icon">
+              <span><i class="fa fa-lock"></i></span>
+            </div>
+            <div class="redemption-period-success">
+              <span>QR CODE NO LONGER REEDEMABLE</span>
+            </div>
+            <div class="redemption-period-close-transaction">
+              <button type="button">Close Transaction</button>
             </div>
           </div>
 
@@ -89,20 +112,20 @@
                 <input type="text" value="{{ $row->phone }}" readonly>
               </div>
               <div class="user-element">
-                <label for=""># of GCS: </label>
-                <input type="text" value="{{ $row->number_of_gcs }}" readonly>
+                <label for="">GC Description: </label>
+                <input type="text" value="{{ $row->gc_description }}" readonly>
               </div>
             </div>
           </div>
           <div class="user-info-content">
             <div class="user-info">
               <div class="user-element">
-                <label for="">Redemption Period: </label>
-                <input type="text" value="{{ $row->redemption_period }}" readonly>
+                <label for="">Redemption Start Date: </label>
+                <input id="redemption_start_date" type="text" value="{{ $row->redemption_start }}" readonly>
               </div>
               <div class="user-element">
-                <label for="">GC Description: </label>
-                <input type="text" value="{{ $row->gc_description }}" readonly>
+                <label for="">Redemption End Date: </label>
+                <input id="redemption_end_date" type="text" value="{{ $row->redemption_end }}" readonly>
               </div>
             </div>
           </div>
@@ -113,10 +136,9 @@
                 <input type="text" value="{{ $row->gc_value }}" readonly>
               </div>
               <div class="user-element">
-                <label for=""><span class="required">*</span> ID#: </label>
+                <label for=""><span class="required">*</span> GOVT ID#: </label>
                 <input type="text" name="id_number" 
-                id="id_number" {{ $row->id_number ? "value=$row->id_number readonly" : '' }} required>
-
+                id="id_number"  value="{{ $row->id_number }}" {{ $row->id_number ? 'readonly' : '' }} required>
               </div>
             </div>
           </div>
@@ -134,7 +156,7 @@
               </div>
               <div class="user-element" id="id-type-other" style="display: none;">
                 <label for=""><span class="required">*</span> Other ID Type: </label>
-                <input type="text" name="other_id_type" id="other_id_type" value="">
+                <input type="text" name="other_id_type" id="other_id_type" value="{{ $row->other_id_type }}">
               </div>
             </div>
           </div>
@@ -153,9 +175,9 @@
           </div>
         
           <div class="redeem-btn">
-            <button type='button' class='redeem-code' id="show-input-invoice" disabled><i class='fa fa-pencil '></i> Input Invoice #</button>
-            <button type='button' class='redeem-code' id="show-reference-number" disabled><i class='fa fa-sticky-note-o '></i> Show QR Reference #</button>
-            <button type='submit' class='redeem-code' id="redeem-code"><i class='fa fa-credit-card-alt '></i> Redeem Code</button>
+            <button type='button' class='redeem-code' id="show-input-invoice" disabled><i class='fa fa-pencil '></i>Step 3 - Input POS #</button>
+            <button type='button' class='redeem-code' id="show-reference-number" disabled><i class='fa fa-sticky-note-o '></i>Step - 2 Show QR Reference #</button>
+            <button type='submit' class='redeem-code' id="redeem-code"><i class='fa fa-credit-card-alt '></i> Step 1 - Redeem Code</button>
           </div>
         </div>
       </form>
@@ -167,7 +189,7 @@
   <script>
 
     $(document).ready(function() {
-      
+
       $('form').css('display','block');
 
       // Transaction 
@@ -181,6 +203,11 @@
         $('#show-input-invoice').attr('disabled', false);
       }  
 
+      if("{{ $row->other_id_type }}"){
+        $('#id-type-other').show();
+        $('#other_id_type').attr('readonly', true);
+      }
+
       // Toggle QR Reference Card
       $('#show-reference-number').click(function(event) {
         $('.qr-reference-card').fadeToggle();
@@ -190,14 +217,12 @@
       $('#close-qr-reference-code').click(function(){
         $('.qr-reference-card').hide();
       })
-      
-      // Close QR Reference Card
-      $(document).click(function(event){
-        if (!$(event.target).closest('.qr-reference-card').length && !$('#show-reference-number').is(event.target)){
-          $('.qr-reference-card').hide();
-        }
 
+      // Redemption End Close Button
+      $('#close-qr-redemption-period').click(function(){
+        $('.redemption-period-not-available-card').hide();
       })
+      
       // Input Invoice Number
       $('#show-input-invoice').click(function(event) {
         $('.qr-invoice-number-card').fadeToggle();
@@ -213,8 +238,15 @@
         if (!$(event.target).closest('.qr-invoice-number-card').length && !$('#show-input-invoice').is(event.target)){
           $('.qr-invoice-number-card').hide();
         }
+        if (!$(event.target).closest('.qr-reference-card').length && !$('#show-reference-number').is(event.target)){
+          $('.qr-reference-card').hide();
+        }
+        // if (!$(event.target).closest('.redemption-period-not-available-card').length){
+        //   $('.redemption-period-not-available-card').hide();
+        // }
 
       })
+
 
       $('#id-type').on('change', function(){
         const id_type_value = $(this).val();
@@ -225,8 +257,26 @@
         }else{
           $('#id-type-other').hide();
           $('#other_id_type').removeAttr('required');
+          $('#other_id_type').val('');
         }
       })
+
+      // Validate redemption period
+      function colorRedemptionPeriod(){
+        let redemption_date = $('#redemption_end_date').val();
+        let date = new Date();
+        let dateValidation = new Date(redemption_date);
+
+        if(date > dateValidation){
+          $('#redemption_start_date').css({'color' : '#F42B03', 'font-weight' : 'bold'});
+          $('#redemption_end_date').css({'color' : '#F42B03', 'font-weight' : 'bold'});
+        }else{
+          $('#redemption_start_date').css({'color' : '#2BA84A', 'font-weight' : 'bold'});
+          $('#redemption_end_date').css({'color' : '#2BA84A', 'font-weight' : 'bold'});
+        }
+      }
+
+      colorRedemptionPeriod();
 
       // Redeem Code Button
       $('#redeem-code').click(function(event){
@@ -236,56 +286,20 @@
         const id_number = $('#id_number').val();
         const user_id = $('#user_id').val();
 
+        // Validate redemption period
+        const redemption_end_date = $('#redemption_end_date').val();
+        const current_date = new Date();
+        const redemptionDateValidation = new Date(redemption_end_date);
+
         event.preventDefault();
-        
-        if((id_type == 'other' && !other_id_type) || !id_number || !id_type ){
-            const Toast = Swal.mixin({
-            toast: true,
-            position: 'bottom-end',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.addEventListener('mouseenter', Swal.stopTimer)
-              toast.addEventListener('mouseleave', Swal.resumeTimer)
-            }
-          })
 
-          Toast.fire({
-            icon: 'warning',
-            title: 'All required field must be filled'
-          })
-          return
+        if(current_date > redemptionDateValidation){
+          
+          console.log('Redemption period has ended.')
 
-        }
-            
+          $('.redemption-period-not-available-card').fadeToggle();
 
-        $.ajax({
-          url: "{{ route('redeem_code') }}",
-          dataType: 'json',
-          type: 'POST',
-          data: {
-            id_type: id_type,
-            other_id_type: other_id_type,
-            id_number: id_number,
-            user_id: user_id,
-          },
-          success: function(response){
-
-            console.log(response.test.qr_reference_number);
-            
-            $('#qr-reference-number').text(`QR REFERENCE #: ${response.test.qr_reference_number}`)
-            $('#redeem-code').css({'box-shadow': 'none', 'transform': 'translateY(5px)', 'opacity': '0.9'});
-            $('#redeem-code').attr('disabled', true);
-            $('#show-reference-number').attr('disabled', false)
-            $('#show-input-invoice').attr('disabled', false)
-            
-            $('#id-type').attr('disabled', true);
-            $('#id-type').css({'background-color': '#eeeeee'});
-            $('#id_number').attr('readonly', true);
-            $('#other_id_type').attr('readonly', true);
-
-            const Toast = Swal.mixin({
+          const Toast = Swal.mixin({
               toast: true,
               position: 'bottom-end',
               showConfirmButton: false,
@@ -298,16 +312,89 @@
             })
 
             Toast.fire({
-              icon: 'success',
-              title: 'Code Redeemed Successfully'
+              icon: 'error',
+              title: 'Redemption period has ended.'
             })
-          },
-          error: function(error){
-            console.log(error)
+
+            return
+
+            
+        }else{
+
+          if((id_type == '15' && !other_id_type) || !id_number || !id_type ){
+              const Toast = Swal.mixin({
+              toast: true,
+              position: 'bottom-end',
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+              }
+            })
+
+            Toast.fire({
+              icon: 'warning',
+              title: 'All required field must be filled'
+            })
+            return
+
           }
 
+          $.ajax({
+            url: "{{ route('redeem_code') }}",
+            dataType: 'json',
+            type: 'POST',
+            data: {
+              id_type: id_type,
+              other_id_type: other_id_type,
+              id_number: id_number,
+              user_id: user_id,
+            },
+            success: function(response){
 
-        })
+              console.log(response.test.qr_reference_number);
+
+              confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.8, x: 0.57 }
+              });
+              
+              $('#qr-reference-number').text(`QR REFERENCE #: ${response.test.qr_reference_number}`)
+              $('#redeem-code').css({'box-shadow': 'none', 'transform': 'translateY(5px)', 'opacity': '0.9'});
+              $('#redeem-code').attr('disabled', true);
+              $('#show-reference-number').attr('disabled', false)
+              $('#show-input-invoice').attr('disabled', false)
+              
+              $('#id-type').attr('disabled', true);
+              $('#id-type').css({'background-color': '#eeeeee'});
+              $('#id_number').attr('readonly', true);
+              $('#other_id_type').attr('readonly', true);
+
+              const Toast = Swal.mixin({
+                toast: true,
+                position: 'bottom-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                  toast.addEventListener('mouseenter', Swal.stopTimer)
+                  toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+              })
+
+              Toast.fire({
+                icon: 'success',
+                title: 'Code Redeemed Successfully'
+              })
+            },
+            error: function(error){
+              console.log(error)
+            }
+          })
+        }
 
       })
       // End of Redeem Button
@@ -320,10 +407,6 @@
 
       })
       // End of Invoice Submit Button
-
-      
-
-      
 
     });
   </script>

@@ -30,9 +30,9 @@ use Mail;
 			$this->button_bulk_action = true;
 			$this->button_action_style = "button_icon";
 			$this->button_add = true;
-			$this->button_edit = false;
+			$this->button_edit = true;
 			$this->button_delete = true;
-			$this->button_detail = true;
+			$this->button_detail = false;
 			$this->button_show = true;
 			$this->button_filter = true;
 			$this->button_import = false;
@@ -47,7 +47,6 @@ use Mail;
 			$this->col[] = ["label"=>"Phone","name"=>"phone"];
 			$this->col[] = ["label"=>"Email","name"=>"email"];
 			$this->col[] = ["label"=>"Number Of Gcs","name"=>"number_of_gcs"];
-			$this->col[] = ["label"=>"Redemption Period","name"=>"redemption_period"];
 			$this->col[] = ["label"=>"Gc Description","name"=>"gc_description"];
 			// $this->col[] = ["label"=>"Gc Value","name"=>"gc_value"];
 			# END COLUMNS DO NOT REMOVE THIS LINE
@@ -58,7 +57,6 @@ use Mail;
 			$this->form[] = ['label'=>'Phone','name'=>'phone','type'=>'number','validation'=>'required|numeric','width'=>'col-sm-10','placeholder'=>'You can only enter the number only'];
 			$this->form[] = ['label'=>'Email','name'=>'email','type'=>'email','validation'=>'required|min:1|max:255|email|unique:g_c_lists','width'=>'col-sm-10','placeholder'=>'Please enter a valid email address'];
 			$this->form[] = ['label'=>'Number Of Gcs','name'=>'number_of_gcs','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
-			$this->form[] = ['label'=>'Redemption Period','name'=>'redemption_period','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
 			$this->form[] = ['label'=>'Gc Description','name'=>'gc_description','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
 			$this->form[] = ['label'=>'Gc Value','name'=>'gc_value','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
 			$this->form[] = ['label'=>'Redeem','name'=>'redeem','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
@@ -291,13 +289,14 @@ use Mail;
 			// 	IdType::create(['valid_ids' => strtoupper($option)]);
 			// }
 
-			// for($i=0; $i<1000; $i++){
+			// for($i=0; $i<100; $i++){
 			// 	GCList::create([
 			// 		'name' => $faker->name,
 			// 		'phone' => $faker->phoneNumber,
 			// 		'email' => $faker->email,
 			// 		'number_of_gcs' => $faker->randomNumber(2),
-			// 		'redemption_period' => $faker->sentence,
+			// 		'redemption_start' => $faker->date,
+			// 		'redemption_end' => $faker->date,
 			// 		'gc_description' => $faker->sentence,
 			// 		'gc_value' => $faker->randomFloat(2, 0, 100),
 			// 	]);

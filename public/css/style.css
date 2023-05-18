@@ -204,7 +204,7 @@ video{
 
 /* QR Reference content */
 .qr-reference-content{
-    margin-top: 75px;
+    margin-top: 35px;
     min-width: 255px;
     padding: 12px;
     background-color: rgba(255, 255, 255, 0.87);
@@ -274,7 +274,7 @@ video{
 }
 
 .input-invoice{
-    margin-top: 75px;
+    margin-top: 40px;
 }
 
 .input-invoice input{
@@ -284,11 +284,10 @@ video{
     border: 1px solid #eee;
     border-radius: 5px;
     text-align: center;
-
 }
 
 .input-invoice button{
-    padding: 7.7px 14px;
+    padding: 7.9px 14px;
     background-color: white;
     border: 1px solid #eee;
     font-weight: bold;
@@ -304,7 +303,110 @@ video{
     opacity: 0.9;
 }
 
+.input-invoice-notes{
+    margin-top: 10px;
+}
+.input-invoice-notes span{
+    color: white;
+    font-size: 14px;
+}
+
 /* End of Input Invoice Number */
+
+/* Redemption Period Over */
+.redemption-period-not-available-card{
+    height: 300px;
+    width: calc(100% - 110px);
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+    position: absolute;
+    top: 50%;
+    right: 50%;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    display: flex;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #174b69d9;
+    z-index: 999;
+    flex-direction: column;
+    margin: auto;
+    align-items: center;
+}
+
+.redemption-period-check-icon{
+    height: 80px;
+    width: 80px;
+    border-radius: 50%;
+    background-color: #ecf6f7;
+    display: grid;
+    place-items: center;
+}
+
+.redemption-period-check-icon span{
+    color: rgb(31, 32, 49);
+    font-size: 50px;
+}
+
+.redemption-period-close-icon{
+    display: grid;
+    place-items: center;
+    right: 10px;
+    top: 8px;
+    position: absolute;
+}
+
+.redemption-period-success{
+    font-size: 20px;
+    margin-top: 15px;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+    text-align: center;
+}
+
+.redemption-period-close-transaction{
+    margin-top: 20px;
+}
+
+.redemption-period-close-transaction button {
+    padding: 15px 25px;
+    border: unset;
+    border-radius: 15px;
+    color: #212121;
+    z-index: 1;
+    background: #e8e8e8;
+    position: relative;
+    font-weight: 1000;
+    font-size: 17px;
+    -webkit-box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
+    box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
+    transition: all 250ms;
+    overflow: hidden;
+}
+
+.redemption-period-close-transaction button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0;
+    border-radius: 15px;
+    background-color: #212121;
+    z-index: -1;
+    -webkit-box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
+    box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
+    transition: all 250ms
+}
+
+.redemption-period-close-transaction button:hover {
+    color: #e8e8e8;
+   }
+   
+.redemption-period-close-transaction button:hover::before {
+    width: 100%;
+}
+
+/* End of Redemption Period */
 
 .user-info{
     display: flex;
@@ -367,13 +469,18 @@ video{
 .redeem-btn{
     display: flex;
     align-items: center;
-    justify-content: end;
+    justify-content: center;
 }
 
 .redeem-btn > * {
     margin: 3px;
 }
-.redeem-code{
+
+.redeem-code {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
     border: none;
     outline: none;
     background-color: #3C8DBC;
@@ -384,7 +491,7 @@ video{
     border-radius: 5px;
     transition: all ease 0.1s;
     box-shadow: 0px 5px 0px 0px #243962;
-}
+  }
 
 .redeem-code:active{
     transform: translateY(5px);
@@ -397,6 +504,12 @@ video{
 
 .redeem-code:disabled{
     opacity: 0.7;
+}
+
+.redeem-code i{
+    /* vertical-align: middle; */
+    vertical-align: middle;
+    margin-right: 3px;
 }
 
 
