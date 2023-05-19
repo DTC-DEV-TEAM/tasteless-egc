@@ -40,11 +40,21 @@
             <div class="close-icon">
               <button type="button" id="close-qr-reference-code"><i class="fa fa-close"></i></button>
             </div>
+            @if ($row->status == 'EXPIRED')
+            <div class="expired-icon">
+              <span><i class="fa fa-close"></i></span>
+            </div>
+            @else
             <div class="check-icon">
               <span><i class="fa fa-check"></i></span>
             </div>
+            @endif
             <div class="redemption-success">
+              @if ($row->status == 'EXPIRED')
+              <span>REDEMPTION EXPIRED</span>
+              @else
               <span>REDEMPTION SUCCESS</span>
+              @endif
             </div>
             <div class="qr-reference-content">
               <span id="qr-reference-number">QR REFERENCE #: {{ $row->qr_reference_number }}</span>
@@ -89,7 +99,7 @@
               <span>QR CODE NO LONGER REEDEMABLE</span>
             </div>
             <div class="redemption-period-close-transaction">
-              <button type="button">Close Transaction</button>
+              <button id="redemption-ended" type="button">Close Transaction</button>
             </div>
           </div>
 
@@ -165,7 +175,6 @@
           {{-- @php
           $qrCodeUrl = route('scan_qr', ['data' => 'your-data-goes-here']);
           $qrCodeURL = url()->current();
-          dd($qrCodeURL);
           @endphp
           {!! QrCode::size(200)->generate(url()->current()); !!} --}}
           <div class="text-center">
@@ -192,74 +201,23 @@
 
       $('form').css('display','block');
 
-      // Transaction 
-      if('{{ $row->redeem }}' && '{{ $row->invoice_number }}'){
-        $('#redeem-code').attr('disabled', true);
-        $('#show-reference-number').attr('disabled', false);
-        $('#show-input-invoice').attr('disabled', false);
-      }else if ('{{ $row->redeem }}' && '{{ !$row->invoice_number }}'){
-        $('#redeem-code').attr('disabled', true);
-        $('#show-reference-number').attr('disabled', false);
-        $('#show-input-invoice').attr('disabled', false);
-      }  
+  
+      // Transaction Validation 
+      function transactionValidation(){
 
-      if("{{ $row->other_id_type }}"){
-        $('#id-type-other').show();
-        $('#other_id_type').attr('readonly', true);
+        if('{{ $row->redeem }}' && '{{ $row->invoice_number }}'){
+          $('#redeem-code').attr('disabled', true);
+          $('#show-reference-number').attr('disabled', false);
+          $('#show-input-invoice').attr('disabled', false);
+        }else if ('{{ $row->redeem }}' && '{{ !$row->invoice_number }}'){
+          $('#redeem-code').attr('disabled', true);
+          $('#show-reference-number').attr('disabled', false);
+          $('#show-input-invoice').attr('disabled', false);
+        } else if ('{{ $row->status }}' == 'EXPIRED') {
+          $('#redeem-code').attr('disabled', true);
+          $('#show-reference-number').attr('disabled', false);
+        }
       }
-
-      // Toggle QR Reference Card
-      $('#show-reference-number').click(function(event) {
-        $('.qr-reference-card').fadeToggle();
-      });
-      
-      // QR Reference Card Close button
-      $('#close-qr-reference-code').click(function(){
-        $('.qr-reference-card').hide();
-      })
-
-      // Redemption End Close Button
-      $('#close-qr-redemption-period').click(function(){
-        $('.redemption-period-not-available-card').hide();
-      })
-      
-      // Input Invoice Number
-      $('#show-input-invoice').click(function(event) {
-        $('.qr-invoice-number-card').fadeToggle();
-      });
-      
-      // Input Invoice Number Close buttonn
-      $('#close-qr-invoice_number').click(function(){
-        $('.qr-invoice-number-card').hide();
-      })
-
-      // Close QR Reference Card
-      $(document).click(function(event){
-        if (!$(event.target).closest('.qr-invoice-number-card').length && !$('#show-input-invoice').is(event.target)){
-          $('.qr-invoice-number-card').hide();
-        }
-        if (!$(event.target).closest('.qr-reference-card').length && !$('#show-reference-number').is(event.target)){
-          $('.qr-reference-card').hide();
-        }
-        // if (!$(event.target).closest('.redemption-period-not-available-card').length){
-        //   $('.redemption-period-not-available-card').hide();
-        // }
-
-      })
-
-
-      $('#id-type').on('change', function(){
-        const id_type_value = $(this).val();
-
-        if (id_type_value == '15'){
-          $('#id-type-other').show();
-          $('#other_id_type').attr('required', true);
-        }else{
-          $('#id-type-other').hide();
-          $('#other_id_type').removeAttr('required');
-          $('#other_id_type').val('');
-        }
-      })
 
       // Validate redemption period
       function colorRedemptionPeriod(){
@@ -276,7 +234,66 @@
         }
       }
 
-      colorRedemptionPeriod();
+      // Toggle and Closing
+      function toggleAndClosing(){
+        // Toggle QR Reference Card
+        $('#show-reference-number').click(function(event) {
+          $('.qr-reference-card').fadeToggle();
+        });
+        
+        // QR Reference Card Close button
+        $('#close-qr-reference-code').click(function(){
+          $('.qr-reference-card').hide();
+        })
+
+        // Redemption End Close Button
+        $('#close-qr-redemption-period').click(function(){
+          $('.redemption-period-not-available-card').hide();
+        })
+        
+        // Input Invoice Number
+        $('#show-input-invoice').click(function(event) {
+          $('.qr-invoice-number-card').fadeToggle();
+        });
+        
+        // Input Invoice Number Close buttonn
+        $('#close-qr-invoice_number').click(function(){
+          $('.qr-invoice-number-card').hide();
+        })
+
+        // Close QR Reference Card
+        $(document).click(function(event){
+
+          if (!$(event.target).closest('.qr-invoice-number-card').length && !$('#show-input-invoice').is(event.target)){
+            $('.qr-invoice-number-card').hide();
+          }
+          if (!$(event.target).closest('.qr-reference-card').length && !$('#show-reference-number').is(event.target)){
+            $('.qr-reference-card').hide();
+          }
+        })
+      }
+
+      function idType(){
+
+        if("{{ $row->other_id_type }}"){
+        $('#id-type-other').show();
+        $('#other_id_type').attr('readonly', true);
+      }
+
+      $('#id-type').on('change', function(){
+
+        const id_type_value = $(this).val();
+
+        if (id_type_value == '15'){
+            $('#id-type-other').show();
+            $('#other_id_type').attr('required', true);
+          }else{
+            $('#id-type-other').hide();
+            $('#other_id_type').removeAttr('required');
+            $('#other_id_type').val('');
+          }
+        })
+      };
 
       // Redeem Code Button
       $('#redeem-code').click(function(event){
@@ -407,6 +424,24 @@
 
       })
       // End of Invoice Submit Button
+
+      // Redemption date validation
+      $('#redemption-ended').click(function(){
+        
+        $('input').removeAttr('required');
+        $('select').removeAttr('required');
+        $(this).parents('form').attr("action", "{{ route('redemption_ended') }}")
+        $(this).attr('type', 'submit');
+      })
+      // End of Redemption date validation
+
+      colorRedemptionPeriod();
+
+      transactionValidation();
+
+      toggleAndClosing();
+
+      idType();
 
     });
   </script>

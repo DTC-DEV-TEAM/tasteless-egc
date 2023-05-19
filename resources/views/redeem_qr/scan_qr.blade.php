@@ -25,7 +25,6 @@
                     <div class="qr_code_box">
                         <p>Once you have scanned the QR code</p>
                         <p>Please wait for the code link to load</p>
-                        <p>Click on the link to proceed.</p>
                         <p>{{ $scannedData }}</p>
                         <span></span>
                     </div>

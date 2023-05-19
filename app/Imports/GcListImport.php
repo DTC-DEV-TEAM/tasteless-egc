@@ -5,6 +5,7 @@ namespace App\Imports;
 use App\GCList;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithStartRow;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Mail;
 use CRUDBooster;
 
@@ -26,13 +27,13 @@ class GcListImport implements ToModel, WithStartRow
     */
     public function model(array $row)
     {
-
+        
         $gcList = new GCList([
             'name' => $row[0],
             'phone' => $row[1],
             'email' => $row[2],
             'number_of_gcs' => $row[3],
-            'redemption_period' => $row[4],
+            // 'redemption_end' => Date::excelToDateTimeObject($row[4])->format('Y-m-d'),
             'gc_description' => $row[5],
             'gc_value' => $row[6],
         ]);

@@ -194,6 +194,21 @@ video{
     font-size: 50px;
 }
 
+.expired-icon{
+    height: 80px;
+    width: 80px;
+    border-radius: 50%;
+    background-color: #ee7c7c;
+    display: grid;
+    place-items: center;
+}
+
+.expired-icon span{
+    color: rgb(31, 32, 49);
+    font-size: 50px;
+}
+
+
 /* Redemption Text */
 .redemption-success{
     font-size: 20px;
