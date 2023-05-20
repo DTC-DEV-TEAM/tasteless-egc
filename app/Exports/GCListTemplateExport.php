@@ -19,6 +19,6 @@ class GCListTemplateExport implements FromCollection, WithHeadings
 
     public function headings(): array
     {
-        return ['NAME', 'PHONE', 'EMAIL', 'NUMBER OF GCS', 'REDEMPTION PERIOD', 'GC DESCRIPTION', 'GC VALUE'];
+        return ['NAME', 'PHONE', 'EMAIL'];
     }
 }

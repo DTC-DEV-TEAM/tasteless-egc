@@ -445,29 +445,29 @@ use Mail;
 		// 	return Excel::download(new GCListTemplateExport, 'gc_list_template.xlsx');
 		// }
 
-		// public function getEdit($id) {
-		// 	//Create an Auth
-		// 	if(!CRUDBooster::isUpdate() && $this->global_privilege==FALSE || $this->button_edit==FALSE) {    
-		// 		CRUDBooster::redirect(CRUDBooster::adminPath(),trans("crudbooster.denied_access"));
-		// 	}
+		public function getEdit($id) {
+			//Create an Auth
+			if(!CRUDBooster::isUpdate() && $this->global_privilege==FALSE || $this->button_edit==FALSE) {    
+				CRUDBooster::redirect(CRUDBooster::adminPath(),trans("crudbooster.denied_access"));
+			}
 			
-		// 	$data = [];
-		// 	$data['page_title'] = 'Redeem QR';
-		// 	$data['row'] = DB::table('g_c_lists')
-		// 		->leftJoin('id_types as id_name', 'id_name.id' ,'=', 'g_c_lists.id_type')
-		// 		->select('g_c_lists.*',
-		// 			'id_name.valid_ids')
-		// 		->where('g_c_lists.id',$id)->first();
+			$data = [];
+			$data['page_title'] = 'Redeem QR';
+			$data['row'] = DB::table('g_c_lists')
+				->leftJoin('id_types as id_name', 'id_name.id' ,'=', 'g_c_lists.id_type')
+				->select('g_c_lists.*',
+					'id_name.valid_ids')
+				->where('g_c_lists.id',$id)->first();
 
-		// 	$data['valid_ids'] = IdType::get();
+			$data['valid_ids'] = IdType::get();
 
-		// 	// Generate QR Code
-		// 	$qrCodeData = $data['row']->email.'|'.$data['row']->id;
+			// Generate QR Code
+			$qrCodeData = $data['row']->email.'|'.$data['row']->id;
 
-		// 	//Please use view method instead view method from laravel
-		// 	return $this->view('redeem_qr.qr_redeem_section',$data);
+			//Please use view method instead view method from laravel
+			return $this->view('redeem_qr.qr_redeem_section',$data);
 
-		// }
+		}
 
 		public function redeemCode(IlluminateRequest $request){
 			

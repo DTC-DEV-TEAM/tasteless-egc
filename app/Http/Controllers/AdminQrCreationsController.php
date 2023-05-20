@@ -50,8 +50,8 @@ use Mail;
 			$this->form[] = ['label'=>'Gc Description','name'=>'gc_description','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-6'];
 			$this->form[] = ['label'=>'Gc Value','name'=>'gc_value','type'=>'number','validation'=>'required|integer|min:0','width'=>'col-sm-6'];
 			$this->form[] = ['label'=>'Number Of Gcs','name'=>'number_of_gcs','type'=>'number','validation'=>'required|integer|min:0','width'=>'col-sm-6'];
-			$this->form[] = ['label'=>'Redemption Start','name'=>'redemption_start','type'=>'date','validation'=>'required|date','width'=>'col-sm-6'];
-			$this->form[] = ['label'=>'Redemption End','name'=>'redemption_end','type'=>'date','validation'=>'required|date','width'=>'col-sm-6'];
+			$this->form[] = ['label'=>'Redemption Start Date','name'=>'redemption_start','type'=>'date','validation'=>'required|date','width'=>'col-sm-6'];
+			$this->form[] = ['label'=>'Redemption End Date','name'=>'redemption_end','type'=>'date','validation'=>'required|date','width'=>'col-sm-6'];
 			# END FORM DO NOT REMOVE THIS LINE
 
 			# OLD START FORM

@@ -35,10 +35,13 @@
           <div class="file-upload-content">
             <label for="">File XLS / CSV</label>
             <input type="file" name="excel_file" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" required>
+            <br>
+            @if ($errors->has('excel_file'))
+            <p class="required">{{ $errors->first('excel_file') }}</p>
+            @endif
           </div>
         </div>
         <!-- etc .... -->
-        <br>
         <button class="btn btn-primary excel_file_btn_submit" type="submit">Submit</button>
       </form>
     </div>
