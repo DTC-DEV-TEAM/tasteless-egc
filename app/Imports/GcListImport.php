@@ -6,11 +6,18 @@ use App\GCList;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Mail;
 use CRUDBooster;
 
 class GcListImport implements ToModel, WithStartRow
 {
+    private $user_id;
+
+    public function __construct($user_id)
+    {
+        $this->user_id = $user_id;
+    }
     
     /**
      * @return int
@@ -27,7 +34,7 @@ class GcListImport implements ToModel, WithStartRow
     */
     public function model(array $row)
     {
-        
+        dd($this->user_id);
         $gcList = new GCList([
             'name' => $row[0],
             'phone' => $row[1],

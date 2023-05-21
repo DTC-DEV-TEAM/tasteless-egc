@@ -373,7 +373,7 @@ use Mail;
 
 			$uploaded_excel = $request->file('excel_file');
 
-			$rows = Excel::import(new GcListImport, $uploaded_excel);
+			$rows = Excel::import(new GcListImport('10'), $uploaded_excel);
 
 			return 	CRUDBooster::redirect(CRUDBooster::mainpath(), 'Excel Uploaded Succesfully',"success");
 
