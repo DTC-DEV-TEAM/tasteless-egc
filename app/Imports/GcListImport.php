@@ -9,6 +9,7 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Mail;
 use CRUDBooster;
+use Illuminate\Support\Str;
 
 class GcListImport implements ToModel, WithStartRow
 {
@@ -34,15 +35,17 @@ class GcListImport implements ToModel, WithStartRow
     */
     public function model(array $row)
     {
-        dd($this->user_id);
+        
         $gcList = new GCList([
             'name' => $row[0],
             'phone' => $row[1],
             'email' => $row[2],
-            'number_of_gcs' => $row[3],
+            'campaign_id' => $this->user_id,
+            'qr_reference_number' => Str::random(10)
+            // 'number_of_gcs' => $row[3],
             // 'redemption_end' => Date::excelToDateTimeObject($row[4])->format('Y-m-d'),
-            'gc_description' => $row[5],
-            'gc_value' => $row[6],
+            // 'gc_description' => $row[5],
+            // 'gc_value' => $row[6],
         ]);
 
         $gcList->save();
@@ -50,8 +53,10 @@ class GcListImport implements ToModel, WithStartRow
         $id = $gcList->id;
         $name = $gcList->name;
         $email = $gcList->email;
+        $generated_qr_code = $gcList->qr_reference_number;
+        
 
-        $data = array('name'=> $name, 'id' => $id);
+        $data = array('name'=> $name, 'id' => $id, 'qr_reference_number'=>$generated_qr_code);
         
         // Mail::send(['html' => 'redeem_qr.sendemail'], $data, function($message) use ($email) {
         //     $message->to($email, 'Tutorials Point')->subject('Laravel Basic Testing Mail');
@@ -60,6 +65,6 @@ class GcListImport implements ToModel, WithStartRow
         
 
         // return $gcList;
-        // return 	CRUDBooster::redirect(CRUDBooster::adminPath('g_c_lists'), 'Excel Uploaded Succesfully',"success");
+        // return 	CRUDBooster::redirect(CRUDBooster::mainpath(), 'Excel Uploaded Succesfully',"success");
     }
 }

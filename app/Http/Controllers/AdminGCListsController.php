@@ -14,6 +14,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\GcListImport;
 use App\Exports\GCListTemplateExport;
 use Mail;
+use Illuminate\Support\Str;
 
 
 
@@ -29,10 +30,10 @@ use Mail;
 			$this->button_table_action = true;
 			$this->button_bulk_action = true;
 			$this->button_action_style = "button_icon";
-			$this->button_add = true;
+			$this->button_add = false;
 			$this->button_edit = true;
 			$this->button_delete = true;
-			$this->button_detail = false;
+			$this->button_detail = true;
 			$this->button_show = true;
 			$this->button_filter = true;
 			$this->button_import = false;
@@ -46,11 +47,10 @@ use Mail;
 			$this->col[] = ["label"=>"Name","name"=>"name"];
 			$this->col[] = ["label"=>"Phone","name"=>"phone"];
 			$this->col[] = ["label"=>"Email","name"=>"email"];
-			$this->col[] = ["label"=>"Number Of Gcs","name"=>"number_of_gcs"];
-			$this->col[] = ["label"=>"Gc Description","name"=>"gc_description"];
-			$this->col[] = ["label"=>"Redemption Start Date","name"=>"redemption_start"];
-			$this->col[] = ["label"=>"Redemption End Date","name"=>"redemption_end"];
-			// $this->col[] = ["label"=>"Gc Value","name"=>"gc_value"];
+			$this->col[] = ["label"=>"Campaign ID", "name"=>"campaign_id", "join"=>"qr_creations,campaign_id"];
+			$this->col[] = ["label"=>"Campaign ID", "name"=>"campaign_id", "join"=>"qr_creations,gc_description"];
+			$this->col[] = ["label"=>"Redemption Start Date","name"=>"campaign_id","join"=>"qr_creations,redemption_start"];
+			$this->col[] = ["label"=>"Redemption End Date","name"=>"campaign_id","join"=>"qr_creations,redemption_end"];
 			# END COLUMNS DO NOT REMOVE THIS LINE
 
 			# START FORM DO NOT REMOVE THIS LINE
@@ -58,10 +58,6 @@ use Mail;
 			$this->form[] = ['label'=>'Name','name'=>'name','type'=>'text','validation'=>'required|string|min:3|max:70','width'=>'col-sm-10','placeholder'=>'You can only enter the letter only'];
 			$this->form[] = ['label'=>'Phone','name'=>'phone','type'=>'number','validation'=>'required|numeric','width'=>'col-sm-10','placeholder'=>'You can only enter the number only'];
 			$this->form[] = ['label'=>'Email','name'=>'email','type'=>'email','validation'=>'required|min:1|max:255|email|unique:g_c_lists','width'=>'col-sm-10','placeholder'=>'Please enter a valid email address'];
-			$this->form[] = ['label'=>'Number Of Gcs','name'=>'number_of_gcs','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
-			$this->form[] = ['label'=>'Gc Description','name'=>'gc_description','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
-			$this->form[] = ['label'=>'Gc Value','name'=>'gc_value','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
-			$this->form[] = ['label'=>'Redeem','name'=>'redeem','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
 			# END FORM DO NOT REMOVE THIS LINE
 
 			# OLD START FORM
@@ -270,7 +266,7 @@ use Mail;
 				$sub_query->where('status', '!=', 'EXPIRED')->orWhere('status', null);
 			})->orderBy('id', 'asc');
 
-			// $faker = Factory::create();
+			$faker = Factory::create();
 
 			// $options = [
 			// 	"Driver's License",
@@ -299,11 +295,8 @@ use Mail;
 			// 		'name' => $faker->name,
 			// 		'phone' => $faker->phoneNumber,
 			// 		'email' => $faker->email,
-			// 		'number_of_gcs' => $faker->randomNumber(2),
-			// 		'redemption_start' => $faker->date,
-			// 		'redemption_end' => $faker->date,
-			// 		'gc_description' => $faker->sentence,
-			// 		'gc_value' => $faker->randomFloat(2, 0, 100),
+			// 		'campaign_id' => 1,
+			// 		'qr_reference_number' => Str::random(10)
 			// 	]);
 			// }
 
@@ -411,61 +404,49 @@ use Mail;
 			return $this->view('redeem_qr.scan_qr',$data);
 		}
 
-		// public function uploadGCList(IlluminateRequest $request){
-
-		// 	if(!CRUDBooster::isCreate() && $this->global_privilege==FALSE || $this->button_add==FALSE) {    
-		// 		CRUDBooster::redirect(CRUDBooster::adminPath(),trans("crudbooster.denied_access"));
-		// 	}
-			
-		// 	$data = [];
-		// 	$data['page_title'] = 'Upload GC List';
-
-		// 	$email_data = ['qr_code'=>'Testing'];
-	
-		// 	return $this->view('redeem_qr.upload_gc_list',$data);
-
-		// }
-
-		// public function uploadGCListPost(IlluminateRequest $request){
-
-		// 	$validatedData = $request->validate([
-		// 		'excel_file' => 'required|mimes:xls,xlsx',
-		// 	]);
-
-		// 	$uploaded_excel = $request->file('excel_file');
-
-		// 	$rows = Excel::import(new GcListImport, $uploaded_excel);
-
-		// 	return 	CRUDBooster::redirect(CRUDBooster::mainpath(), 'Excel Uploaded Succesfully',"success");
-
-		// }
-
-		// public function exportGCListTemplate(){
-
-		// 	return Excel::download(new GCListTemplateExport, 'gc_list_template.xlsx');
-		// }
-
 		public function getEdit($id) {
 			//Create an Auth
 			if(!CRUDBooster::isUpdate() && $this->global_privilege==FALSE || $this->button_edit==FALSE) {    
 				CRUDBooster::redirect(CRUDBooster::adminPath(),trans("crudbooster.denied_access"));
 			}
+
+			$slug = Request::all()['value'];
+			$user = GCList::find($id);
+
+			if ($user->qr_reference_number == $slug || CRUDBooster::isSuperAdmin()){
 			
-			$data = [];
-			$data['page_title'] = 'Redeem QR';
-			$data['row'] = DB::table('g_c_lists')
-				->leftJoin('id_types as id_name', 'id_name.id' ,'=', 'g_c_lists.id_type')
-				->select('g_c_lists.*',
-					'id_name.valid_ids')
-				->where('g_c_lists.id',$id)->first();
+				$data = [];
+				$data['page_title'] = 'Redeem QR';
+				$data['row'] = DB::table('g_c_lists')
+					->leftJoin('id_types as id_name', 'id_name.id' ,'=', 'g_c_lists.id_type')
+					->leftJoin('qr_creations as qr', 'qr.id', '=', 'g_c_lists.campaign_id')
+					->select('g_c_lists.*',
+						'qr.campaign_id',
+						'qr.gc_description',
+						'qr.gc_value',
+						'qr.number_of_gcs',
+						'qr.redemption_start',
+						'qr.redemption_end',
+						'id_name.valid_ids')
+					->where('g_c_lists.id',$id)
+					->first();
 
-			$data['valid_ids'] = IdType::get();
+				$data['valid_ids'] = IdType::get();
 
-			// Generate QR Code
-			$qrCodeData = $data['row']->email.'|'.$data['row']->id;
+				// Generate QR Code
+				// $qrCodeData = $data['row']->email.'|'.$data['row']->id;
 
-			//Please use view method instead view method from laravel
-			return $this->view('redeem_qr.qr_redeem_section',$data);
+				// dd($request->input());
+				
+				//Please use view method instead view method from laravel
+				return $this->view('redeem_qr.qr_redeem_section',$data);
+
+			}
+
+			else{
+				CRUDBooster::redirect(CRUDBooster::mainpath(), sprintf("You don't have privilege to access this area."),"danger");
+
+			}
 
 		}
 
@@ -486,12 +467,23 @@ use Mail;
 				'id_type' => $id_type,
 				'other_id_type' => $other_id_type,
 				'status' => 'CLAIMED',
-				'qr_reference_number' => 'QRN-'.str_pad($id,6,"0", STR_PAD_LEFT)
+				// 'qr_reference_number' => 'QRN-'.str_pad($id,6,"0", STR_PAD_LEFT)
 			]);
 
-			$user_information = GCList::find($id);
+			$user_information = DB::table('g_c_lists')
+			->leftJoin('id_types as id_name', 'id_name.id' ,'=', 'g_c_lists.id_type')
+			->leftJoin('qr_creations as qr', 'qr.id', '=', 'g_c_lists.campaign_id')
+			->select('g_c_lists.*',
+				'qr.campaign_id',
+				'qr.gc_description',
+				'qr.gc_value',
+				'qr.number_of_gcs',
+				'qr.redemption_start',
+				'qr.redemption_end',
+				'id_name.valid_ids')
+			->where('g_c_lists.id',$id)
+			->first();
 
-			
 			return response()->json(['test'=>$user_information]);
 		}
 
@@ -507,7 +499,7 @@ use Mail;
 				['invoice_number'=>$invoice_number]
 			);
 
-			CRUDBooster::redirect(CRUDBooster::mainpath(), sprintf('Code redemption succesful. QR Reference Number: %s', $user_information->qr_reference_number),"success");
+			CRUDBooster::redirect(CRUDBooster::mainpath(), sprintf('Code redemption succesful. CAMPAIGN ID REFERENCE # : %s', $user_information->qr_reference_number),"success");
 
 		}
 
@@ -522,6 +514,38 @@ use Mail;
 
 			CRUDBooster::redirect(CRUDBooster::mainpath(), 'QR code has ended, and it is no longer valid for redemption',"success");
 		}
+
+		// public function getDetail($id) {
+		// 	//Create an Auth
+		// 	if(!CRUDBooster::isUpdate() && $this->global_privilege==FALSE || $this->button_edit==FALSE) {    
+		// 		CRUDBooster::redirect(CRUDBooster::adminPath(),trans("crudbooster.denied_access"));
+		// 	}
+			
+		// 	$data = [];
+		// 	$data['page_title'] = 'Redeem QR';
+		// 	$data['row'] = DB::table('g_c_lists')
+		// 		->leftJoin('id_types as id_name', 'id_name.id' ,'=', 'g_c_lists.id_type')
+		// 		->leftJoin('qr_creations as qr', 'qr.id', '=', 'g_c_lists.campaign_id')
+		// 		->select('g_c_lists.*',
+		// 			'qr.campaign_id',
+		// 			'qr.gc_description',
+		// 			'qr.gc_value',
+		// 			'qr.number_of_gcs',
+		// 			'qr.redemption_start',
+		// 			'qr.redemption_end',
+		// 			'id_name.valid_ids')
+		// 		->where('g_c_lists.id',$id)
+		// 		->first();
+
+		// 	$data['valid_ids'] = IdType::get();
+
+		// 	// Generate QR Code
+		// 	$qrCodeData = $data['row']->email.'|'.$data['row']->id;
+
+		// 	//Please use view method instead view method from laravel
+		// 	return $this->view('redeem_qr.qr_redeem_section',$data);
+
+		// }
 
 
 	}

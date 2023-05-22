@@ -35,10 +35,10 @@ use Session;
 			$this->col[] = ["label"=>"Name","name"=>"name"];
 			$this->col[] = ["label"=>"Phone","name"=>"phone"];
 			$this->col[] = ["label"=>"Email","name"=>"email"];
-			$this->col[] = ["label"=>"Number Of Gcs","name"=>"number_of_gcs"];
-			$this->col[] = ["label"=>"Gc Description","name"=>"gc_description"];
-			$this->col[] = ["label"=>"Redemption Start Date","name"=>"redemption_start"];
-			$this->col[] = ["label"=>"Redemption End Date","name"=>"redemption_end"];
+			$this->col[] = ["label"=>"Campaign ID", "name"=>"campaign_id", "join"=>"qr_creations,campaign_id"];
+			$this->col[] = ["label"=>"Campaign ID", "name"=>"campaign_id", "join"=>"qr_creations,gc_description"];
+			$this->col[] = ["label"=>"Redemption Start Date","name"=>"campaign_id","join"=>"qr_creations,redemption_start"];
+			$this->col[] = ["label"=>"Redemption End Date","name"=>"campaign_id","join"=>"qr_creations,redemption_end"];
 			# END COLUMNS DO NOT REMOVE THIS LINE
 
 			# START FORM DO NOT REMOVE THIS LINE
@@ -351,7 +351,6 @@ use Session;
 
 		public function getDetail($id) {
 			//Create an Auth
-				//Create an Auth
 			if(!CRUDBooster::isUpdate() && $this->global_privilege==FALSE || $this->button_edit==FALSE) {    
 				CRUDBooster::redirect(CRUDBooster::adminPath(),trans("crudbooster.denied_access"));
 			}
@@ -360,17 +359,26 @@ use Session;
 			$data['page_title'] = 'Redeem QR';
 			$data['row'] = DB::table('g_c_lists')
 				->leftJoin('id_types as id_name', 'id_name.id' ,'=', 'g_c_lists.id_type')
+				->leftJoin('qr_creations as qr', 'qr.id', '=', 'g_c_lists.campaign_id')
 				->select('g_c_lists.*',
+					'qr.campaign_id',
+					'qr.gc_description',
+					'qr.gc_value',
+					'qr.number_of_gcs',
+					'qr.redemption_start',
+					'qr.redemption_end',
 					'id_name.valid_ids')
-				->where('g_c_lists.id',$id)->first();
+				->where('g_c_lists.id',$id)
+				->first();
 
 			$data['valid_ids'] = IdType::get();
 
 			// Generate QR Code
 			$qrCodeData = $data['row']->email.'|'.$data['row']->id;
-			
+
 			//Please use view method instead view method from laravel
 			return $this->view('redeem_qr.qr_redeem_section',$data);
-		  }
+
+		}
 
 	}

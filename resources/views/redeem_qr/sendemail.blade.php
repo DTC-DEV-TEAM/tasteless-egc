@@ -51,10 +51,9 @@
                     {!! QrCode::size(200)->generate($qrCodeUrl); !!} --}}
 
                     @php
-                    $url = url('admin/g_c_lists/edit/' . $id);
+                    $url = url('admin/g_c_lists/edit/' . $id.'?value='.$qr_reference_number);
                     $qrCodeApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode($url);
                     @endphp
-                    {{-- <img src="{{ $qrCodeApiUrl }}" alt="QR Code"> --}}
                     <a href="{{ $qrCodeApiUrl }}" download="qr_code.png">
                         <img src="{{ $qrCodeApiUrl }}" alt="QR Code">
                     </a>

@@ -57,7 +57,7 @@
               @endif
             </div>
             <div class="qr-reference-content">
-              <span id="qr-reference-number">QR REFERENCE #: {{ $row->qr_reference_number }}</span>
+              <span id="qr-reference-number">CAMPAIGN ID REFERENCE #: {{ $row->campaign_id }} - {{ $row->qr_reference_number }}</span>
             </div>
             <div class="input-invoice-notes">
               <span style="text-transform: uppercase;">Note: Please copy paste below your POS memo field</span>
@@ -224,7 +224,7 @@
         let redemption_date = $('#redemption_end_date').val();
         let date = new Date();
         let dateValidation = new Date(redemption_date);
-
+        
         if(date > dateValidation){
           $('#redemption_start_date').css({'color' : '#F42B03', 'font-weight' : 'bold'});
           $('#redemption_end_date').css({'color' : '#F42B03', 'font-weight' : 'bold'});
@@ -307,10 +307,10 @@
         const redemption_end_date = $('#redemption_end_date').val();
         const current_date = new Date();
         const redemptionDateValidation = new Date(redemption_end_date);
-
+        
         event.preventDefault();
 
-        if(current_date > redemptionDateValidation){
+        if(current_date > redemptionDateValidation || redemptionDateValidation == 'Invalid Date' ){
           
           console.log('Redemption period has ended.')
 
@@ -379,7 +379,7 @@
                 origin: { y: 0.8, x: 0.57 }
               });
               
-              $('#qr-reference-number').text(`QR REFERENCE #: ${response.test.qr_reference_number}`)
+              $('#qr-reference-number').text(`CAMPAIGN ID REFERENCE #: ${response.test.campaign_id} ${response.test.qr_reference_number}`)
               $('#redeem-code').css({'box-shadow': 'none', 'transform': 'translateY(5px)', 'opacity': '0.9'});
               $('#redeem-code').attr('disabled', true);
               $('#show-reference-number').attr('disabled', false)

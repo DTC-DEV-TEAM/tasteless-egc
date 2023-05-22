@@ -5,16 +5,33 @@
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.min.js"></script>
+    {{-- <script src="https://nominatim.openstreetmap.org/ui/reverse-geocode.js"></script> --}}
+
 @endpush
 
 @section('content')
   <!-- Your html goes here -->
+  <div class="sk-chase-position" style="display: none;">
+    <div class="sk-chase">
+      <div class="sk-chase-dot"></div>
+      <div class="sk-chase-dot"></div>
+      <div class="sk-chase-dot"></div>
+      <div class="sk-chase-dot"></div>
+      <div class="sk-chase-dot"></div>
+      <div class="sk-chase-dot"></div>
+    </div>
+    <div class="sk-chase-text">
+      <p>Please wait, generating QR code and sending to emails...</p>
+    </div>
+  </div>
+
   <p><a title='Return' href='{{ CRUDBooster::mainpath() }}'><i class='fa fa-chevron-circle-left '></i>&nbsp; Back To Redeem QR Home</a></p>
   <div class='panel panel-default'>
     <div class='panel-heading'>Upload Excel File</div>
     <div class='panel-body'>
-      <form method='post' action='{{ route('import_file') }}' enctype="multipart/form-data">
+      <form id="import_excel" method='post' action='{{ route('import_file') }}' enctype="multipart/form-data">
         @csrf
+        <input type="text" name="campaign_id" value="{{ $row->id }}" style="display: none;">
         <div class="callout callout-info">
           <h4>Before uploading the file, please follow these instructions:</h4>
           <div class="csv-instructions">
@@ -48,4 +65,11 @@
     <div class='panel-footer'>
     </div>
   </div>
+
+  <script>
+    $('#import_excel').submit(function(){
+      $('.sk-chase-position').show();
+    })
+
+  </script>
 @endsection

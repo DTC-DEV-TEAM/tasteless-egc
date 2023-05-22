@@ -25,7 +25,7 @@ use Mail;
 			$this->button_action_style = "button_icon";
 			$this->button_add = true;
 			$this->button_edit = true;
-			$this->button_delete = true;
+			$this->button_delete = false;
 			$this->button_detail = true;
 			$this->button_show = true;
 			$this->button_filter = true;
@@ -36,6 +36,7 @@ use Mail;
 
 			# START COLUMNS DO NOT REMOVE THIS LINE
 			$this->col = [];
+			$this->col[] = ["label"=>"ID","name"=>"id"];
 			$this->col[] = ["label"=>"Campaign Id","name"=>"campaign_id"];
 			$this->col[] = ["label"=>"Gc Description","name"=>"gc_description"];
 			$this->col[] = ["label"=>"Gc Value","name"=>"gc_value"];
@@ -56,12 +57,12 @@ use Mail;
 
 			# OLD START FORM
 			//$this->form = [];
-			//$this->form[] = ['label'=>'Campaign Id','name'=>'campaign_id','type'=>'select2','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
-			//$this->form[] = ['label'=>'Gc Description','name'=>'gc_description','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
-			//$this->form[] = ['label'=>'Gc Value','name'=>'gc_value','type'=>'number','validation'=>'required|integer|min:0','width'=>'col-sm-10'];
-			//$this->form[] = ['label'=>'Number Of Gcs','name'=>'number_of_gcs','type'=>'number','validation'=>'required|integer|min:0','width'=>'col-sm-10'];
-			//$this->form[] = ['label'=>'Redemption Start','name'=>'redemption_start','type'=>'date','validation'=>'required|date','width'=>'col-sm-10'];
-			//$this->form[] = ['label'=>'Redemption End','name'=>'redemption_end','type'=>'date','validation'=>'required|date','width'=>'col-sm-10'];
+			//$this->form[] = ['label'=>'Campaign Id','name'=>'campaign_id','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-6'];
+			//$this->form[] = ['label'=>'Gc Description','name'=>'gc_description','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-6'];
+			//$this->form[] = ['label'=>'Gc Value','name'=>'gc_value','type'=>'number','validation'=>'required|integer|min:0','width'=>'col-sm-6'];
+			//$this->form[] = ['label'=>'Number Of Gcs','name'=>'number_of_gcs','type'=>'number','validation'=>'required|integer|min:0','width'=>'col-sm-6'];
+			//$this->form[] = ['label'=>'Redemption Start Date','name'=>'redemption_start','type'=>'date','validation'=>'required|date','width'=>'col-sm-6','disabled'=>'1'];
+			//$this->form[] = ['label'=>'Redemption End Date','name'=>'redemption_end','type'=>'date','validation'=>'required|date','width'=>'col-sm-6','disabled'=>'1'];
 			# OLD END FORM
 
 			/* 
@@ -271,7 +272,7 @@ use Mail;
 	    */
 	    public function hook_before_add(&$postdata) {        
 	        //Your code here
-
+			$postdata['created_by'] = CRUDBooster::myId();
 	    }
 
 	    /* 
@@ -283,7 +284,7 @@ use Mail;
 	    */
 	    public function hook_after_add($id) {        
 	        //Your code here
-
+			
 	    }
 
 	    /* 
@@ -346,11 +347,7 @@ use Mail;
 			
 			$data = [];
 			$data['page_title'] = 'Upload GC List';
-			$data['row'] = DB::table('g_c_lists')
-			->leftJoin('id_types as id_name', 'id_name.id' ,'=', 'g_c_lists.id_type')
-			->select('g_c_lists.*',
-				'id_name.valid_ids')
-			->where('g_c_lists.id',$id)->first();
+			$data['row'] = DB::table('qr_creations')->find($id);
 
 			$data['valid_ids'] = IdType::get();
 
@@ -370,10 +367,12 @@ use Mail;
 			$validatedData = $request->validate([
 				'excel_file' => 'required|mimes:xls,xlsx',
 			]);
+		
+			$campaign_id = $request->all()['campaign_id'];
 
 			$uploaded_excel = $request->file('excel_file');
-
-			$rows = Excel::import(new GcListImport('10'), $uploaded_excel);
+			
+			$rows = Excel::import(new GcListImport($campaign_id), $uploaded_excel);
 
 			return 	CRUDBooster::redirect(CRUDBooster::mainpath(), 'Excel Uploaded Succesfully',"success");
 
