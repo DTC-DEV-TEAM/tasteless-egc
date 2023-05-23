@@ -25,7 +25,7 @@ use Mail;
 			$this->button_action_style = "button_icon";
 			$this->button_add = true;
 			$this->button_edit = true;
-			$this->button_delete = false;
+			$this->button_delete = true;
 			$this->button_detail = true;
 			$this->button_show = true;
 			$this->button_filter = true;
@@ -36,7 +36,7 @@ use Mail;
 
 			# START COLUMNS DO NOT REMOVE THIS LINE
 			$this->col = [];
-			$this->col[] = ["label"=>"ID","name"=>"id"];
+			// $this->col[] = ["label"=>"ID","name"=>"id"];
 			$this->col[] = ["label"=>"Campaign Id","name"=>"campaign_id"];
 			$this->col[] = ["label"=>"Gc Description","name"=>"gc_description"];
 			$this->col[] = ["label"=>"Gc Value","name"=>"gc_value"];
@@ -61,8 +61,8 @@ use Mail;
 			//$this->form[] = ['label'=>'Gc Description','name'=>'gc_description','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-6'];
 			//$this->form[] = ['label'=>'Gc Value','name'=>'gc_value','type'=>'number','validation'=>'required|integer|min:0','width'=>'col-sm-6'];
 			//$this->form[] = ['label'=>'Number Of Gcs','name'=>'number_of_gcs','type'=>'number','validation'=>'required|integer|min:0','width'=>'col-sm-6'];
-			//$this->form[] = ['label'=>'Redemption Start Date','name'=>'redemption_start','type'=>'date','validation'=>'required|date','width'=>'col-sm-6','disabled'=>'1'];
-			//$this->form[] = ['label'=>'Redemption End Date','name'=>'redemption_end','type'=>'date','validation'=>'required|date','width'=>'col-sm-6','disabled'=>'1'];
+			//$this->form[] = ['label'=>'Redemption Start Date','name'=>'redemption_start','type'=>'date','validation'=>'required|date','width'=>'col-sm-6'];
+			//$this->form[] = ['label'=>'Redemption End Date','name'=>'redemption_end','type'=>'date','validation'=>'required|date','width'=>'col-sm-6'];
 			# OLD END FORM
 
 			/* 
@@ -162,7 +162,16 @@ use Mail;
 	        | $this->script_js = "function() { ... }";
 	        |
 	        */
-	        $this->script_js = NULL;
+	        $this->script_js = '		
+
+				$("#redemption_start").attr("required", "true");
+				$("#redemption_start").removeAttr("readonly");
+				$("#redemption_start").on("keypress", function(){
+					$(this).val("");	
+				});
+				$("#redemption_end").attr("required", "true");
+				$("#redemption_end").removeAttr("readonly");
+			';
 
 
             /*
@@ -372,9 +381,10 @@ use Mail;
 
 			$uploaded_excel = $request->file('excel_file');
 			
-			$rows = Excel::import(new GcListImport($campaign_id), $uploaded_excel);
+			$import = new GcListImport($campaign_id);
+			$rows = Excel::import($import, $uploaded_excel);
 
-			return 	CRUDBooster::redirect(CRUDBooster::mainpath(), 'Excel Uploaded Succesfully',"success");
+			return 	CRUDBooster::redirect(CRUDBooster::mainpath(), 'Excel file uploaded successfully. QR codes have been sent to the email addresses.',"success");
 
 		}
 

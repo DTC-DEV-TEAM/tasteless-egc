@@ -32,16 +32,30 @@
       <form id="import_excel" method='post' action='{{ route('import_file') }}' enctype="multipart/form-data">
         @csrf
         <input type="text" name="campaign_id" value="{{ $row->id }}" style="display: none;">
+
+        @if ($errors->has('0') || $errors->has('1') || $errors->has('2'))
+        <div class="callout callout-danger">
+          <h4>Excel File Validation:</h4>
+          <div class="csv-instructions">
+            <p style="font-size: 16px;">An error occurred during the import process. Please try again.</p>
+            <p style="font-size: 16px;">1. Ensure that all rows has value.</p>
+            <p style="font-size: 16px;">2. Ensure the email has a valid format.</p>
+          </div>
+          <br>
+        </div>
+        @else
         <div class="callout callout-info">
           <h4>Before uploading the file, please follow these instructions:</h4>
           <div class="csv-instructions">
-            <p>1. Ensure that the file you are uploading is either in CSV format or in Microsoft Excel format (XLS or XLSX).</p>
-            <p>2. Please make sure the file contains the data you intend to upload</p>
-            <p>3. The uploaded file should start with the second row, as the first row is typically used for column headers or label</p>
+            <p style="font-size: 16px;">1. Ensure that the file you are uploading is either in CSV format or in Microsoft Excel format (XLS or XLSX).</p>
+            <p style="font-size: 16px;">2. Please make sure the file contains the data you intend to upload</p>
+            <p style="font-size: 16px;">3. The uploaded file should start with the second row, as the first row is typically used for column headers or label</p>
           </div>
           <br>
           <h4>If you have any questions or face any issues during the upload process, please feel free to ask for assistance.</h4>
         </div>
+        @endif
+
         <div class="export-import-section">
           <div class="download-template">
             <label for="">Export Template File:</label>
@@ -70,6 +84,7 @@
     $('#import_excel').submit(function(){
       $('.sk-chase-position').show();
     })
+  </script>
 
   </script>
 @endsection

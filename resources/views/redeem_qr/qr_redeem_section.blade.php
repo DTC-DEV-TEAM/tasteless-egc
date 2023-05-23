@@ -146,7 +146,7 @@
                 <input type="text" value="{{ $row->gc_value }}" readonly>
               </div>
               <div class="user-element">
-                <label for=""><span class="required">*</span> GOVT ID#: </label>
+                <label for=""><span class="required">*</span> Government ID#: </label>
                 <input type="text" name="id_number" 
                 id="id_number"  value="{{ $row->id_number }}" {{ $row->id_number ? 'readonly' : '' }} required>
               </div>
@@ -200,7 +200,6 @@
     $(document).ready(function() {
 
       $('form').css('display','block');
-
   
       // Transaction Validation 
       function transactionValidation(){
@@ -379,7 +378,7 @@
                 origin: { y: 0.8, x: 0.57 }
               });
               
-              $('#qr-reference-number').text(`CAMPAIGN ID REFERENCE #: ${response.test.campaign_id} ${response.test.qr_reference_number}`)
+              $('#qr-reference-number').text(`CAMPAIGN ID REFERENCE #: ${response.test.campaign_id} - ${response.test.qr_reference_number}`)
               $('#redeem-code').css({'box-shadow': 'none', 'transform': 'translateY(5px)', 'opacity': '0.9'});
               $('#redeem-code').attr('disabled', true);
               $('#show-reference-number').attr('disabled', false)

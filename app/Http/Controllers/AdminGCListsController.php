@@ -43,12 +43,12 @@ use Illuminate\Support\Str;
 
 			# START COLUMNS DO NOT REMOVE THIS LINE
 			$this->col = [];
-			$this->col[] = ["label"=>"ID","name"=>"id"];
+			// $this->col[] = ["label"=>"ID","name"=>"id"];
 			$this->col[] = ["label"=>"Name","name"=>"name"];
 			$this->col[] = ["label"=>"Phone","name"=>"phone"];
 			$this->col[] = ["label"=>"Email","name"=>"email"];
 			$this->col[] = ["label"=>"Campaign ID", "name"=>"campaign_id", "join"=>"qr_creations,campaign_id"];
-			$this->col[] = ["label"=>"Campaign ID", "name"=>"campaign_id", "join"=>"qr_creations,gc_description"];
+			$this->col[] = ["label"=>"Campaign Description", "name"=>"campaign_id", "join"=>"qr_creations,gc_description"];
 			$this->col[] = ["label"=>"Redemption Start Date","name"=>"campaign_id","join"=>"qr_creations,redemption_start"];
 			$this->col[] = ["label"=>"Redemption End Date","name"=>"campaign_id","join"=>"qr_creations,redemption_end"];
 			# END COLUMNS DO NOT REMOVE THIS LINE
@@ -221,7 +221,7 @@ use Illuminate\Support\Str;
 	        | $this->style_css = ".style{....}";
 	        |
 	        */
-	        $this->style_css = 'NULL';
+	        $this->style_css = NULL;
 	        
 	        
 	        
@@ -433,9 +433,6 @@ use Illuminate\Support\Str;
 
 				$data['valid_ids'] = IdType::get();
 
-				// Generate QR Code
-				// $qrCodeData = $data['row']->email.'|'.$data['row']->id;
-
 				// dd($request->input());
 				
 				//Please use view method instead view method from laravel
@@ -514,6 +511,32 @@ use Illuminate\Support\Str;
 
 			CRUDBooster::redirect(CRUDBooster::mainpath(), 'QR code has ended, and it is no longer valid for redemption',"success");
 		}
+
+		public function getDetail($id) {
+			//Create an Auth
+			if(!CRUDBooster::isRead() && $this->global_privilege==FALSE || $this->button_edit==FALSE) {    
+		  		CRUDBooster::redirect(CRUDBooster::adminPath(),trans("crudbooster.denied_access"));
+			}
+			
+			$data = [];
+			$data['page_title'] = 'Detail Data';
+			$data['row'] = DB::table('g_c_lists')
+				->leftJoin('id_types as id_name', 'id_name.id' ,'=', 'g_c_lists.id_type')
+				->leftJoin('qr_creations as qr', 'qr.id', '=', 'g_c_lists.campaign_id')
+				->select('g_c_lists.*',
+					'qr.campaign_id',
+					'qr.gc_description',
+					'qr.gc_value',
+					'qr.number_of_gcs',
+					'qr.redemption_start',
+					'qr.redemption_end',
+					'id_name.valid_ids')
+				->where('g_c_lists.id',$id)
+				->first();
+			
+			//Please use view method instead view method from laravel
+			return $this->view('redeem_qr.qr_redeem_section_view',$data);
+	  }
 
 		// public function getDetail($id) {
 		// 	//Create an Auth
