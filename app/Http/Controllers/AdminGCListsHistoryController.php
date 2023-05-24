@@ -25,7 +25,7 @@ use Session;
 			$this->button_show = true;
 			$this->button_filter = true;
 			$this->button_import = false;
-			$this->button_export = false;
+			$this->button_export = true;
 			$this->table = "g_c_lists";
 			# END CONFIGURATION DO NOT REMOVE THIS LINE
 
@@ -36,7 +36,11 @@ use Session;
 			$this->col[] = ["label"=>"Phone","name"=>"phone"];
 			$this->col[] = ["label"=>"Email","name"=>"email"];
 			$this->col[] = ["label"=>"Campaign ID", "name"=>"campaign_id", "join"=>"qr_creations,campaign_id"];
-			$this->col[] = ["label"=>"Campaign ID", "name"=>"campaign_id", "join"=>"qr_creations,gc_description"];
+			$this->col[] = ["label"=>"GC Description", "name"=>"campaign_id", "join"=>"qr_creations,gc_description"];
+			$this->col[] = ["label"=>"GC Value", "name"=>"campaign_id", "join"=>"qr_creations,gc_value"];
+			$this->col[] = ["label"=>"Number of Gcs", "name"=>"campaign_id", "join"=>"qr_creations,number_of_gcs"];
+			// $this->col[] = ["label"=>"Gc Value","name"=>"gc_value"];
+			// $this->col[] = ["label"=>"Number Of Gcs","name"=>"number_of_gcs"];
 			$this->col[] = ["label"=>"Redemption Start Date","name"=>"campaign_id","join"=>"qr_creations,redemption_start"];
 			$this->col[] = ["label"=>"Redemption End Date","name"=>"campaign_id","join"=>"qr_creations,redemption_end"];
 			# END COLUMNS DO NOT REMOVE THIS LINE
@@ -256,10 +260,10 @@ use Session;
 	        $query
 				->where(function($sub_query){
 					$sub_query->where('invoice_number', '!=', null)->where('status', '!=', 'EXPIRED');
-				})
-				->orWhere(function($sub_query){
-					$sub_query->where('status', 'EXPIRED')->where('invoice_number', null);
-				})->orderBy('id', 'asc');
+				});
+				// ->orWhere(function($sub_query){
+				// 	$sub_query->where('status', 'EXPIRED')->where('invoice_number', null);
+				// })->orderBy('id', 'asc');
 	    }
 
 	    /*

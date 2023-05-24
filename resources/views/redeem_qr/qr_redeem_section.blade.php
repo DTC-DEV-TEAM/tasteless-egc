@@ -73,14 +73,13 @@
             </div>
             <div class="redemption-success">
               @if ($row->invoice_number)
-                <span>POS NUMBER</span>
-                @else
-                <span>INPUT POS NUMBER</span>
+              <span>POS NUMBER</span>
+              @else
+              <span>INPUT POS NUMBER</span>
               @endif
-              
             </div>
             <div class="input-invoice">
-              <input type="text" name="invoice_number" value="{{ $row->invoice_number }}" {{ $row->invoice_number ? "readonly" : '' }} required>
+              <input type="number" name="invoice_number" value="{{ $row->invoice_number }}" {{ $row->invoice_number ? "readonly" : '' }} required>
               <button type="button" id="submit-invoice-btn" {{ $row->invoice_number ? 'disabled' : '' }}>Save</button>
             </div>
             <div class="input-invoice-notes">
@@ -184,9 +183,9 @@
           </div>
         
           <div class="redeem-btn">
-            <button type='button' class='redeem-code' id="show-input-invoice" disabled><i class='fa fa-pencil '></i>Step 3 - Input POS #</button>
-            <button type='button' class='redeem-code' id="show-reference-number" disabled><i class='fa fa-sticky-note-o '></i>Step - 2 Show QR Reference #</button>
             <button type='submit' class='redeem-code' id="redeem-code"><i class='fa fa-credit-card-alt '></i> Step 1 - Redeem Code</button>
+            <button type='button' class='redeem-code' id="show-reference-number" disabled><i class='fa fa-sticky-note-o '></i>Step - 2 Show QR Reference #</button>
+            <button type='button' class='redeem-code' id="show-input-invoice" disabled><i class='fa fa-pencil '></i>Step 3 - Input POS Invoice #</button>
           </div>
         </div>
       </form>

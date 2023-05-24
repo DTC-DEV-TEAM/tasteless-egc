@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\GCList;
+use App\QrCreation;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use Maatwebsite\Excel\Concerns\WithStartRow;
@@ -47,9 +48,12 @@ class GcListImport implements ToModel, WithStartRow
             '0' => 'required',
             '1' => 'required',
             '2' => 'required|email',
-        ])->validate();
-            
+        ]);
 
+        if(!$validate->validate()){
+            return;
+        }
+    
         try {
 
             DB::beginTransaction();
@@ -69,29 +73,18 @@ class GcListImport implements ToModel, WithStartRow
 
             $gcList->save();
 
-            $id = $gcList->id;
-            $name = $gcList->name;
-            $email = $gcList->email;
-            $generated_qr_code = $gcList->qr_reference_number;
-            
-
-            $data = array('name'=> $name, 'id' => $id, 'qr_reference_number'=>$generated_qr_code);
-            
-            Mail::send(['html' => 'redeem_qr.sendemail'], $data, function($message) use ($email) {
-                $message->to($email)->subject('Redeem Your QR Code Now!');
-                $message->from('punzalan2233@gmail.com', 'Patrick Lester Punzalan');
-            });
-            
-
-            // return $gcList;
-            // return 	CRUDBooster::redirect(CRUDBooster::mainpath(), 'Excel Uploaded Succesfully',"success");
-
             DB::commit();
+
+
         } catch (\Exception $e) {
+            
             DB::rollback();
+
             // Handle the error and revert any changes made during the transaction
             CRUDBooster::redirect(CRUDBooster::mainpath(), 'Uploading failed',"error");
         }
+
     }
+    
     
 }

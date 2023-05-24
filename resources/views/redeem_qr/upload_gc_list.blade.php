@@ -32,6 +32,8 @@
       <form id="import_excel" method='post' action='{{ route('import_file') }}' enctype="multipart/form-data">
         @csrf
         <input type="text" name="campaign_id" value="{{ $row->id }}" style="display: none;">
+        
+        
 
         @if ($errors->has('0') || $errors->has('1') || $errors->has('2'))
         <div class="callout callout-danger">
@@ -40,6 +42,16 @@
             <p style="font-size: 16px;">An error occurred during the import process. Please try again.</p>
             <p style="font-size: 16px;">1. Ensure that all rows has value.</p>
             <p style="font-size: 16px;">2. Ensure the email has a valid format.</p>
+          </div>
+          <br>
+        </div>
+        @elseif (session()->has('success'))
+        <div class="callout callout-success">
+          <h4>Your QR Redemption Upload and Email Sending were Successful.</h4>
+          <div class="csv-instructions">
+            <p style="font-size: 16px;">All the QR codes associated with this campaign have been successfully uploaded, and the corresponding emails containing the QR codes have been sent to the recipients.</p>
+            <p style="font-size: 16px;">1. If you have any further questions or need assistance, please feel free to reach out to our support team.</p>
+            <p style="font-size: 16px;">2. We are here to ensure a smooth and successful redemption experience for you and your customers.</p>
           </div>
           <br>
         </div>

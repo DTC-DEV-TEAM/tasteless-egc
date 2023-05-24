@@ -62,6 +62,20 @@
             </div>
 
             <p>
+                Campaign ID: {{ $campaign_id }}
+            </p>
+
+            <p>
+                GC Description: {{ $gc_description }}
+            </p>
+
+            <p>
+                Redemption Period: {{ $redemption_period }}
+            </p>
+
+            <br>
+
+            <p>
                 Please note that the QR code is unique to you and cannot be shared or transferred. It is valid only for the specified redemption period, so make sure to visit the store within the given timeframe to enjoy the benefits.
             </p>
 
