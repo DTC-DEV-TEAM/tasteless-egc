@@ -7,6 +7,7 @@ use App\QrCreation;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use Maatwebsite\Excel\Concerns\WithStartRow;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\Importable;
@@ -17,7 +18,7 @@ use CRUDBooster;
 use Illuminate\Support\Str;
 use DB;
 
-class GcListImport implements ToModel, WithStartRow
+class GcListImport implements ToModel, WithValidation, WithHeadingRow
 {
 
     private $user_id;
@@ -29,31 +30,12 @@ class GcListImport implements ToModel, WithStartRow
     }
     
     /**
-     * @return int
-     */
-    public function startRow(): int
-    {
-        return 2;
-    }
-    
-    /**
     * @param array $row
     *
     * @return \Illuminate\Database\Eloquent\Model|null
     */
     public function model(array $row)
     {
-
-        $validate = Validator::make($row, [
-            '0' => 'required',
-            '1' => 'required',
-            '2' => 'required|email',
-        ]);
-
-        if(!$validate->validate()){
-            return;
-        }
-    
         try {
 
             DB::beginTransaction();
@@ -63,12 +45,11 @@ class GcListImport implements ToModel, WithStartRow
             } while (GCList::where('qr_reference_number', $generated_qr_code)->exists());
 
             $gcList = new GCList([
-                'name' => $row[0],
-                'phone' => $row[1],
-                'email' => $row[2],
+                'name' => $row['name'],
+                'phone' => $row['phone'],
+                'email' => $row['email'],
                 'campaign_id' => $this->user_id,
                 'qr_reference_number' => $generated_qr_code
-                // 'redemption_end' => Date::excelToDateTimeObject($row[4])->format('Y-m-d'),
             ]);
 
             $gcList->save();
@@ -84,6 +65,14 @@ class GcListImport implements ToModel, WithStartRow
             CRUDBooster::redirect(CRUDBooster::mainpath(), 'Uploading failed',"error");
         }
 
+    }
+
+    public function rules(): array{
+        return [
+            'name' => 'required',
+            'email' => 'required|email',
+            'phone' => 'required'
+        ];
     }
     
     

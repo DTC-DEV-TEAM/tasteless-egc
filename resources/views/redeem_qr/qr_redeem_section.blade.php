@@ -281,8 +281,8 @@
       $('#id-type').on('change', function(){
 
         const id_type_value = $(this).val();
-
-        if (id_type_value == '15'){
+        
+        if (id_type_value == '1'){
             $('#id-type-other').show();
             $('#other_id_type').attr('required', true);
           }else{

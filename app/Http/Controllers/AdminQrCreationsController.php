@@ -296,7 +296,9 @@ use Illuminate\Support\Facades\Session as UserSession;
 	    */
 	    public function hook_after_add($id) {        
 	        //Your code here
-			
+
+			return CRUDBooster::redirect(CRUDBooster::mainpath("edit/$id"), sprintf("The Campaign ID has been added. Please proceed with the import of the Excel file."),"success")->send();
+
 	    }
 
 	    /* 
@@ -348,8 +350,6 @@ use Illuminate\Support\Facades\Session as UserSession;
 
 	    }
 
-
-
 	    //By the way, you can still create your own method in here... :) 
 		public function getEdit($id){
 
@@ -384,48 +384,53 @@ use Illuminate\Support\Facades\Session as UserSession;
 
 			$uploaded_excel = $request->file('excel_file');
 			
+
+
+
 			$import = new GcListImport($campaign_id);
 
 			$rows = Excel::import($import, $uploaded_excel);
 
+		
+			// Send Email
 			$generated_qr_info = QrCreation::find($campaign_id);
+
 			$gc_list_user = GCList::where('campaign_id', $campaign_id)
-				->where('is_sent', 0)
+				->where('email_is_sent', 0)
 				->pluck('id')
 				->all();
-
 			
-			// foreach($gc_list_user as $user){
+			foreach($gc_list_user as $user){
 
-			// 	$gcList = GCList::find($user);
+				$gcList = GCList::find($user);
 
-			// 	$id = $gcList->id;
-			// 	$name = $gcList->name;
-			// 	$email = $gcList->email;
-			// 	$generated_qr_code = $gcList->qr_reference_number;
-			// 	$campaign_id_qr = $generated_qr_info->campaign_id;
-			// 	$gc_description = $generated_qr_info->gc_description;
-			// 	$redemption_period = date('F j, Y', strtotime($generated_qr_info->redemption_start)).' - '.date('F j, Y', strtotime($generated_qr_info->redemption_end));
+				$id = $gcList->id;
+				$name = $gcList->name;
+				$email = $gcList->email;
+				$generated_qr_code = $gcList->qr_reference_number;
+				$campaign_id_qr = $generated_qr_info->campaign_id;
+				$gc_description = $generated_qr_info->gc_description;
+				$redemption_period = date('F j, Y', strtotime($generated_qr_info->redemption_start)).' - '.date('F j, Y', strtotime($generated_qr_info->redemption_end));
 	
-			// 	$data = array(
-			// 		'name'=> $name,
-			// 		'id' => $id,
-			// 		'qr_reference_number'=>$generated_qr_code,
-			// 		'campaign_id_qr' => $campaign_id,
-			// 		'gc_description' => $gc_description,
-			// 		'redemption_period' => $redemption_period
-			// 	);
+				$data = array(
+					'name'=> $name,
+					'id' => $id,
+					'qr_reference_number'=>$generated_qr_code,
+					'campaign_id_qr' => $campaign_id,
+					'gc_description' => $gc_description,
+					'redemption_period' => $redemption_period
+				);
 
-			// 	Mail::send(['html' => 'redeem_qr.sendemail'], $data, function($message) use ($email) {
-			// 		$message->to($email)->subject('Redeem Your QR Code Now!');
-			// 		$message->from('punzalan2233@gmail.com', 'Patrick Lester Punzalan');
-			// 	});
+				Mail::send(['html' => 'redeem_qr.sendemail'], $data, function($message) use ($email) {
+					$message->to($email)->subject('Redeem Your QR Code Now!');
+					$message->from('punzalan2233@gmail.com', 'Patrick Lester Punzalan');
+				});
 
-			// 	$gcList->update([
-			// 		'is_sent' => 1
-			// 	]);
+				$gcList->update([
+					'email_is_sent' => 1
+				]);
 
-			// }
+			}
 
 			return redirect(route('qr_creations_edit', $campaign_id))->with('success', 'Excel file uploaded successfully. QR codes have been sent to the email addresses.')->send();
 

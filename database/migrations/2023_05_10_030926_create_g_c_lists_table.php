@@ -19,6 +19,7 @@ class CreateGCListsTable extends Migration
             $table->string('name')->nullable();
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
+            $table->integer('email_is_sent')->default('0')->nullable();
             $table->string('id_number')->nullable();
             $table->string('id_type')->nullable();
             $table->string('other_id_type')->nullable();

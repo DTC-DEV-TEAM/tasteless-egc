@@ -16,8 +16,9 @@ class CreateIdTypesTable extends Migration
         Schema::create('id_types', function (Blueprint $table) {
             $table->id();
             $table->string('valid_ids')->nullable();
-            $table->integer('created_by')->nullable();
-            $table->integer('updated_by')->nullable();
+            $table->enum('status', ['ACTIVE', 'INACTIVE'])->default('ACTIVE')->nullable();
+            $table->integer('created_by')->unsigned()->length(10)->nullable();
+            $table->integer('updated_by')->unsigned()->length(10)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

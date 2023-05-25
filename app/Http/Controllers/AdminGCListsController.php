@@ -431,9 +431,7 @@ use Illuminate\Support\Str;
 					->where('g_c_lists.id',$id)
 					->first();
 
-				$data['valid_ids'] = IdType::get();
-
-				// dd($request->input());
+				$data['valid_ids'] = IdType::orderBy('id', 'desc')->get();
 				
 				//Please use view method instead view method from laravel
 				return $this->view('redeem_qr.qr_redeem_section',$data);

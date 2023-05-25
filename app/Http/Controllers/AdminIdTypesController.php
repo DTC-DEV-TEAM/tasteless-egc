@@ -7,6 +7,10 @@
 
 	class AdminIdTypesController extends \crocodicstudio\crudbooster\controllers\CBController {
 
+		public function __construct() {
+			DB::getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping("enum", "string");
+		}
+
 	    public function cbInit() {
 
 			# START CONFIGURATION DO NOT REMOVE THIS LINE
@@ -31,15 +35,15 @@
 			# START COLUMNS DO NOT REMOVE THIS LINE
 			$this->col = [];
 			$this->col[] = ["label"=>"Valids","name"=>"valid_ids"];
-			$this->col[] = ["label"=>"Created By","name"=>"created_by"];
-			$this->col[] = ["label"=>"Updated By","name"=>"updated_by"];
+			$this->col[] = ["label"=>"Created By","name"=>"created_by","join"=>"cms_users,name"];
+			$this->col[] = ["label"=>"Updated By","name"=>"updated_by","join"=>"cms_users,name"];
 			$this->col[] = ["label"=>"Created At","name"=>"created_at"];
 			$this->col[] = ["label"=>"Updated At","name"=>"updated_at"];
 			# END COLUMNS DO NOT REMOVE THIS LINE
 
 			# START FORM DO NOT REMOVE THIS LINE
 			$this->form = [];
-			$this->form[] = ['label'=>'Valid IDs','name'=>'valid_ids','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
+			$this->form[] = ['label'=>'Valid IDs','name'=>'valid_ids','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-6'];
 			# END FORM DO NOT REMOVE THIS LINE
 
 			# OLD START FORM
@@ -256,6 +260,7 @@
 	    */
 	    public function hook_before_add(&$postdata) {        
 	        //Your code here
+			$postdata['created_by'] = CRUDBooster::myId();
 
 	    }
 
@@ -281,6 +286,7 @@
 	    */
 	    public function hook_before_edit(&$postdata,$id) {        
 	        //Your code here
+			$postdata['updated_by'] = CRUDBooster::myId();
 
 	    }
 
@@ -305,6 +311,7 @@
 	    */
 	    public function hook_before_delete($id) {
 	        //Your code here
+			$postdata['updated_by'] = CRUDBooster::myId();
 
 	    }
 

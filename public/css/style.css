@@ -742,5 +742,26 @@ video{
 } 
 }
 
+.campaign-row-1{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+.campaign-id-info{
+    width: 300px;
+}
+
+.campaign-id-info label{
+    font-size: 15px;
+    line-height: 1.4;
+}
+
+.campaign-id-info p{
+    width: 230px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
 /* End of Upload GC List Section */
 
