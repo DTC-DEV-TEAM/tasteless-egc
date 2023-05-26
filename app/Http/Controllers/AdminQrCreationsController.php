@@ -13,6 +13,9 @@ use App\GCList;
 use App\QrCreation;
 use Mail;
 use Illuminate\Support\Facades\Session as UserSession;
+use App\Mail\QrEmail;
+use App\Jobs\SendEmailJob;
+
 
 	class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers\CBController {
 
@@ -374,6 +377,68 @@ use Illuminate\Support\Facades\Session as UserSession;
 			return Excel::download(new GCListTemplateExport, 'gc_list_template.xlsx');
 		}
 
+		// public function uploadGCListPost(IlluminateRequest $request){
+
+		// 	$validatedData = $request->validate([
+		// 		'excel_file' => 'required|mimes:xls,xlsx',
+		// 	]);
+		
+		// 	$campaign_id = $request->all()['campaign_id'];
+
+		// 	$uploaded_excel = $request->file('excel_file');
+			
+
+
+
+		// 	$import = new GcListImport($campaign_id);
+
+		// 	$rows = Excel::import($import, $uploaded_excel);
+
+		
+		// 	// Send Email
+		// 	$generated_qr_info = QrCreation::find($campaign_id);
+
+		// 	$gc_list_user = GCList::where('campaign_id', $campaign_id)
+		// 		->where('email_is_sent', 0)
+		// 		->pluck('id')
+		// 		->all();
+			
+		// 	foreach($gc_list_user as $user){
+
+		// 		$gcList = GCList::find($user);
+
+		// 		$id = $gcList->id;
+		// 		$name = $gcList->name;
+		// 		$email = $gcList->email;
+		// 		$generated_qr_code = $gcList->qr_reference_number;
+		// 		$campaign_id_qr = $generated_qr_info->campaign_id;
+		// 		$gc_description = $generated_qr_info->gc_description;
+		// 		$redemption_period = date('F j, Y', strtotime($generated_qr_info->redemption_start)).' - '.date('F j, Y', strtotime($generated_qr_info->redemption_end));
+	
+		// 		$data = array(
+		// 			'name'=> $name,
+		// 			'id' => $id,
+		// 			'qr_reference_number'=>$generated_qr_code,
+		// 			'campaign_id_qr' => $campaign_id,
+		// 			'gc_description' => $gc_description,
+		// 			'redemption_period' => $redemption_period
+		// 		);
+
+		// 		Mail::send(['html' => 'redeem_qr.sendemail'], $data, function($message) use ($email) {
+		// 			$message->to($email)->subject('Redeem Your QR Code Now!');
+		// 			$message->from('punzalan2233@gmail.com', 'Patrick Lester Punzalan');
+		// 		});
+
+		// 		$gcList->update([
+		// 			'email_is_sent' => 1
+		// 		]);
+
+		// 	}
+
+		// 	return redirect(route('qr_creations_edit', $campaign_id))->with('success', 'Excel file uploaded successfully. QR codes have been sent to the email addresses.')->send();
+
+		// }
+
 		public function uploadGCListPost(IlluminateRequest $request){
 
 			$validatedData = $request->validate([
@@ -381,17 +446,11 @@ use Illuminate\Support\Facades\Session as UserSession;
 			]);
 		
 			$campaign_id = $request->all()['campaign_id'];
-
 			$uploaded_excel = $request->file('excel_file');
 			
-
-
-
 			$import = new GcListImport($campaign_id);
-
 			$rows = Excel::import($import, $uploaded_excel);
 
-		
 			// Send Email
 			$generated_qr_info = QrCreation::find($campaign_id);
 
@@ -403,7 +462,7 @@ use Illuminate\Support\Facades\Session as UserSession;
 			foreach($gc_list_user as $user){
 
 				$gcList = GCList::find($user);
-
+				
 				$id = $gcList->id;
 				$name = $gcList->name;
 				$email = $gcList->email;
@@ -411,20 +470,18 @@ use Illuminate\Support\Facades\Session as UserSession;
 				$campaign_id_qr = $generated_qr_info->campaign_id;
 				$gc_description = $generated_qr_info->gc_description;
 				$redemption_period = date('F j, Y', strtotime($generated_qr_info->redemption_start)).' - '.date('F j, Y', strtotime($generated_qr_info->redemption_end));
-	
+				
 				$data = array(
 					'name'=> $name,
 					'id' => $id,
 					'qr_reference_number'=>$generated_qr_code,
-					'campaign_id_qr' => $campaign_id,
+					'campaign_id_qr' => $campaign_id_qr,
 					'gc_description' => $gc_description,
-					'redemption_period' => $redemption_period
+					'redemption_period' => $redemption_period,
+					'email' => $email
 				);
 
-				Mail::send(['html' => 'redeem_qr.sendemail'], $data, function($message) use ($email) {
-					$message->to($email)->subject('Redeem Your QR Code Now!');
-					$message->from('punzalan2233@gmail.com', 'Patrick Lester Punzalan');
-				});
+				dispatch(new SendEmailJob($data));
 
 				$gcList->update([
 					'email_is_sent' => 1

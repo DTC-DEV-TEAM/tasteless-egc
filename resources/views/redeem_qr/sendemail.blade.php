@@ -62,7 +62,7 @@
             </div>
 
             <p>
-                Campaign ID: {{ $campaign_id }}
+                Campaign ID: {{ $campaign_id_qr }}
             </p>
 
             <p>
