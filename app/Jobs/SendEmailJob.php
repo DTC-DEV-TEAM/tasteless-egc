@@ -35,7 +35,11 @@ class SendEmailJob implements ShouldQueue
     public function handle()
     {
         $email = new QrEmail($this->details);
+        
         Mail::to($this->details['email'])->send($email);
+        // $gcList->update([
+        //     'email_is_sent' => 1
+        // ]);
     }
     
 }

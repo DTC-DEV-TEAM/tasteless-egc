@@ -481,11 +481,12 @@ use App\Jobs\SendEmailJob;
 					'email' => $email
 				);
 
-				dispatch(new SendEmailJob($data));
+				// dispatch(new SendEmailJob($data));
 
-				$gcList->update([
-					'email_is_sent' => 1
-				]);
+				SendEmailJob::dispatch($data);
+				// $gcList->update([
+				// 	'email_is_sent' => 1
+				// ]);
 
 			}
 
