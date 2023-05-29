@@ -13,12 +13,14 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\Importable;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Maatwebsite\Excel\Concerns\WithBatchInserts;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Mail;
 use CRUDBooster;
 use Illuminate\Support\Str;
 use DB;
 
-class GcListImport implements ToModel, WithValidation, WithHeadingRow
+class GcListImport implements ToModel, WithValidation, WithHeadingRow, WithBatchInserts, WithChunkReading
 {
 
     private $user_id;
@@ -36,6 +38,7 @@ class GcListImport implements ToModel, WithValidation, WithHeadingRow
     */
     public function model(array $row)
     {
+
         try {
 
             DB::beginTransaction();
@@ -48,6 +51,7 @@ class GcListImport implements ToModel, WithValidation, WithHeadingRow
                 'name' => $row['name'],
                 'phone' => $row['phone'],
                 'email' => $row['email'],
+                'customer_reference_number' => $row['customer_reference_number'],
                 'campaign_id' => $this->user_id,
                 'qr_reference_number' => $generated_qr_code
             ]);
@@ -69,11 +73,21 @@ class GcListImport implements ToModel, WithValidation, WithHeadingRow
 
     public function rules(): array{
         return [
-            'name' => 'required',
-            'email' => 'required|email',
-            'phone' => 'required'
+            '*.name' => 'required',
+            '*.email' => 'required|email',
+            '*.phone' => 'required',
+            '*.customer_reference_number' => 'required'
         ];
     }
     
+    public function batchSize(): int
+    {
+        return 50; 
+    }
+
+    public function chunkSize(): int
+    {   
+        return 50;
+    }
     
 }

@@ -39,10 +39,8 @@ use Session;
 			$this->col[] = ["label"=>"GC Description", "name"=>"campaign_id", "join"=>"qr_creations,gc_description"];
 			$this->col[] = ["label"=>"GC Value", "name"=>"campaign_id", "join"=>"qr_creations,gc_value"];
 			$this->col[] = ["label"=>"Number of Gcs", "name"=>"campaign_id", "join"=>"qr_creations,number_of_gcs"];
-			// $this->col[] = ["label"=>"Gc Value","name"=>"gc_value"];
-			// $this->col[] = ["label"=>"Number Of Gcs","name"=>"number_of_gcs"];
-			$this->col[] = ["label"=>"Redemption Start Date","name"=>"campaign_id","join"=>"qr_creations,redemption_start"];
-			$this->col[] = ["label"=>"Redemption End Date","name"=>"campaign_id","join"=>"qr_creations,redemption_end"];
+			$this->col[] = ["label"=>"Batch Group","name"=>"campaign_id","join"=>"qr_creations,batch_group"];
+			$this->col[] = ["label"=>"Batch Number","name"=>"campaign_id","join"=>"qr_creations,batch_number"];
 			# END COLUMNS DO NOT REMOVE THIS LINE
 
 			# START FORM DO NOT REMOVE THIS LINE
@@ -52,25 +50,6 @@ use Session;
 			$this->form[] = ['label'=>'Number Of Gcs','name'=>'number_of_gcs','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
 			$this->form[] = ['label'=>'Gc Description','name'=>'gc_description','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
 			# END FORM DO NOT REMOVE THIS LINE
-
-			# OLD START FORM
-			//$this->form = [];
-			//$this->form[] = ["label"=>"Name","name"=>"name","type"=>"text","required"=>TRUE,"validation"=>"required|string|min:3|max:70","placeholder"=>"You can only enter the letter only"];
-			//$this->form[] = ["label"=>"Phone","name"=>"phone","type"=>"number","required"=>TRUE,"validation"=>"required|numeric","placeholder"=>"You can only enter the number only"];
-			//$this->form[] = ["label"=>"Email","name"=>"email","type"=>"email","required"=>TRUE,"validation"=>"required|min:1|max:255|email|unique:g_c_lists","placeholder"=>"Please enter a valid email address"];
-			//$this->form[] = ["label"=>"Number Of Gcs","name"=>"number_of_gcs","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"Redemption Period","name"=>"redemption_period","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"Gc Description","name"=>"gc_description","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"Gc Value","name"=>"gc_value","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"Number","name"=>"id_number","type"=>"select2","required"=>TRUE,"validation"=>"required|min:1|max:255","datatable"=>"number,id"];
-			//$this->form[] = ["label"=>"Type","name"=>"id_type","type"=>"select2","required"=>TRUE,"validation"=>"required|min:1|max:255","datatable"=>"type,id"];
-			//$this->form[] = ["label"=>"Other Type","name"=>"other_id_type","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"Qr Reference Number","name"=>"qr_reference_number","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"Invoice Number","name"=>"invoice_number","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"Redeem","name"=>"redeem","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"Cashier Name","name"=>"cashier_name","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"Cashier Date Transact","name"=>"cashier_date_transact","type"=>"datetime","required"=>TRUE,"validation"=>"required|date_format:Y-m-d H:i:s"];
-			# OLD END FORM
 
 			/* 
 	        | ---------------------------------------------------------------------- 
@@ -257,13 +236,11 @@ use Session;
 	    */
 	    public function hook_query_index(&$query) {
 	        //Your code here
-	        $query
-				->where(function($sub_query){
-					$sub_query->where('invoice_number', '!=', null)->where('status', '!=', 'EXPIRED');
-				});
-				// ->orWhere(function($sub_query){
-				// 	$sub_query->where('status', 'EXPIRED')->where('invoice_number', null);
-				// })->orderBy('id', 'asc');
+	        // $query
+			// 	->where(function($sub_query){
+			// 		$sub_query->where('invoice_number', '!=', null)->where('status', '!=', 'EXPIRED');
+			// 	});
+			$query->where('uploaded_img', '!=', null);
 	    }
 
 	    /*
@@ -369,8 +346,8 @@ use Session;
 					'qr.gc_description',
 					'qr.gc_value',
 					'qr.number_of_gcs',
-					'qr.redemption_start',
-					'qr.redemption_end',
+					'qr.batch_group',
+					'qr.batch_number',
 					'id_name.valid_ids')
 				->where('g_c_lists.id',$id)
 				->first();

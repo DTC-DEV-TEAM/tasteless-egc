@@ -163,6 +163,8 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
+        Spatie\LaravelImageOptimizer\ImageOptimizerServiceProvider::class,
+        Intervention\Image\ImageServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -230,7 +232,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
-
+        'ImageOptimizer' => Spatie\LaravelImageOptimizer\Facades\ImageOptimizer::class,
+        'Image' => Intervention\Image\Facades\Image::class,
     ],
 
 ];

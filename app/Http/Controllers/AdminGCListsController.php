@@ -15,7 +15,8 @@ use App\Imports\GcListImport;
 use App\Exports\GCListTemplateExport;
 use Mail;
 use Illuminate\Support\Str;
-
+use Intervention\Image\Facades\Image;
+use Spatie\ImageOptimizer\OptimizerChainFactory;
 
 
 	class AdminGCListsController extends \crocodicstudio\crudbooster\controllers\CBController {
@@ -49,8 +50,8 @@ use Illuminate\Support\Str;
 			$this->col[] = ["label"=>"Email","name"=>"email"];
 			$this->col[] = ["label"=>"Campaign ID", "name"=>"campaign_id", "join"=>"qr_creations,campaign_id"];
 			$this->col[] = ["label"=>"GC Description", "name"=>"campaign_id", "join"=>"qr_creations,gc_description"];
-			$this->col[] = ["label"=>"Redemption Start Date","name"=>"campaign_id","join"=>"qr_creations,redemption_start"];
-			$this->col[] = ["label"=>"Redemption End Date","name"=>"campaign_id","join"=>"qr_creations,redemption_end"];
+			$this->col[] = ["label"=>"Batch Group","name"=>"campaign_id","join"=>"qr_creations,batch_group"];
+			$this->col[] = ["label"=>"Batch Number","name"=>"campaign_id","join"=>"qr_creations,batch_number"];
 			# END COLUMNS DO NOT REMOVE THIS LINE
 
 			# START FORM DO NOT REMOVE THIS LINE
@@ -59,18 +60,6 @@ use Illuminate\Support\Str;
 			$this->form[] = ['label'=>'Phone','name'=>'phone','type'=>'number','validation'=>'required|numeric','width'=>'col-sm-10','placeholder'=>'You can only enter the number only'];
 			$this->form[] = ['label'=>'Email','name'=>'email','type'=>'email','validation'=>'required|min:1|max:255|email|unique:g_c_lists','width'=>'col-sm-10','placeholder'=>'Please enter a valid email address'];
 			# END FORM DO NOT REMOVE THIS LINE
-
-			# OLD START FORM
-			//$this->form = [];
-			//$this->form[] = ['label'=>'Name','name'=>'name','type'=>'text','validation'=>'required|string|min:3|max:70','width'=>'col-sm-10','placeholder'=>'You can only enter the letter only'];
-			//$this->form[] = ['label'=>'Phone','name'=>'phone','type'=>'number','validation'=>'required|numeric','width'=>'col-sm-10','placeholder'=>'You can only enter the number only'];
-			//$this->form[] = ['label'=>'Email','name'=>'email','type'=>'email','validation'=>'required|min:1|max:255|email|unique:g_c_lists','width'=>'col-sm-10','placeholder'=>'Please enter a valid email address'];
-			//$this->form[] = ['label'=>'Number Of Gcs','name'=>'number_of_gcs','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
-			//$this->form[] = ['label'=>'Redemption Period','name'=>'redemption_period','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
-			//$this->form[] = ['label'=>'Gc Description','name'=>'gc_description','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
-			//$this->form[] = ['label'=>'Gc Value','name'=>'gc_value','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
-			//$this->form[] = ['label'=>'Redeem','name'=>'redeem','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
-			# OLD END FORM
 
 			/* 
 	        | ---------------------------------------------------------------------- 
@@ -262,33 +251,14 @@ use Illuminate\Support\Str;
 	    */
 	    public function hook_query_index(&$query) {
 
-			$query->where('invoice_number', null)->where(function($sub_query) {
-				$sub_query->where('status', '!=', 'EXPIRED')->orWhere('status', null);
-			})->orderBy('id', 'asc');
+			// $query->where('invoice_number', null)->where(function($sub_query) {
+			// 	$sub_query->where('uploaded_img', null)->orWhere('status', null);
+			// })->orderBy('id', 'asc');
+
+			$query->where('uploaded_img', null);
+
 
 			$faker = Factory::create();
-
-			// $options = [
-			// 	"Driver's License",
-			// 	"Passport",
-			// 	"PRC License",
-			// 	"UMID",
-			// 	"SSS ID",
-			// 	"GSIS ID",
-			// 	"Voter's ID",
-			// 	"Postal ID",
-			// 	"TIN ID",
-			// 	"PhilHealth ID",
-			// 	"Senior Citizen ID",
-			// 	"OFW ID",
-			// 	"School ID",
-			// 	"Company ID",
-			// 	"Other",
-			// ];
-			
-			// foreach ($options as $option) {
-			// 	IdType::create(['valid_ids' => strtoupper($option)]);
-			// }
 
 			// for($i=0; $i<5; $i++){
 			// 	GCList::create([
@@ -425,13 +395,13 @@ use Illuminate\Support\Str;
 						'qr.gc_description',
 						'qr.gc_value',
 						'qr.number_of_gcs',
-						'qr.redemption_start',
-						'qr.redemption_end',
+						'qr.batch_group',
+						'qr.batch_number',
 						'id_name.valid_ids')
 					->where('g_c_lists.id',$id)
 					->first();
 
-				$data['valid_ids'] = IdType::orderBy('id', 'desc')->get();
+				$data['valid_ids'] = IdType::orderBy('valid_ids', 'asc')->get();
 				
 				//Please use view method instead view method from laravel
 				return $this->view('redeem_qr.qr_redeem_section',$data);
@@ -462,7 +432,6 @@ use Illuminate\Support\Str;
 				'id_type' => $id_type,
 				'other_id_type' => $other_id_type,
 				'status' => 'CLAIMED',
-				// 'qr_reference_number' => 'QRN-'.str_pad($id,6,"0", STR_PAD_LEFT)
 			]);
 
 			$user_information = DB::table('g_c_lists')
@@ -473,8 +442,8 @@ use Illuminate\Support\Str;
 				'qr.gc_description',
 				'qr.gc_value',
 				'qr.number_of_gcs',
-				'qr.redemption_start',
-				'qr.redemption_end',
+				'qr.batch_group',
+				'qr.batch_number',
 				'id_name.valid_ids')
 			->where('g_c_lists.id',$id)
 			->first();
@@ -485,29 +454,52 @@ use Illuminate\Support\Str;
 		public function inputInvoice(IlluminateRequest $request){
 
 			$return_inputs = $request->all();
-			$id = $return_inputs['user_id'];
-			$invoice_number = $return_inputs['invoice_number'];
+			$id = $return_inputs['userId'];
+			$invoice_number = $return_inputs['posInvoiceNumber'];
 
 			$user_information = GCList::find($id);
 		
-			GCList::find($id)->update(
+			$user_information->update(
 				['invoice_number'=>$invoice_number]
 			);
 
-			CRUDBooster::redirect(CRUDBooster::mainpath(), sprintf('Code redemption succesful. CAMPAIGN ID REFERENCE # : %s', $user_information->qr_reference_number),"success");
+			return response()->json(['pos'=>$user_information]);
 
 		}
 
-		public function redemptionEnded(IlluminateRequest $request){
-
-
-			$id = $request->all()['user_id'];
-
-			GCList::where('id', $id)->update([
-				'status' => 'EXPIRED'
+		public function closeTransaction(IlluminateRequest $request){
+			
+			$validate = $request->validate([
+				'item_image' => 'required|image'
 			]);
 
-			CRUDBooster::redirect(CRUDBooster::mainpath(), 'QR code has ended, and it is no longer valid for redemption',"success");
+			$img_file = $request->all()['item_image'];
+			$id = $request->all()['user_id'];
+
+			$user_information = DB::table('g_c_lists')
+			->leftJoin('id_types as id_name', 'id_name.id' ,'=', 'g_c_lists.id_type')
+			->leftJoin('qr_creations as qr', 'qr.id', '=', 'g_c_lists.campaign_id')
+			->select('g_c_lists.*','qr.campaign_id')
+			->where('g_c_lists.id',$id)
+			->first();
+
+			$filename = 'redeemed_item'.'_'.$user_information->id.'_'.substr(uniqid(), 0, 5).'.'.$img_file->getClientOriginalExtension();
+			$image = Image::make($img_file);
+
+			$image->resize(1024, 768, function ($constraint) {
+				$constraint->aspectRatio();
+				$constraint->upsize();
+			});
+
+			// Save the resized image to the public folder
+			$image->save(public_path('uploaded_item/img/' . $filename));
+			// Optimize the uploaded image
+			$optimizerChain = OptimizerChainFactory::create();
+			$optimizerChain->optimize(public_path('uploaded_item/img/' . $filename));
+
+			GCList::find($id)->update(['uploaded_img'=>$filename]);
+
+			CRUDBooster::redirect(CRUDBooster::mainpath(), sprintf('Code redemption succesful. CAMPAIGN ID REFERENCE # : %s', $user_information->campaign_id.' - '.$user_information->qr_reference_number),"success");
 		}
 
 		public function getDetail($id) {
@@ -526,8 +518,8 @@ use Illuminate\Support\Str;
 					'qr.gc_description',
 					'qr.gc_value',
 					'qr.number_of_gcs',
-					'qr.redemption_start',
-					'qr.redemption_end',
+					'qr.batch_group',
+					'qr.batch_number',
 					'id_name.valid_ids')
 				->where('g_c_lists.id',$id)
 				->first();

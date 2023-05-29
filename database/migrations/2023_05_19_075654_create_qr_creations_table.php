@@ -19,8 +19,8 @@ class CreateQrCreationsTable extends Migration
             $table->string('gc_description')->nullable();
             $table->integer('gc_value')->nullable();
             $table->integer('number_of_gcs')->nullable();
-            $table->date('redemption_start')->nullable();
-            $table->date('redemption_end')->nullable();
+            $table->string('batch_number')->nullable();
+            $table->string('batch_group')->nullable();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->timestamps();

@@ -47,8 +47,8 @@ use App\Jobs\SendEmailJob;
 			$this->col[] = ["label"=>"Gc Description","name"=>"gc_description"];
 			$this->col[] = ["label"=>"Gc Value","name"=>"gc_value"];
 			$this->col[] = ["label"=>"Number Of Gcs","name"=>"number_of_gcs"];
-			$this->col[] = ["label"=>"Redemption Start","name"=>"redemption_start"];
-			$this->col[] = ["label"=>"Redemption End","name"=>"redemption_end"];
+			$this->col[] = ["label"=>"Batch Group","name"=>"batch_group"];
+			$this->col[] = ["label"=>"Batch Number","name"=>"batch_number"];
 			# END COLUMNS DO NOT REMOVE THIS LINE
 
 			# START FORM DO NOT REMOVE THIS LINE
@@ -57,8 +57,8 @@ use App\Jobs\SendEmailJob;
 			$this->form[] = ['label'=>'Gc Description','name'=>'gc_description','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-6'];
 			$this->form[] = ['label'=>'Gc Value','name'=>'gc_value','type'=>'number','validation'=>'required|integer|min:0','width'=>'col-sm-6'];
 			$this->form[] = ['label'=>'Number Of Gcs','name'=>'number_of_gcs','type'=>'number','validation'=>'required|integer|min:0','width'=>'col-sm-6'];
-			$this->form[] = ['label'=>'Redemption Start Date','name'=>'redemption_start','type'=>'date','validation'=>'required|date','width'=>'col-sm-6'];
-			$this->form[] = ['label'=>'Redemption End Date','name'=>'redemption_end','type'=>'date','validation'=>'required|date','width'=>'col-sm-6'];
+			$this->form[] = ['label'=>'Batch Group','name'=>'batch_group','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-6'];
+			$this->form[] = ['label'=>'Batch Number','name'=>'batch_number','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-6'];
 			# END FORM DO NOT REMOVE THIS LINE
 
 			# OLD START FORM
@@ -67,8 +67,8 @@ use App\Jobs\SendEmailJob;
 			//$this->form[] = ['label'=>'Gc Description','name'=>'gc_description','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-6'];
 			//$this->form[] = ['label'=>'Gc Value','name'=>'gc_value','type'=>'number','validation'=>'required|integer|min:0','width'=>'col-sm-6'];
 			//$this->form[] = ['label'=>'Number Of Gcs','name'=>'number_of_gcs','type'=>'number','validation'=>'required|integer|min:0','width'=>'col-sm-6'];
-			//$this->form[] = ['label'=>'Redemption Start Date','name'=>'redemption_start','type'=>'date','validation'=>'required|date','width'=>'col-sm-6'];
-			//$this->form[] = ['label'=>'Redemption End Date','name'=>'redemption_end','type'=>'date','validation'=>'required|date','width'=>'col-sm-6'];
+			//$this->form[] = ['label'=>'Batch Number','name'=>'redemption_start','type'=>'date','validation'=>'required|date','width'=>'col-sm-6'];
+			//$this->form[] = ['label'=>'Batch Group','name'=>'redemption_end','type'=>'date','validation'=>'required|date','width'=>'col-sm-6'];
 			# OLD END FORM
 
 			/* 
@@ -168,16 +168,7 @@ use App\Jobs\SendEmailJob;
 	        | $this->script_js = "function() { ... }";
 	        |
 	        */
-	        $this->script_js = '		
-
-				$("#redemption_start").attr("required", "true");
-				$("#redemption_start").removeAttr("readonly");
-				$("#redemption_start").on("keypress", function(){
-					$(this).val("");	
-				});
-				$("#redemption_end").attr("required", "true");
-				$("#redemption_end").removeAttr("readonly");
-			';
+	        $this->script_js = '';
 
 
             /*
@@ -483,7 +474,7 @@ use App\Jobs\SendEmailJob;
 
 				// dispatch(new SendEmailJob($data));
 
-				SendEmailJob::dispatch($data);
+				// SendEmailJob::dispatch($data);
 				// $gcList->update([
 				// 	'email_is_sent' => 1
 				// ]);

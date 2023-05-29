@@ -93,12 +93,12 @@
               <p>{{ $row->gc_description }}</p>
             </div>
             <div class="campaign-id-info">
-              <label for="">Redemption Start Date:</label>
-              <p>{{ $row->redemption_start }}</p>
+              <label for="">Batch Group</label>
+              <p>{{ $row->batch_group }}</p>
             </div>
             <div class="campaign-id-info">
-              <label for="">Redemption End Date:</label>
-              <p>{{ $row->redemption_end }}</p>
+              <label for="">Batch Number</label>
+              <p>{{ $row->batch_number }}</p>
             </div>
           </div>
         </div>

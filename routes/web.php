@@ -33,7 +33,7 @@ Route::get('admin/g_c_lists/edit/{id}', [AdminGCListsController::class, 'getEdit
 Route::post('admin/g_c_list/edit/redeem_code', [AdminGCListsController::class, 'redeemCode'])->name('redeem_code');
 Route::post('admin/g_c_list/edit/save_invoice_number', [AdminGCListsController::class, 'inputInvoice'])->name('input_invoice');
 // Redemption Period Ended
-Route::post('admin/g_c_list/edit/close_transaction', [AdminGCListsController::class, 'redemptionEnded'])->name('redemption_ended');
+Route::post('admin/g_c_list/edit/close_transaction', [AdminGCListsController::class, 'closeTransaction'])->name('close_transaction');
 // Email
 Route::get('admin/g_c_lists/email', function(){
     return view('/redeem_qr.sendemail');
