@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use App\GCList;
 
 class QrEmail extends Mailable implements ShouldQueue
 {
@@ -29,8 +30,11 @@ class QrEmail extends Mailable implements ShouldQueue
      */
     public function build()
     {
+
         return $this->view('redeem_qr.sendemail', $this->data)
             ->subject('Redeem Your QR Code Now!')
             ->from('punzalan2233@gmail.com', 'Patrick Lester Punzalan');
     }
+
+    
 }

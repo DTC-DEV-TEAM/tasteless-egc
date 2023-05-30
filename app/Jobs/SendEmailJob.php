@@ -10,8 +10,9 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Mail\QrEmail;
 use Illuminate\Support\Facades\Mail;
+use App\GCList;
 
-class SendEmailJob implements ShouldQueue
+class SendEmailJob 
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
   
@@ -34,12 +35,13 @@ class SendEmailJob implements ShouldQueue
      */
     public function handle()
     {
+
         $email = new QrEmail($this->details);
         
         Mail::to($this->details['email'])->send($email);
-        // $gcList->update([
-        //     'email_is_sent' => 1
-        // ]);
+
+        GCList::find($this->details['id'])->update(['email_is_sent'=>1]);
+        
     }
     
 }

@@ -32,64 +32,60 @@
     <div class="container">
         <h3>QR Code Redemption</h3>
         
-            <p>
-                Dear {{ $name }},
-            </p>
+        <p>
+            Dear {{ $name }},
+        </p>
 
-            <p>
-                We are pleased to provide you with your exclusive QR code for redemption. This QR code represents exciting offers and discounts that you can avail yourself of at our selected stores. Simply present this QR code at the designated store to claim your special offers.
-            </p>
+        <p>
+            We are pleased to provide you with your exclusive QR code for redemption. This QR code represents exciting offers and discounts that you can avail yourself of at our selected stores. Simply present this QR code at the designated store to claim your special offers.
+        </p>
 
-            <div id="qr-code-download">
-                <div id="download_qr">
+        <div id="qr-code-download">
+            <div id="download_qr">
 
-                    {{-- @php
-                        // $qrCodeUrl = route('edit_redeem_code', ['data' => 'your-data-goes-here']);
-                        $qrCodeUrl = route('edit_redeem_code', ['id' => 13]);
-                        // $qrCodeURL = url()->current();
-                    @endphp
-                    {!! QrCode::size(200)->generate($qrCodeUrl); !!} --}}
+                {{-- @php
+                    // $qrCodeUrl = route('edit_redeem_code', ['data' => 'your-data-goes-here']);
+                    $qrCodeUrl = route('edit_redeem_code', ['id' => 13]);
+                    // $qrCodeURL = url()->current();
+                @endphp
+                {!! QrCode::size(200)->generate($qrCodeUrl); !!} --}}
 
-                    @php
-                    $url = url('admin/g_c_lists/edit/' . $id.'?value='.$qr_reference_number);
-                    $qrCodeApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode($url);
-                    @endphp
-                    <a href="{{ $qrCodeApiUrl }}" download="qr_code.png">
-                        <img src="{{ $qrCodeApiUrl }}" alt="QR Code">
-                    </a>
-                
-                </div>
+                @php
+                $url = url('admin/g_c_lists/edit/' . $id.'?value='.$qr_reference_number);
+                $qrCodeApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode($url);
+                @endphp
+                <a href="{{ $qrCodeApiUrl }}" download="qr_code.png">
+                    <img src="{{ $qrCodeApiUrl }}" alt="QR Code">
+                </a>
+            
             </div>
+        </div>
 
-            <p>
-                Campaign ID: {{ $campaign_id_qr }}
-            </p>
+        <p>
+            Campaign ID: {{ $campaign_id_qr }}
+        </p>
 
-            <p>
-                GC Description: {{ $gc_description }}
-            </p>
+        <p>
+            GC Description: {{ $gc_description }}
+        </p>
 
-            <p>
-                Redemption Period: {{ $redemption_period }}
-            </p>
+        {{-- <p>
+            Redemption Period: {{ $redemption_period }}
+        </p> --}}
 
-            <br>
+        <br>
 
-            <p>
-                Please note that the QR code is unique to you and cannot be shared or transferred. It is valid only for the specified redemption period, so make sure to visit the store within the given timeframe to enjoy the benefits.
-            </p>
+        <p>
+            If you have any questions or need assistance, please don't hesitate to contact our customer support team. We are here to ensure a smooth and rewarding redemption experience for you.
+        </p>
 
-            <p>
-                If you have any questions or need assistance, please don't hesitate to contact our customer support team. We are here to ensure a smooth and rewarding redemption experience for you.
-            </p>
-
-            <p>
-                Thank you for choosing our services. We appreciate your business and look forward to serving you again in the future.
-            </p>
-            <br>
-            <p>Best regards,</p> 
-            <p>BPG Department</p>
-            <p>Digits Trading Corp.</p>
+        <p>
+            Thank you for choosing our services. We appreciate your business and look forward to serving you again in the future.
+        </p>
+        <br>
+        <p>Best regards,</p> 
+        <p>BPG Department</p>
+        <p>Digits Trading Corp.</p>
             
     </div>
 

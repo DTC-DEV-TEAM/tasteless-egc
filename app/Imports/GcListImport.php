@@ -15,13 +15,27 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\SkipsOnError;
 use Mail;
 use CRUDBooster;
 use Illuminate\Support\Str;
 use DB;
+use Maatwebsite\Excel\Concerns\SkipsFailures;
+use Maatwebsite\Excel\Concerns\SkipsOnFailure;
+use Maatwebsite\Excel\Validators\Failure;
 
-class GcListImport implements ToModel, WithValidation, WithHeadingRow, WithBatchInserts, WithChunkReading
+
+class GcListImport implements 
+    ToModel, 
+    WithValidation, 
+    WithHeadingRow,
+    // SkipsOnFailure,
+    WithBatchInserts,
+    WithChunkReading
+    // ShouldQueue
 {
+
+    use Importable;
 
     private $user_id;
 
@@ -38,36 +52,20 @@ class GcListImport implements ToModel, WithValidation, WithHeadingRow, WithBatch
     */
     public function model(array $row)
     {
+        do {
+            $generated_qr_code = Str::random(10);
+        } while (GCList::where('qr_reference_number', $generated_qr_code)->exists());
 
-        try {
+        $gcList = new GCList([
+            'name' => $row['name'],
+            'phone' => $row['phone'],
+            'email' => $row['email'],
+            'customer_reference_number' => $row['customer_reference_number'],
+            'campaign_id' => $this->user_id,
+            'qr_reference_number' => $generated_qr_code
+        ]);
 
-            DB::beginTransaction();
-
-            do {
-                $generated_qr_code = Str::random(10);
-            } while (GCList::where('qr_reference_number', $generated_qr_code)->exists());
-
-            $gcList = new GCList([
-                'name' => $row['name'],
-                'phone' => $row['phone'],
-                'email' => $row['email'],
-                'customer_reference_number' => $row['customer_reference_number'],
-                'campaign_id' => $this->user_id,
-                'qr_reference_number' => $generated_qr_code
-            ]);
-
-            $gcList->save();
-
-            DB::commit();
-
-
-        } catch (\Exception $e) {
-            
-            DB::rollback();
-
-            // Handle the error and revert any changes made during the transaction
-            CRUDBooster::redirect(CRUDBooster::mainpath(), 'Uploading failed',"error");
-        }
+        $gcList->save();
 
     }
 
@@ -82,12 +80,12 @@ class GcListImport implements ToModel, WithValidation, WithHeadingRow, WithBatch
     
     public function batchSize(): int
     {
-        return 50; 
+        return 500; 
     }
 
     public function chunkSize(): int
     {   
-        return 50;
+        return 500;
     }
     
 }

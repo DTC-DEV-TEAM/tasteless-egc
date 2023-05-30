@@ -13,6 +13,7 @@ use Illuminate\Http\Request as IlluminateRequest;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\GcListImport;
 use App\Exports\GCListTemplateExport;
+use App\QrCreation;
 use Mail;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
@@ -44,7 +45,7 @@ use Spatie\ImageOptimizer\OptimizerChainFactory;
 
 			# START COLUMNS DO NOT REMOVE THIS LINE
 			$this->col = [];
-			// $this->col[] = ["label"=>"ID","name"=>"id"];
+			$this->col[] = ["label"=>"ID","name"=>"id"];
 			$this->col[] = ["label"=>"Name","name"=>"name"];
 			$this->col[] = ["label"=>"Phone","name"=>"phone"];
 			$this->col[] = ["label"=>"Email","name"=>"email"];
@@ -383,7 +384,7 @@ use Spatie\ImageOptimizer\OptimizerChainFactory;
 			$slug = Request::all()['value'];
 			$user = GCList::find($id);
 
-			if ($user->qr_reference_number == $slug || CRUDBooster::isSuperAdmin()){
+			if ($user->qr_reference_number == $slug){
 			
 				$data = [];
 				$data['page_title'] = 'Redeem QR';
@@ -458,12 +459,12 @@ use Spatie\ImageOptimizer\OptimizerChainFactory;
 			$invoice_number = $return_inputs['posInvoiceNumber'];
 
 			$user_information = GCList::find($id);
-		
+
 			$user_information->update(
 				['invoice_number'=>$invoice_number]
 			);
 
-			return response()->json(['pos'=>$user_information]);
+			return response()->json(['success'=>'Successful saving invoice number']);
 
 		}
 
@@ -476,13 +477,21 @@ use Spatie\ImageOptimizer\OptimizerChainFactory;
 			$img_file = $request->all()['item_image'];
 			$id = $request->all()['user_id'];
 
-			$user_information = DB::table('g_c_lists')
+			$data = [];
+			$data['row'] = DB::table('g_c_lists')
 			->leftJoin('id_types as id_name', 'id_name.id' ,'=', 'g_c_lists.id_type')
 			->leftJoin('qr_creations as qr', 'qr.id', '=', 'g_c_lists.campaign_id')
-			->select('g_c_lists.*','qr.campaign_id')
+			->select('g_c_lists.*',
+				'qr.campaign_id',
+				'qr.gc_description',
+				'qr.gc_value',
+				'qr.number_of_gcs',
+				'qr.batch_group',
+				'qr.batch_number',
+				'id_name.valid_ids')
 			->where('g_c_lists.id',$id)
 			->first();
-
+			
 			$filename = 'redeemed_item'.'_'.$user_information->id.'_'.substr(uniqid(), 0, 5).'.'.$img_file->getClientOriginalExtension();
 			$image = Image::make($img_file);
 
@@ -497,9 +506,24 @@ use Spatie\ImageOptimizer\OptimizerChainFactory;
 			$optimizerChain = OptimizerChainFactory::create();
 			$optimizerChain->optimize(public_path('uploaded_item/img/' . $filename));
 
-			GCList::find($id)->update(['uploaded_img'=>$filename]);
+			GCList::find($id)->update([
+				'uploaded_img'=>$filename,
+				'cashier_date_transact' => date('Y-m-d'),
+				'cashier_name' => CRUDBooster::myId()
+			]);
+			
+			// Send Mail
+			$email = $data['row']->email;
 
-			CRUDBooster::redirect(CRUDBooster::mainpath(), sprintf('Code redemption succesful. CAMPAIGN ID REFERENCE # : %s', $user_information->campaign_id.' - '.$user_information->qr_reference_number),"success");
+			try {
+				Mail::send(['html' => 'redeem_qr.redeemedemail'], $data, function($message) use ($email) {
+					$message->to($email)->subject('Qr Code Redemption!');
+					$message->from('punzalan2233@gmail.com', 'Patrick Lester Punzalan');
+				});
+			} catch (\Exception $e) {
+				dd($e);
+			}
+			CRUDBooster::redirect(CRUDBooster::mainpath(), sprintf('Code redemption succesful. CAMPAIGN ID REFERENCE # : %s', $data['row']->campaign_id.' - '.$data['row']->qr_reference_number),"success")->send();
 		}
 
 		public function getDetail($id) {

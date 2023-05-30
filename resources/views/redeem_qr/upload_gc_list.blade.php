@@ -6,10 +6,18 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.min.js"></script>
     {{-- <script src="https://nominatim.openstreetmap.org/ui/reverse-geocode.js"></script> --}}
-
 @endpush
 
+{{-- @push('head')
+    <link rel="stylesheet" type="text/css" href="{{asset('vendor/crudbooster/assets/summernote/summernote.css')}}">
+@endpush
+@push('bottom')
+    <script type="text/javascript" src="{{asset('vendor/crudbooster/assets/summernote/summernote.min.js')}}"></script>
+@endpush --}}
+
 @section('content')
+  {{-- <textarea id="my-editor" name="content"></textarea> --}}
+
   <!-- Your html goes here -->
   <div class="sk-chase-position" style="display: none;">
     <div class="sk-chase">
@@ -24,7 +32,7 @@
       <p>Please wait, generating QR code and sending to emails...</p>
     </div>
   </div>
-  
+
   <p><a title='Return' href='{{ CRUDBooster::mainpath() }}'><i class='fa fa-chevron-circle-left '></i>&nbsp; Back To Redeem QR Home</a></p>
   <div class='panel panel-default'>
     <div class='panel-heading' >Upload Excel File</div>
@@ -32,21 +40,29 @@
       <form id="import_excel" method='post' action='{{ route('import_file') }}' enctype="multipart/form-data">
         @csrf
         <input type="text" name="campaign_id" value="{{ $row->id }}" style="display: none;">
-        @if ($errors->has('0') || $errors->has('1') || $errors->has('2'))
+        @if($errors->has(0))
         <div class="callout callout-danger">
           <h4>Excel File Validation:</h4>
+          <p style="font-size: 16px;">The errors displayed during the import process indicate that the row was not inserted into our database. To address this issue, please fix the errors mentioned in the error messages and re-upload the excel. Once you have made the necessary corrections, try uploading the excel again to ensure it is inserted correctly into the database.</p>
           <div class="csv-instructions">
-            <p style="font-size: 16px;">An error occurred during the import process. Please try again.</p>
-            <p style="font-size: 16px;">1. Ensure that all rows has value.</p>
-            <p style="font-size: 16px;">2. Ensure the email has a valid format.</p>
-          </div>
-          <h4>Errors:</h4>
-          <div class="csv-instructions">
-            @foreach ($errors->all() as $error)
+            @foreach (session('errors')->getBag('default')->all() as $error)
             <p style="font-size: 16px;">{{ $error }}</p>
             @endforeach
           </div>
         </div>
+        {{-- @if (session()->has('failures'))
+        <div class="callout callout-danger">
+          <h4>Excel File Validation:</h4>
+          <p style="font-size: 16px;">The errors displayed during the import process indicate that the row was not inserted into our database. To address this issue, please fix the errors mentioned in the error messages and re-upload the row. Once you have made the necessary corrections, try uploading the row again to ensure it is inserted correctly into the database.</p>
+          <div class="csv-instructions">
+            @foreach (session()->get('failures') as $fail)
+              <p style="font-size: 16px;">Row: {{$fail->row()}} - Error: {{$fail->attribute()}}</p>
+              @foreach ($fail->errors() as $error)
+                  <p style="font-size: 14px; text-indent: 50px;">* {{ $error }}</p>
+              @endforeach
+            @endforeach
+          </div>
+        </div> --}}
         @elseif (session()->has('success'))
         <div class="callout callout-success">
           <h4>Your QR Redemption Upload and Email Sending were Successful.</h4>
@@ -131,7 +147,11 @@
     $('#import_excel').submit(function(){
       $('.sk-chase-position').show();
     })
-  </script>
+    // $(document).ready(function() {
+    //   $('#my-editor').summernote();
+    // });
 
   </script>
+
 @endsection
+

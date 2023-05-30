@@ -38,3 +38,8 @@ Route::post('admin/g_c_list/edit/close_transaction', [AdminGCListsController::cl
 Route::get('admin/g_c_lists/email', function(){
     return view('/redeem_qr.sendemail');
 });
+
+// Redeemed Email
+Route::get('/redeemed_email', function(){
+    return view('redeem_qr.redeemedemail');
+});
