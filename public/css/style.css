@@ -699,9 +699,11 @@ video{
     margin-bottom: 25px;
 }
 
-.file-upload-contet{
+.file-upload-content{
     width: 420px;
 }
+
+
 
 .download-template label{
     font-size: 15px;
@@ -729,6 +731,23 @@ video{
 
 }
 
+.email-template-section{
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+}
+
+.email-template-section select{
+    text-align: center;
+    outline: none;
+    width: 190px;
+    height: 41px;
+    border: 1px solid rgb(228, 228, 228);
+    filter: drop-shadow(2px 2px 1px rgba(0, 0, 0, .2));
+    border-radius: 5px;
+    margin-bottom: 13px;
+}
+
 /* Loading Animation */
 .sk-chase-position{
     position: absolute;
@@ -739,7 +758,7 @@ video{
     width: 100%;
     display: grid;
     place-items: center;
-    z-index: 999;
+    z-index: 9999;
     background-color: #21212172;
 }
 
@@ -831,4 +850,17 @@ video{
 }
 
 /* End of Upload GC List Section */
+.add_email_header{
+    font-size: 15px;
+}
 
+.code-box{
+    /* height: 100px; */
+    width: 100%;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    /* justify-content: center; */
+
+    padding: 15px;
+}

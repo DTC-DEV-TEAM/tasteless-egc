@@ -18,6 +18,7 @@ use Mail;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 use Spatie\ImageOptimizer\OptimizerChainFactory;
+use App\EmailTesting;
 
 
 	class AdminGCListsController extends \crocodicstudio\crudbooster\controllers\CBController {
@@ -384,7 +385,7 @@ use Spatie\ImageOptimizer\OptimizerChainFactory;
 			$slug = Request::all()['value'];
 			$user = GCList::find($id);
 
-			if ($user->qr_reference_number == $slug){
+			if ($user->qr_reference_number == $slug || CRUDBooster::isSuperAdmin()){
 			
 				$data = [];
 				$data['page_title'] = 'Redeem QR';
@@ -516,13 +517,16 @@ use Spatie\ImageOptimizer\OptimizerChainFactory;
 			$email = $data['row']->email;
 
 			try {
+
 				Mail::send(['html' => 'redeem_qr.redeemedemail'], $data, function($message) use ($email) {
 					$message->to($email)->subject('Qr Code Redemption!');
 					$message->from('punzalan2233@gmail.com', 'Patrick Lester Punzalan');
 				});
+
 			} catch (\Exception $e) {
 				dd($e);
 			}
+			
 			CRUDBooster::redirect(CRUDBooster::mainpath(), sprintf('Code redemption succesful. CAMPAIGN ID REFERENCE # : %s', $data['row']->campaign_id.' - '.$data['row']->qr_reference_number),"success")->send();
 		}
 
