@@ -5,12 +5,12 @@
 	use DB;
 	use CRUDBooster;
 
-	class AdminIdTypesController extends \crocodicstudio\crudbooster\controllers\CBController {
+	class AdminStoreConceptsController extends \crocodicstudio\crudbooster\controllers\CBController {
 
 		public function __construct() {
 			DB::getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping("enum", "string");
 		}
-
+		
 	    public function cbInit() {
 
 			# START CONFIGURATION DO NOT REMOVE THIS LINE
@@ -29,12 +29,13 @@
 			$this->button_filter = true;
 			$this->button_import = false;
 			$this->button_export = false;
-			$this->table = "id_types";
+			$this->table = "store_concepts";
 			# END CONFIGURATION DO NOT REMOVE THIS LINE
 
 			# START COLUMNS DO NOT REMOVE THIS LINE
 			$this->col = [];
-			$this->col[] = ["label"=>"Valids","name"=>"valid_ids"];
+			$this->col[] = ["label"=>"Names","name"=>"name"];
+			$this->col[] = ["label"=>"Status","name"=>"status"];
 			$this->col[] = ["label"=>"Created By","name"=>"created_by","join"=>"cms_users,name"];
 			$this->col[] = ["label"=>"Created At","name"=>"created_at"];
 			$this->col[] = ["label"=>"Updated By","name"=>"updated_by","join"=>"cms_users,name"];
@@ -43,12 +44,16 @@
 
 			# START FORM DO NOT REMOVE THIS LINE
 			$this->form = [];
-			$this->form[] = ['label'=>'Valid IDs','name'=>'valid_ids','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-6'];
+			$this->form[] = ['label'=>'Name','name'=>'name','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
+			// $this->form[] = ['label'=>'Status','name'=>'status','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-10'];
+			// $this->form[] = ['label'=>'Created By','name'=>'created_by','type'=>'number','validation'=>'required|integer|min:0','width'=>'col-sm-10'];
+			// $this->form[] = ['label'=>'Updated By','name'=>'updated_by','type'=>'number','validation'=>'required|integer|min:0','width'=>'col-sm-10'];
 			# END FORM DO NOT REMOVE THIS LINE
 
 			# OLD START FORM
 			//$this->form = [];
-			//$this->form[] = ["label"=>"Valids","name"=>"valid_ids","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
+			//$this->form[] = ["label"=>"Names","name"=>"names","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
+			//$this->form[] = ["label"=>"Status","name"=>"status","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
 			//$this->form[] = ["label"=>"Created By","name"=>"created_by","type"=>"number","required"=>TRUE,"validation"=>"required|integer|min:0"];
 			//$this->form[] = ["label"=>"Updated By","name"=>"updated_by","type"=>"number","required"=>TRUE,"validation"=>"required|integer|min:0"];
 			# OLD END FORM
@@ -261,7 +266,6 @@
 	    public function hook_before_add(&$postdata) {        
 	        //Your code here
 			$postdata['created_by'] = CRUDBooster::myId();
-
 	    }
 
 	    /* 
@@ -287,7 +291,6 @@
 	    public function hook_before_edit(&$postdata,$id) {        
 	        //Your code here
 			$postdata['updated_by'] = CRUDBooster::myId();
-
 	    }
 
 	    /* 
@@ -311,7 +314,6 @@
 	    */
 	    public function hook_before_delete($id) {
 	        //Your code here
-			$postdata['updated_by'] = CRUDBooster::myId();
 
 	    }
 

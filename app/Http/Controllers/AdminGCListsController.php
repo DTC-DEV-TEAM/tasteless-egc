@@ -262,7 +262,7 @@ use App\EmailTesting;
 
 			$faker = Factory::create();
 
-			// for($i=0; $i<5; $i++){
+			// for($i=0; $i<50; $i++){
 			// 	GCList::create([
 			// 		'name' => $faker->name,
 			// 		'phone' => $faker->phoneNumber,

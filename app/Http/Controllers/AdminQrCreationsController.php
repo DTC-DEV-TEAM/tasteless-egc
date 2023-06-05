@@ -406,7 +406,7 @@ use App\Jobs\SendEmailJob;
 				$email_template = $email_testing->html_email;
 				$email_subject = $email_testing->subject_of_the_email;
 
-				$url = url('admin/g_c_lists/edit/' . $id.'?value='.$generated_qr_code);
+				$url = "/g_c_lists/edit/$id?value=$generated_qr_code";
 				$qrCodeApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode($url);
 				$qr_code = "<div id='qr-code-download'><div id='download_qr'><a href='$qrCodeApiUrl' download='qr_code.png'> <img src='$qrCodeApiUrl' alt='QR Code'> </a></div></div>";
 				
