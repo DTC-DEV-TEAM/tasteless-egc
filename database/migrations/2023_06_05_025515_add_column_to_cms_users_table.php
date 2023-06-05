@@ -14,7 +14,7 @@ class AddColumnToCmsUsersTable extends Migration
     public function up()
     {
         Schema::table('cms_users', function (Blueprint $table) {
-            $table->string('store_concept')->after('id_cms_privileges')->nullable();
+            $table->string('id_store_concept')->after('id_cms_privileges')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ class AddColumnToCmsUsersTable extends Migration
     public function down()
     {
         Schema::table('cms_users', function (Blueprint $table) {
-            $table->dropColumn('store_concept');
+            $table->dropColumn('id_store_concept');
         });
     }
 }
