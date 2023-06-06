@@ -21,9 +21,9 @@
 			$this->button_table_action = true;
 			$this->button_bulk_action = true;
 			$this->button_action_style = "button_icon";
-			$this->button_add = true;
-			$this->button_edit = true;
-			$this->button_delete = true;
+			$this->button_add = false;
+			$this->button_edit = false;
+			$this->button_delete = false;
 			$this->button_detail = true;
 			$this->button_show = true;
 			$this->button_filter = true;
@@ -265,7 +265,6 @@
 	    */
 	    public function hook_before_add(&$postdata) {        
 	        //Your code here
-			$postdata['created_by'] = CRUDBooster::myId();
 	    }
 
 	    /* 
@@ -290,7 +289,6 @@
 	    */
 	    public function hook_before_edit(&$postdata,$id) {        
 	        //Your code here
-			$postdata['updated_by'] = CRUDBooster::myId();
 	    }
 
 	    /* 
