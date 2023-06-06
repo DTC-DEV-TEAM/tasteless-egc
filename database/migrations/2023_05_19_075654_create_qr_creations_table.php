@@ -21,6 +21,7 @@ class CreateQrCreationsTable extends Migration
             $table->integer('number_of_gcs')->nullable();
             $table->string('batch_number')->nullable();
             $table->string('batch_group')->nullable();
+            $table->string('id_store_concept')->nullable();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->timestamps();
