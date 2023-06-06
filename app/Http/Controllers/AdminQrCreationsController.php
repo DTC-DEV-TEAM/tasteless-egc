@@ -17,10 +17,14 @@ use Mail;
 use Illuminate\Support\Facades\Session as UserSession;
 use App\Mail\QrEmail;
 use App\Jobs\SendEmailJob;
-
-
+use App\Jobs\StoreConceptFetchApi;
+use Illuminate\Support\Facades\Http;
 
 	class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers\CBController {
+
+		public function __construct() {
+			DB::getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping("enum", "string");
+		}
 
 	    public function cbInit() {
 
@@ -52,6 +56,9 @@ use App\Jobs\SendEmailJob;
 			$this->col[] = ["label"=>"Number Of Gcs","name"=>"number_of_gcs"];
 			$this->col[] = ["label"=>"Batch Group","name"=>"batch_group"];
 			$this->col[] = ["label"=>"Batch Number","name"=>"batch_number"];
+			$this->col[] = ["label"=>"Store Concept","name"=>"id_store_concept","join"=>"store_concepts,name"];
+			// $this->col[] = ["label"=>"Batch Number","name"=>"campaign_id","join"=>"qr_creations,batch_number"];
+
 			# END COLUMNS DO NOT REMOVE THIS LINE
 
 			# START FORM DO NOT REMOVE THIS LINE
@@ -62,6 +69,8 @@ use App\Jobs\SendEmailJob;
 			$this->form[] = ['label'=>'Number Of Gcs','name'=>'number_of_gcs','type'=>'number','validation'=>'required|integer|min:0','width'=>'col-sm-6'];
 			$this->form[] = ['label'=>'Batch Group','name'=>'batch_group','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-6'];
 			$this->form[] = ['label'=>'Batch Number','name'=>'batch_number','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-6'];
+			$this->form[] = ['label'=>'Store Concept','name'=>'id_store_concept','type'=>'select','validation'=>'required|min:1|max:255',"datatable"=>"store_concepts,name",'width'=>'col-sm-6'];
+
 			# END FORM DO NOT REMOVE THIS LINE
 
 			# OLD START FORM
@@ -257,9 +266,10 @@ use App\Jobs\SendEmailJob;
 	    | @query = current sql query 
 	    |
 	    */
+
 	    public function hook_query_index(&$query) {
 	        //Your code here
-	            
+	        StoreConceptFetchApi::dispatch();
 	    }
 
 	    /*
