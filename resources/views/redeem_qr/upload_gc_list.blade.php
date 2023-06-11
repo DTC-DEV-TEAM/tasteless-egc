@@ -2,10 +2,18 @@
 @extends('crudbooster::admin_template')
 
 @push('head')
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.min.js"></script>
-    {{-- <script src="https://nominatim.openstreetmap.org/ui/reverse-geocode.js"></script> --}}
+  <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    .swal2-popup {
+        /* padding: 100px 0; */
+        font-size: 17px !important;
+        color: rgb(0, 0, 0) !important;
+    }
+  </style>
 @endpush
 
 @section('content')
@@ -28,6 +36,7 @@
   <div class='panel panel-default'>
     <div class='panel-heading' >Upload Excel File</div>
     <div class='panel-body'>
+      <a href="{{ route('email_template',$row->id) }}">Back to email Template</a>
       <form id="import_excel" method='post' action='{{ route('import_file') }}' enctype="multipart/form-data">
         @csrf
         <input type="text" name="campaign_id" value="{{ $row->id }}" style="display: none;">
@@ -84,6 +93,17 @@
               <label for="">Batch Number</label>
               <p>{{ $row->batch_number }}</p>
             </div>
+            @if (!is_null($row->upload_limit_control) )
+            <div class="campaign-id-info">
+              <label for="">Upload Limit</label>
+              <p>{{ $row->upload_limit_control }}</p>
+            </div>
+            @else
+            <div class="campaign-id-info">
+              <label for="">Upload Limit</label>
+              <p>{{ $row->upload_limit }}</p>
+            </div>
+            @endif
           </div>
         </div>
         <br>
@@ -113,7 +133,14 @@
           </div>
         </div>
         <!-- etc .... -->
-        <button class="btn btn-primary excel_file_btn_submit" type="submit">Submit</button>
+        @if ($row->upload_limit_control == '0')
+        <input class="btn btn-primary excel_file_btn_submit" id="input_btn" value="Submit" style="width: 100px;" disabled>
+        <p style="margin-top: 15px; color: red;">Your upload has reached the limit. Please contact the distribution assignee for assistance.</p>
+        @else
+        <input class="btn btn-primary excel_file_btn_submit" id="input_btn" value="Submit" style="width: 100px;" readonly>
+        @endif
+        <button class="hide" id="btn_submit" type="submit">Submit</button>
+        
       </form>
     </div>
     <div class='panel-footer'>
@@ -121,10 +148,33 @@
   </div>
 
   <script>
+    $(document).ready(function(){
+
+        $('#import_excel').submit(function(){
+          $('.sk-chase-position').show();
+        })
+
+        $('#input_btn').click(function(){
+          Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, save it!',
+                returnFocus: false,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                  $('#btn_submit').click();
+                }
+            })
+        })
     
-    $('#import_excel').submit(function(){
-      $('.sk-chase-position').show();
-    })
+        
+    });
+    
+
   </script>
 
 @endsection
