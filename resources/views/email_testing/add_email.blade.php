@@ -25,7 +25,7 @@
     <p><a title='Return' href='{{ CRUDBooster::mainpath() }}'><i class='fa fa-chevron-circle-left '></i>&nbsp; Back To Email Home</a></p>
     <div class='panel panel-default'>
         <div class='panel-heading'>Add Form</div>
-        <form method='post' action='{{CRUDBooster::mainpath('add-save')}}' autocomplete="off">
+        <form method='post' action='{{CRUDBooster::mainpath('edit-save/'.$row->id)}}' autocomplete="off">
         @csrf
         <div class='panel-body'>
                 <br>
@@ -61,6 +61,11 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label class="add_email_header" for="">Your Test Email</label>
+                            <input type="text" class="form-control" id="test_email" name="test_email" placeholder="youremail@gmail.com" required>
+                            <p style="margin-top:10px; color: red;">Required only for testing button.</p>
+                        </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="form-group">
@@ -74,68 +79,14 @@
                     <div class="col-lg-6">
                         <div class="form-group">
                             <label class="add_email_header" for="">Email Content</label>
-                            <textarea id="email-test" name="email_content"></textarea>
+                            <textarea id="email-test" name="email_content" required></textarea>
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="form-group">
                             <label class="add_email_header" for="">Sample Email</label>
                             <textarea id="email-sample">
-                                <h3>QR Code Redemption</h3>
-                                
-                                <p>
-                                    Dear [name],
-                                </p>
-                        
-                                <p>
-                                    We are pleased to provide you with your exclusive QR code for redemption. This QR code represents exciting offers and discounts that you can avail yourself of at our selected stores. Simply present this QR code at the designated store to claim your special offers.
-                                </p>
-                        
-                                <div id="qr-code-download">
-                                    <div id="download_qr">
-                        
-                                        {{-- @php
-                                            // $qrCodeUrl = route('edit_redeem_code', ['data' => 'your-data-goes-here']);
-                                            $qrCodeUrl = route('edit_redeem_code', ['id' => 13]);
-                                            // $qrCodeURL = url()->current();
-                                        @endphp
-                                        {!! QrCode::size(200)->generate($qrCodeUrl); !!} --}}
-                                        <p>
-                                            QR Information
-                                        </p>
-                                        <p>
-                                            [qr_code]
-                                        </p>
-                                    
-                                    </div>
-                                </div>
-                        
-
-                                <p>
-                                    Campaign ID: [campaign_id]
-                                </p>
-                        
-                                <p>
-                                    GC Description: [gc_description]
-                                </p>
-                        
-                                {{-- <p>
-                                    Redemption Period: {{ $redemption_period }}
-                                </p> --}}
-                        
-                                <br>
-                        
-                                <p>
-                                    If you have any questions or need assistance, please don't hesitate to contact our customer support team. We are here to ensure a smooth and rewarding redemption experience for you.
-                                </p>
-                        
-                                <p>
-                                    Thank you for choosing our services. We appreciate your business and look forward to serving you again in the future.
-                                </p>
-                                <br>
-                                <p>Best regards,</p> 
-                                <p>BPG Department</p>
-                                <p>Digits Trading Corp.</p>
+                                <h4><b>QR Code Redemption</b></h4><p>Dear [name],</p><p>We are pleased to provide you with your exclusive QR code for redemption. This QR code represents exciting offers and discounts that you can avail yourself of at our selected stores. Simply present this QR code at the designated store to claim your special offers.</p><p>QR Information</p><p>[qr_code]</p><p>Campaign ID: [campaign_id]</p><p>GC Description: [gc_description]</p><p>If you have any questions or need assistance, please don't hesitate to contact our customer support team. We are here to ensure a smooth and rewarding redemption experience for you.</p><p>Thank you for choosing our services. We appreciate your business and look forward to serving you again in the future.</p><p><br></p><p>Best regards,</p><p>BPG Department</p><p>Digits Trading Corp</p>
                             </textarea>
                         </div>
                     </div>
@@ -143,7 +94,9 @@
             </div>
             <div class='panel-footer'>
                 <a href="{{ CRUDBooster::mainpath() }}" class="btn btn-default">Cancel</a>
-                <input type='button' class='btn btn-primary pull-right' id='create_email' value='Create Email Template'/>
+                <input class='btn btn-warning pull-right' id="proceed" value="Proceed" name="selected_button" style="margin-left: 10px; width: 100px" readonly>
+                <input class='btn btn-primary pull-right' id='create_email' value='Create Email Template' name="selected_button" style="margin-left: 10px;" readonly/>
+                <input class='btn btn-info pull-right' id='testing' value='Testing' name="selected_button" style="width: 75px;" readonly/>
                 <button class="hide" id="hidden-submit" type="submit">submit</button>
             </div>
         </form>
@@ -151,11 +104,14 @@
 
     <script>
     $(document).ready(function() {
+        let clicked_btn;
         $('#email-test').summernote();
         $('#email-sample').summernote();
         $('.note-editable').eq(0).css('height', '300px');
+        $('.note-editable').eq(1).attr('contenteditable', 'false');
 
         $('#create_email').click(function(event){
+            
             Swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
@@ -163,15 +119,98 @@
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, save it!',
+                confirmButtonText: 'Yes, create it!',
                 returnFocus: false,
             }).then((result) => {
                 if (result.isConfirmed) {
+                    $('#test_email').removeAttr('required');
+                    $('#proceed').removeAttr('name');
+                    $('#testing').removeAttr('name');
+                    clicked_btn = null;
                     $('#hidden-submit').click();
                 }
             })
         })
+
+        $('#proceed').click(function(event){
+            $(this).attr('name', 'selected_button');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, Proceed!',
+                returnFocus: false,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    clicked_btn = null;
+                    $('#testing').removeAttr('name');
+                    $('#create_email').removeAttr('name');
+                    $('#email-test').removeAttr('required');
+                    $('input').removeAttr('required');
+                    $('#hidden-submit').click();
+                }
+            })
+        })
+
+        $('#testing').click(function(event){
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, Send test email!',
+                returnFocus: false,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#test_email').attr('required', true);
+                    clicked_btn = 'test_email';
+                    $('#hidden-submit').click();
+                }
+            })      
+        })
         
+        $('form').on('submit', function(event){
+            if(clicked_btn == 'test_email'){
+                event.preventDefault();
+
+                const subject_of_the_email = $("input[name='subject_of_the_email']").val();
+                const test_email = $("input[name='test_email']").val();
+                const email_content = $("textarea[name='email_content']").val();
+
+                $.ajax({
+                    url: "{{ route('emailtesting') }}",
+                    dataType: 'json',
+                    type: 'POST',
+                    data: {
+                        subject_of_the_email: subject_of_the_email,
+                        test_email: test_email,
+                        email_content: email_content
+                    },
+                    success: function(response){
+                        console.log(response);
+                        Swal.fire(
+                            'Good job!',
+                            'Email successfully sent.',
+                            'success'
+                        )
+                    },
+                    error: function(error){
+                        console.log(error);
+                        Swal.fire(
+                            'Error Occured!',
+                            'Make sure the input data are correct.',
+                            'error'
+                        )
+                    }
+                
+                })
+            }
+        })
     });
 
 
