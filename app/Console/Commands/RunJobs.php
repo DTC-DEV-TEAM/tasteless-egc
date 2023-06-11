@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 
 class RunJobs extends Command
 {
@@ -40,6 +41,13 @@ class RunJobs extends Command
     {
         Artisan::call('queue:restart');
         Artisan::call('queue:work');
+        // // Retry all failed jobs
+        // $failedJobs = DB::table('failed_jobs')->get();
+        // foreach ($failedJobs as $failedJob) {
 
+        //     Artisan::call('queue:retry', ['id' => $failedJob->id]);
+        // }
+        return 0;
+        
     }
 }
