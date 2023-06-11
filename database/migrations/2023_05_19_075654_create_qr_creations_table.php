@@ -15,13 +15,20 @@ class CreateQrCreationsTable extends Migration
     {
         Schema::create('qr_creations', function (Blueprint $table) {
             $table->id();
+            $table->string('status_id')->nullable();
             $table->string('campaign_id')->nullable();
             $table->string('gc_description')->nullable();
             $table->integer('gc_value')->nullable();
             $table->integer('number_of_gcs')->nullable();
             $table->string('batch_number')->nullable();
             $table->string('batch_group')->nullable();
-            $table->string('id_store_concept')->nullable();
+            // $table->string('id_store_concept')->nullable();
+            $table->string('company_id')->nullable();
+            $table->string('upload_limit')->nullable();
+            $table->string('upload_limit_control')->nullable();
+            $table->string('title_of_the_email')->nullable();
+            $table->string('subject_of_the_email')->nullable();
+            $table->text('html_email')->nullable();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->timestamps();
