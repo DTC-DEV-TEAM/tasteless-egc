@@ -26,6 +26,10 @@ Route::get('admin/g_c_lists/scan_qr', [AdminGCListsController::class, 'getScanQR
 Route::get('admin/qr_creations/edit/{id}', [AdminQrCreationsController::class, 'getEdit'])->name('qr_creations_edit');
 Route::get('admin/qr_creations/upload_gc_list', [AdminQrCreationsController::class, 'uploadGCList'])->name('upload_file');
 Route::post('admin/qr_creations/upload_gc_list/excel', [AdminQrCreationsController::class, 'uploadGCListPost'])->name('import_file');
+// Email Testing
+Route::post('/admin/qr_creations/email_testing', [AdminQrCreationsController::class, 'EmailTesting'])->name('emailtesting');
+// Back
+Route::get('admin/qr_creations/back_to_email_template/{id}', [AdminQrCreationsController::class, 'backToEmailTemplate'])->name('email_template');
 // Export File
 Route::get('admin/g_c_lists/upload_gc_list/dowload_template', [AdminQrCreationsController::class, 'exportGCListTemplate'])->name('export_file');
 // Get Edit
@@ -35,28 +39,6 @@ Route::post('admin/g_c_list/edit/redeem_code', [AdminGCListsController::class, '
 Route::post('admin/g_c_list/edit/save_invoice_number', [AdminGCListsController::class, 'inputInvoice'])->name('input_invoice');
 // Redemption Period Ended
 Route::post('admin/g_c_list/edit/close_transaction', [AdminGCListsController::class, 'closeTransaction'])->name('close_transaction');
-// Email Testing
 
-// Email
-Route::get('admin/g_c_lists/email', function(){
-    return view('/redeem_qr.sendemail');
-});
 
-// Redeemed Email
-Route::get('/redeemed_email', function() {
-    $email = EmailTesting::get()->first();
-    $name = 'Patrick';
-    $gc_description = '50% sale';
-    $gc_value = '500php';
-    $url = url('admin/g_c_lists/edit/' . $id.'?value='.$qr_reference_number);
-    $qrCodeApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode($url);
-    $qr_code = "<a href='$qrCodeApiUrl' download='qr_code.png'> <img src='$qrCodeApiUrl' alt='QR Code'> </a>";
-    
-    $htmlEmail = str_replace(
-        ['[name]', '[campaign_id]', '[gc_description]', '[qr_code]'],
-        [$name, $gc_description, $gc_value, $qr_code ],
-        $email->html_email
-    );
 
-    return view('redeem_qr.redeemedemail', compact('htmlEmail'));
-});
