@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers;
 
-	use Session;
+use App\QrCreation;
+use Session;
 	use Illuminate\Http\Request;
 	use Illuminate\Support\Facades\Request as Input;
 	use DB;
@@ -9,7 +10,7 @@
 	class AdminEmailTestingsController extends \crocodicstudio\crudbooster\controllers\CBController {
 
 	    public function cbInit() {
-
+			
 			# START CONFIGURATION DO NOT REMOVE THIS LINE
 			$this->title_field = "id";
 			$this->limit = "20";
@@ -18,9 +19,9 @@
 			$this->button_table_action = true;
 			$this->button_bulk_action = true;
 			$this->button_action_style = "button_icon";
-			$this->button_add = true;
+			$this->button_add = false;
 			$this->button_edit = true;
-			$this->button_delete = true;
+			$this->button_delete = false;
 			$this->button_detail = true;
 			$this->button_show = true;
 			$this->button_filter = true;
@@ -31,7 +32,7 @@
 
 			# START COLUMNS DO NOT REMOVE THIS LINE
 			$this->col = [];
-			$this->col[] = ["label"=>"Id","name"=>"id"];
+			// $this->col[] = ["label"=>"Id","name"=>"id"];
 			$this->col[] = ["label"=>"Title of the email","name"=>"title_of_the_email"];
 			$this->col[] = ["label"=>"Subject","name"=>"subject_of_the_email"];
 			$this->col[] = ["label"=>"Created by","name"=>"created_by","join"=>"cms_users,name"];
@@ -42,6 +43,7 @@
 
 			# START FORM DO NOT REMOVE THIS LINE
 			$this->form = [];
+			$this->form[] = ['label'=>'Email Subject','name'=>'subject_of_the_email','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-3'];
 			$this->form[] = ['label'=>'Html Email','name'=>'html_email','type'=>'wysiwyg','validation'=>'required|string','width'=>'col-sm-8'];
 			# END FORM DO NOT REMOVE THIS LINE
 
@@ -235,7 +237,14 @@
 	    */
 	    public function hook_query_index(&$query) {
 	        //Your code here
-	            
+			$cb_id = CRUDBooster::myId(); 
+			$cb_companyId = DB::table('cms_users')
+				->where('id', $cb_id)
+				->value('company_id');
+
+			if(CRUDBooster::myPrivilegeName() == 'Company'){
+				$query->where("email_testings.company_id", $cb_companyId);
+			}
 	    }
 
 	    /*
@@ -288,7 +297,10 @@
 	    */
 	    public function hook_before_edit(&$postdata,$id) {        
 	        //Your code here
+			date_default_timezone_set("Asia/Manila");
+			date_default_timezone_get();
 			$postdata['updated_by'] = CRUDBooster::myId();
+			$postdata['updated_at'] = date('Y-m-d H:i:s');
 
 	    }
 
