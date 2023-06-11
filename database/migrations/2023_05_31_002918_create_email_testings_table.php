@@ -18,6 +18,7 @@ class CreateEmailTestingsTable extends Migration
             $table->string('title_of_the_email')->nullable();
             $table->string('subject_of_the_email')->nullable();
             $table->text('html_email')->nullable();
+            $table->string('company_id')->nullable();
             $table->integer('created_by')->unsigned()->length(10)->nullable();
             $table->integer('updated_by')->unsigned()->length(10)->nullable();
             $table->timestamps();
