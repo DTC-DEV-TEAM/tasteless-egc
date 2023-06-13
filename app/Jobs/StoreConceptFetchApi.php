@@ -32,6 +32,7 @@ class StoreConceptFetchApi implements ShouldQueue
     public function handle()
     {
 
+        sleep(1);
         // Localhost fetch campaign
 		$response = Http::withHeaders([
             'Content-Type' => 'application/json',
@@ -47,13 +48,16 @@ class StoreConceptFetchApi implements ShouldQueue
 
         $gc_list_fetch = $redemption_list->json();
         
-        $gc_list_data = array_reverse($gc_list_fetch['data']);
+        if($gc_list_fetch['data']){
 
-        foreach ($gc_list_data as $item) {
-            StoreConcept::updateOrCreate(
-                ['id' => $item['id']],
-                $item
-            );
+            foreach ($gc_list_fetch['data'] as $item) {
+                StoreConcept::updateOrCreate(
+                    ['id' => $item['id']],
+                    $item
+                );
+            }
+        }else{
+            return;
         }
     }
 }
