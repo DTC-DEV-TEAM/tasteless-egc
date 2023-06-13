@@ -31,6 +31,9 @@ class CampaignCreationFetchApi implements ShouldQueue
      */
     public function handle()
     {
+
+        sleep(1);
+
         $response = Http::withHeaders([
 			'Content-Type' => 'application/json',
 		])->post('http://127.0.0.1:1000/api/get-token', [
@@ -43,16 +46,19 @@ class CampaignCreationFetchApi implements ShouldQueue
 			'Authorization' => 'Bearer ' . $get_token['data']['access_token'],
 		])->get('http://127.0.0.1:1000/api/campaign_creation');
 
-		$campaign_data = $campaign_request->json();
+		$campaign_fetch = $campaign_request->json();
 		
-		$campaign_list = array_reverse($campaign_data['data']);
+        if($campaign_fetch['data']){
 
-		foreach ($campaign_list as $item) {
-
-			QrCreation::firstOrCreate(
-				['id' => $item['id']],
-				$item
-			);
-		}
+            foreach ($campaign_fetch['data'] as $item) {
+    
+                QrCreation::firstOrCreate(
+                    ['id' => $item['id']],
+                    $item
+                );
+            }
+        }else{
+            return;
+        }
     }
 }
