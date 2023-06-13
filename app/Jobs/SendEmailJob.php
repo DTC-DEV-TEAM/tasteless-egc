@@ -39,8 +39,6 @@ class SendEmailJob
         $email = new QrEmail($this->details);
         
         Mail::to($this->details['email'])->send($email);
-
-        // GCList::find($this->details['id'])->update(['email_is_sent'=>1]);      
     }
     
 }
