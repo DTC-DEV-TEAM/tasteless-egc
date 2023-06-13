@@ -41,7 +41,7 @@ class RunJobs extends Command
     {
         Artisan::call('queue:restart');
         Artisan::call('queue:work');
-        // // Retry all failed jobs
+        // Retry all failed jobs
         // $failedJobs = DB::table('failed_jobs')->get();
         // foreach ($failedJobs as $failedJob) {
 
