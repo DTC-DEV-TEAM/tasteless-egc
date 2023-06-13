@@ -32,6 +32,8 @@ class CompanyIdsJob implements ShouldQueue
      */
     public function handle()
     {
+
+        sleep(1);
        	// Localhost fetch CompanyIds
 		$response = Http::withHeaders([
 			'Content-Type' => 'application/json',
@@ -45,15 +47,18 @@ class CompanyIdsJob implements ShouldQueue
 			'Authorization' => 'Bearer ' . $get_token['data']['access_token'],
 		])->get('http://127.0.0.1:1000/api/company_ids');
 
-		$company_data = $company_ids->json();
+		$company_fetch = $company_ids->json();
 		
-		$company_list = array_reverse($company_data['data']);
+        if($company_fetch['data']){
 
-		foreach ($company_list as $item) {
-			CompanyId::updateOrCreate(
-				['id' => $item['id']],
-				$item
-			);
-		}
+            foreach ($company_fetch['data'] as $item) {
+                CompanyId::updateOrCreate(
+                    ['id' => $item['id']],
+                    $item
+                );
+            }
+        }else{
+            return;
+        }
     }
 }
