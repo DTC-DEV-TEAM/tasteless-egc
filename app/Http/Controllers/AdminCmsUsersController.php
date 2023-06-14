@@ -15,6 +15,7 @@ class AdminCmsUsersController extends CBController {
 		# START CONFIGURATION DO NOT REMOVE THIS LINE
 		$this->table               = 'cms_users';
 		$this->primary_key         = 'id';
+		$this->orderby = "id_cms_privileges,asc";
 		$this->title_field         = "name";
 		$this->button_action_style = 'button_icon';	
 		$this->button_import 	   = FALSE;	
@@ -44,6 +45,8 @@ class AdminCmsUsersController extends CBController {
 		$this->script_js = "
 		
 			$(document).ready(function(){
+
+				$('#company_id').attr('required', false);
 
 				$('#form-group-company_id').hide();
 				
