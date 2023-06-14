@@ -95,7 +95,7 @@
             <div class='panel-footer'>
                 <a href="{{ CRUDBooster::mainpath() }}" class="btn btn-default">Cancel</a>
                 <input class='btn btn-warning pull-right' id="proceed" value="Proceed" name="selected_button" style="margin-left: 10px; width: 100px" readonly>
-                <input class='btn btn-primary pull-right' id='create_email' value='Create Email Template' name="selected_button" style="margin-left: 10px;" readonly/>
+                <input class='btn btn-primary pull-right' id='create_email' value='Create Email Template' name="selected_button" style="margin-left: 10px; width: 160px;" readonly/>
                 <input class='btn btn-info pull-right' id='testing' value='Testing' name="selected_button" style="width: 75px;" readonly/>
                 <button class="hide" id="hidden-submit" type="submit">submit</button>
             </div>
