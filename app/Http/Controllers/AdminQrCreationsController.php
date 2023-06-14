@@ -389,7 +389,11 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			$data['page_title'] = 'Upload GC List';
 			$data['row'] = DB::table('qr_creations')->find($id);
 			$data['valid_ids'] = IdType::get();
-			$data['email_templates'] = EmailTesting::where('company_id', $cb_company_id)->get();
+			if(CRUDBooster::isSuperAdmin()){
+				$data['email_templates'] = EmailTesting::get();
+			}else{
+				$data['email_templates'] = EmailTesting::where('company_id', $cb_company_id)->get();
+			}
 
 			if($data['row']->status_id == 1){
 				$data['page_title'] = 'Email Template';
