@@ -43,9 +43,18 @@
                         </div>
                     </div>
                 </div>
-                <hr>
                 <div class="row">
                     <div class="col-lg-6">
+                        <div class="form-group">
+                            <label class="add_email_header" for="">Your Test Email</label>
+                            <input type="text" class="form-control" id="test_email" name="test_email" placeholder="youremail@gmail.com" required>
+                            <p style="margin-top:10px; color: red;">Required only for testing button.</p>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    {{-- <div class="col-lg-6">
                         <div class="form-group">
                             <div class="box box-primary box-solid">
                                 <div class="box-header with-border">
@@ -61,12 +70,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="add_email_header" for="">Your Test Email</label>
-                            <input type="text" class="form-control" id="test_email" name="test_email" placeholder="youremail@gmail.com" required>
-                            <p style="margin-top:10px; color: red;">Required only for testing button.</p>
-                        </div>
-                    </div>
+                    </div> --}}
                     <div class="col-lg-6">
                         <div class="form-group">
                             <label class="add_email_header" for="">Gmail Preview</label>
