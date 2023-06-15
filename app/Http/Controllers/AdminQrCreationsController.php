@@ -15,6 +15,7 @@ use App\Jobs\StoreConceptFetchApi;
 use App\Imports\GcListImport;
 use App\Exports\GCListTemplateExport;
 use App\Jobs\CampaignCreationFetchApi;
+use Exception;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request as IlluminateRequest;
 use Illuminate\Support\Facades\Request as Input;
@@ -324,19 +325,14 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			$cb_id = CRUDBooster::myId();
 			$cb_company_id = DB::table('cms_users')->where('id', $cb_id)->value('company_id');
 			
-			if($email['selected_button'] == 'Proceed'){
-				$postdata['status_id'] = 2;
-			}else if($email['selected_button'] == 'Create Email Template'){
+			if($email['selected_button'] == 'Create Email Template'){
 
 				$postdata['status_id'] = 2;
 
-				EmailTesting::insert([
+				QrCreation::find($id)->update([
 					'title_of_the_email' => $email['title_of_the_email'],
 					'subject_of_the_email' => $email['subject_of_the_email'],
-					'html_email' => $email['email_content'],
-					'company_id' => $cb_company_id,
-					'created_by' => CRUDBooster::myId(),
-					'created_at' => date('Y-m-d H:i:s')
+					'html_email' => $email['email_content'],	
 				]);
 			}
 		}
@@ -416,12 +412,11 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			]);
 		
 			$campaign_id = $request->all()['campaign_id'];
-			$email_template_id = $request->all()['email_template_id'];
 			$uploaded_excel = $request->file('excel_file');
 			
-			$import = new GcListImport(compact('campaign_id', 'email_template_id'));
+			$import = new GcListImport(compact('campaign_id'));
 			$rows = Excel::import($import, $uploaded_excel);
-			
+	
 			// Send Email
 			$generated_qr_info = QrCreation::find($campaign_id);
 
@@ -442,9 +437,9 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 				$gc_description = $generated_qr_info->gc_description;
 				$email_template_id = $gcList->email_template_id;
 
-				$email_testing = EmailTesting::find($email_template_id);
-				$email_template = $email_testing->html_email;
-				$email_subject = $email_testing->subject_of_the_email;
+				// $email_testing = EmailTesting::find($email_template_id);
+				$email_template = $generated_qr_info->html_email;
+				$email_subject = $generated_qr_info->subject_of_the_email;
 
 				$url = "/g_c_lists/edit/$id?value=$generated_qr_code";
 				$qrCodeApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode($url);
@@ -468,13 +463,6 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 				);
 
 				dispatch(new SendEmailJob($data));
-			}
-
-			
-			if($generated_qr_info->upload_limit_control){
-				$generated_qr_info->upload_limit_control = (int)$generated_qr_info->upload_limit_control - 1;
-			}else{
-				$generated_qr_info->upload_limit_control = (int)$generated_qr_info->upload_limit-1;
 			}
 			
 			$generated_qr_info->status_id = 1;

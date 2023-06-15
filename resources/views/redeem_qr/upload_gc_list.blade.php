@@ -89,11 +89,19 @@
               <label for="">Batch Group</label>
               <p>{{ $row->batch_group }}</p>
             </div>
+            @if($row->upload_limit_control != null)
+            <div class="campaign-id-info">
+              <label for="">Batch Number</label>
+              <p>{{ $row->upload_limit_control }}</p>
+            </div>
+            @else
             <div class="campaign-id-info">
               <label for="">Batch Number</label>
               <p>{{ $row->batch_number }}</p>
             </div>
-            @if (!is_null($row->upload_limit_control) )
+            @endif
+
+            {{-- @if (!is_null($row->upload_limit_control) )
             <div class="campaign-id-info">
               <label for="">Upload Limit</label>
               <p>{{ $row->upload_limit_control }}</p>
@@ -103,12 +111,12 @@
               <label for="">Upload Limit</label>
               <p>{{ $row->upload_limit }}</p>
             </div>
-            @endif
+            @endif --}}
           </div>
         </div>
         <br>
         <div class="export-import-section">
-          <div class="email-template-section">
+          {{-- <div class="email-template-section">
             <label for="">Email Template</label>
             <select name="email_template_id" id="" required>
               <option value="" selected disabled>Choose an email template</option>
@@ -116,7 +124,7 @@
               <option value="{{ $mail->id }}">{{ $mail->title_of_the_email }}</option>
               @endforeach
             </select>
-          </div>
+          </div> --}}
           <div class="download-template">
             <label for="">Export Template File:</label>
             <div class="export-template-section">
@@ -139,6 +147,7 @@
         @else
         <input class="btn btn-primary excel_file_btn_submit" id="input_btn" value="Submit" style="width: 100px;" readonly>
         @endif
+        {{-- <input class="btn btn-primary excel_file_btn_submit" id="input_btn" value="Submit" style="width: 100px;" readonly> --}}
         <button class="hide" id="btn_submit" type="submit">Submit</button>
         
       </form>

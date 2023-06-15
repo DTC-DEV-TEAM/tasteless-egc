@@ -52,7 +52,7 @@ class CampaignCreationFetchApi implements ShouldQueue
 
             foreach ($campaign_fetch['data'] as $item) {
     
-                QrCreation::updateOrInsert(
+                QrCreation::firstOrCreate(
                     ['id' => $item['id']],
                     $item
                 );

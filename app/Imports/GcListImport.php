@@ -23,7 +23,8 @@ use DB;
 use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Concerns\SkipsOnFailure;
 use Maatwebsite\Excel\Validators\Failure;
-
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\BeforeImport;
 
 class GcListImport implements 
     ToModel, 
@@ -31,18 +32,41 @@ class GcListImport implements
     WithHeadingRow,
     // SkipsOnFailure,
     WithBatchInserts,
-    WithChunkReading
-    // ShouldQueue
+    WithChunkReading,
+    WithEvents 
 {
 
     use Importable;
 
     private $gc_information;
+    private $count_row = 0;
+    private $total_row = 0;
+    private $errors = [];
 
 
     public function __construct($gc_information)
     {
         $this->gc_information = $gc_information;
+    }
+
+    public function registerEvents(): array
+    {
+
+        return[BeforeImport::class => function (BeforeImport $event) {
+
+            $campaign_id = $this->gc_information['campaign_id'];
+            $qr_creation = QrCreation::find($this->gc_information['campaign_id']);
+            $qr_creation_batch_number = $qr_creation->batch_number;
+            $qr_creation_upload_limit_control = $qr_creation->upload_limit_control;
+            $totalRow = $event->getReader()->getTotalRows();
+
+            $this->total_row = $totalRow['Worksheet']-1;
+            
+            if (($this->total_row > $qr_creation_batch_number && $qr_creation_upload_limit_control == null) || ($qr_creation_upload_limit_control == 0 && $qr_creation_upload_limit_control != null) || ($this->total_row > $qr_creation_upload_limit_control && $qr_creation_upload_limit_control != null)){
+                // throw new \Exception('Total row count exceeds the batch limit.');
+                return CRUDBooster::redirect(CRUDBooster::adminPath("qr_creations/edit/$campaign_id"),'Total row count exceeds the batch limit.', 'danger');
+            }     
+        }];
     }
     
     /**
@@ -52,7 +76,23 @@ class GcListImport implements
     */
     public function model(array $row)
     {
+
+        $count_row = 0;
+        $count_row+=1;
         
+        $campaign_id = $this->gc_information['campaign_id'];
+        $qr_creation = QrCreation::find($this->gc_information['campaign_id']);
+        $qr_creation_batch_number = $qr_creation->batch_number;
+        $qr_creation_upload_limit_control = $qr_creation->upload_limit_control;
+
+        if($qr_creation_upload_limit_control == null){
+            $qr_creation->upload_limit_control = $qr_creation_batch_number - $count_row;
+        }else{
+            $qr_creation->upload_limit_control = $qr_creation->upload_limit_control - $count_row;
+        }
+
+        $qr_creation->save();
+            
         do {
             $generated_qr_code = Str::random(10);
         } while (GCList::where('qr_reference_number', $generated_qr_code)->exists());
@@ -63,7 +103,6 @@ class GcListImport implements
             'email' => $row['email'],
             'customer_reference_number' => $row['customer_reference_number'],
             'campaign_id' => $this->gc_information['campaign_id'],
-            'email_template_id' => $this->gc_information['email_template_id'],
             'qr_reference_number' => $generated_qr_code
         ]);
 
@@ -88,5 +127,5 @@ class GcListImport implements
     {   
         return 500;
     }
-    
+
 }

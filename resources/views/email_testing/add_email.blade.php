@@ -33,13 +33,13 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <label class="add_email_header" for="">Title of the email</label>
-                            <input type="text" class="form-control" name="title_of_the_email" required>
+                            <input type="text" class="form-control" name="title_of_the_email" value="{{ $row->title_of_the_email }}" required>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label class="add_email_header" for="">Subject</label>
-                            <input type="text" class="form-control" name="subject_of_the_email" required>
+                            <input type="text" class="form-control" name="subject_of_the_email" value="{{ $row->subject_of_the_email }}" required>
                         </div>
                     </div>
                 </div>
@@ -83,7 +83,9 @@
                     <div class="col-lg-6">
                         <div class="form-group">
                             <label class="add_email_header" for="">Email Content</label>
-                            <textarea id="email-test" name="email_content" required></textarea>
+                            <textarea id="email-test" name="email_content" required>
+                                {{ $row->html_email }}
+                            </textarea>
                         </div>
                     </div>
                     <div class="col-lg-6">
@@ -98,9 +100,8 @@
             </div>
             <div class='panel-footer'>
                 <a href="{{ CRUDBooster::mainpath() }}" class="btn btn-default">Cancel</a>
-                <input class='btn btn-warning pull-right' id="proceed" value="Proceed" name="selected_button" style="margin-left: 10px; width: 100px" readonly>
-                <input class='btn btn-primary pull-right' id='create_email' value='Create Email Template' name="selected_button" style="margin-left: 10px; width: 160px;" readonly/>
-                <input class='btn btn-info pull-right' id='testing' value='Testing' name="selected_button" style="width: 75px;" readonly/>
+                <input class='btn btn-success pull-right' id='create_email' value='Create Email Template' name="selected_button" style="margin-left: 10px; width: 160px;" readonly/>
+                <input class='btn btn-primary pull-right' id='testing' value='Testing' name="selected_button" style="width: 75px;" readonly/>
                 <button class="hide" id="hidden-submit" type="submit">submit</button>
             </div>
         </form>
@@ -111,8 +112,13 @@
         let clicked_btn;
         $('#email-test').summernote();
         $('#email-sample').summernote();
-        $('.note-editable').eq(0).css('height', '300px');
+        const note_editable_check_text = $('.note-editable').eq(0).text();
         $('.note-editable').eq(1).attr('contenteditable', 'false');
+        if (/\w/gi.test(note_editable_check_text)) {
+            $('.note-editable').eq(0).css('height', '100%');
+        }else{
+            $('.note-editable').eq(0).css('height', '300px');
+        }
 
         $('#create_email').click(function(event){
             
@@ -128,32 +134,8 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $('#test_email').removeAttr('required');
-                    $('#proceed').removeAttr('name');
                     $('#testing').removeAttr('name');
                     clicked_btn = null;
-                    $('#hidden-submit').click();
-                }
-            })
-        })
-
-        $('#proceed').click(function(event){
-            $(this).attr('name', 'selected_button');
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, Proceed!',
-                returnFocus: false,
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    clicked_btn = null;
-                    $('#testing').removeAttr('name');
-                    $('#create_email').removeAttr('name');
-                    $('#email-test').removeAttr('required');
-                    $('input').removeAttr('required');
                     $('#hidden-submit').click();
                 }
             })
