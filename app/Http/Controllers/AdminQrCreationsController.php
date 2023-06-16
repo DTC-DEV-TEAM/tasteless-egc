@@ -483,9 +483,19 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			$qrCodeApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode($url);
 			$qr_code = "<div id='qr-code-download'><div id='download_qr'><a href='$qrCodeApiUrl' download='qr_code.png'> <img src='$qrCodeApiUrl' alt='QR Code'> </a></div></div>";
 			
+
+			// $startTag = '<img src="data:image';
+			// $endTag = ';">';
+		  
+			// $startPos = strpos($email_content, $startTag);
+			// $endPos = strpos($email_content, $endTag, $startPos + strlen($startTag) + 1);
+		  
+			// $imageData = substr($email_content, $startPos, $endPos - $startPos + strlen($endTag));
+			// $imageData = str_replace('\\', '', $imageData);
+
 			$html_email = str_replace(
 				['[name]', '[campaign_id]', '[gc_description]', '[qr_code]'],
-				['Test Name', 'Test Campaign ID', 'Test Description', $qr_code ],
+				['Test Name', 'Test Campaign ID', 'Test Description', $qr_code],
 				$email_content
 			);
 			
@@ -499,7 +509,7 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 				$message->from('punzalan2233@gmail.com', 'Patrick Lester Punzalan');
 			});
 
-			return response()->json(['success'=>'success']);
+			return response()->json(['success'=>'success', 'img'=>$imageData]);
 		}
 
 		public function backToEmailTemplate($id) {

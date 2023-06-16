@@ -36,7 +36,7 @@ class StoreConceptFetchApi implements ShouldQueue
         // Localhost fetch campaign
 		$response = Http::withHeaders([
             'Content-Type' => 'application/json',
-        ])->post('http://127.0.0.1:1000/api/get-token', [
+        ])->post('https://devp.digitstrading.ph//api/get-token', [
             'secret' => '9384c81fb1f9e661946976585fb0d75a',
         ]);
 
@@ -44,7 +44,7 @@ class StoreConceptFetchApi implements ShouldQueue
 
         $redemption_list = Http::withHeaders([
             'Authorization' => 'Bearer ' . $get_token['data']['access_token'],
-        ])->get('http://127.0.0.1:1000/api/store_concept');
+        ])->get('https://devp.digitstrading.ph//api/store_concept');
 
         $gc_list_fetch = $redemption_list->json();
         
