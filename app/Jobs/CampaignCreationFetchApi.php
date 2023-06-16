@@ -36,7 +36,7 @@ class CampaignCreationFetchApi implements ShouldQueue
 
         $response = Http::withHeaders([
 			'Content-Type' => 'application/json',
-		])->post('https://devp.digitstrading.ph//api/get-token', [
+		])->post('https://devp.digitstrading.ph/api/get-token', [
 			'secret' => '9384c81fb1f9e661946976585fb0d75a',
 		]);
 
@@ -44,7 +44,7 @@ class CampaignCreationFetchApi implements ShouldQueue
 
 		$campaign_request = Http::withHeaders([
 			'Authorization' => 'Bearer ' . $get_token['data']['access_token'],
-		])->get('https://devp.digitstrading.ph//api/campaign_creation');
+		])->get('https://devp.digitstrading.ph/api/campaign_creation');
 
 		$campaign_fetch = $campaign_request->json();
 		
