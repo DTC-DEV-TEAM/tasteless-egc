@@ -15,6 +15,7 @@ class CompanyIdsJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public $tries = 10;
     /**
      * Create a new job instance.
      *
@@ -63,7 +64,7 @@ class CompanyIdsJob implements ShouldQueue
                 return;
             }
         }catch(MaxAttemptsExceededException $e){
-            $this->release(5);
+            $this->retryUntil(now()->addSeconds(pow(2, $this->attempts())));
         }
     }
 }

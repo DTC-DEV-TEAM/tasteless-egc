@@ -11,13 +11,15 @@ use Illuminate\Queue\SerializesModels;
 use App\Mail\QrEmail;
 use Illuminate\Support\Facades\Mail;
 use App\GCList;
+use Illuminate\Queue\MaxAttemptsExceededException;
+
 
 class SendEmailJob 
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
   
     protected $details;
-  
+    public $tries = 10;
     /**
      * Create a new job instance.
      *
@@ -43,7 +45,7 @@ class SendEmailJob
             Mail::to($this->details['email'])->send($email);
             
         }catch(MaxAttemptsExceededException $e){
-            $this->release(5);
+            $this->retryUntil(now()->addSeconds(pow(2, $this->attempts())));
         }
     }
     
