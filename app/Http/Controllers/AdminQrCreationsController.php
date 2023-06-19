@@ -506,7 +506,7 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 
 			Mail::send(['html' => 'email_testing.email_testing'], $data, function($message) use ($test_email, $data) {
 				$message->to($test_email)->subject($data['subject_of_the_email']);
-				$message->from('punzalan2233@gmail.com', 'Patrick Lester Punzalan');
+				$message->from(env('MAIL_USERNAME'), env('APP_NAME'));
 			});
 
 			return response()->json(['success'=>'success', 'img'=>$imageData]);
