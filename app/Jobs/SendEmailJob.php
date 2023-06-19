@@ -36,9 +36,15 @@ class SendEmailJob
     public function handle()
     {
 
-        $email = new QrEmail($this->details);
-        
-        Mail::to($this->details['email'])->send($email);
+        try{
+
+            $email = new QrEmail($this->details);
+            
+            Mail::to($this->details['email'])->send($email);
+            
+        }catch(MaxAttemptsExceededException $e){
+            $this->release(5);
+        }
     }
     
 }
