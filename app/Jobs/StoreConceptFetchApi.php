@@ -32,32 +32,37 @@ class StoreConceptFetchApi implements ShouldQueue
     public function handle()
     {
 
-        sleep(1);
-        // Localhost fetch campaign
-		$response = Http::withHeaders([
-            'Content-Type' => 'application/json',
-        ])->post('https://devp.digitstrading.ph/api/get-token', [
-            'secret' => '9384c81fb1f9e661946976585fb0d75a',
-        ]);
+        try{
 
-        $get_token = $response->json('data.access_token');
+            sleep(1);
+            // Localhost fetch campaign
+            $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+            ])->post('https://devp.digitstrading.ph/api/get-token', [
+                'secret' => '9384c81fb1f9e661946976585fb0d75a',
+            ]);
 
-        $redemption_list = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $get_token['data']['access_token'],
-        ])->get('https://devp.digitstrading.ph/api/store_concept');
+            $get_token = $response->json('data.access_token');
 
-        $gc_list_fetch = $redemption_list->json();
-        
-        if($gc_list_fetch['data']){
+            $redemption_list = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $get_token['data']['access_token'],
+            ])->get('https://devp.digitstrading.ph/api/store_concept');
 
-            foreach ($gc_list_fetch['data'] as $item) {
-                StoreConcept::updateOrCreate(
-                    ['id' => $item['id']],
-                    $item
-                );
+            $gc_list_fetch = $redemption_list->json();
+            
+            if($gc_list_fetch['data']){
+
+                foreach ($gc_list_fetch['data'] as $item) {
+                    StoreConcept::updateOrCreate(
+                        ['id' => $item['id']],
+                        $item
+                    );
+                }
+            }else{
+                return;
             }
-        }else{
-            return;
+        }catch(MaxAttemptsExceededException $e){
+            $this->release(5);
         }
     }
 }

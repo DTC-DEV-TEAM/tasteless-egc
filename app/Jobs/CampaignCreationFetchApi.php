@@ -32,33 +32,38 @@ class CampaignCreationFetchApi implements ShouldQueue
     public function handle()
     {
 
-        sleep(1);
+        try {
 
-        $response = Http::withHeaders([
-			'Content-Type' => 'application/json',
-		])->post('https://devp.digitstrading.ph/api/get-token', [
-			'secret' => '9384c81fb1f9e661946976585fb0d75a',
-		]);
+            sleep(1);
 
-		$get_token = $response->json('data.access_token');
+            $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+            ])->post('https://devp.digitstrading.ph/api/get-token', [
+                'secret' => '9384c81fb1f9e661946976585fb0d75a',
+            ]);
 
-		$campaign_request = Http::withHeaders([
-			'Authorization' => 'Bearer ' . $get_token['data']['access_token'],
-		])->get('https://devp.digitstrading.ph/api/campaign_creation');
+            $get_token = $response->json('data.access_token');
 
-		$campaign_fetch = $campaign_request->json();
-		
-        if($campaign_fetch['data']){
+            $campaign_request = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $get_token['data']['access_token'],
+            ])->get('https://devp.digitstrading.ph/api/campaign_creation');
 
-            foreach ($campaign_fetch['data'] as $item) {
-    
-                QrCreation::firstOrCreate(
-                    ['id' => $item['id']],
-                    $item
-                );
+            $campaign_fetch = $campaign_request->json();
+            
+            if($campaign_fetch['data']){
+
+                foreach ($campaign_fetch['data'] as $item) {
+        
+                    QrCreation::firstOrCreate(
+                        ['id' => $item['id']],
+                        $item
+                    );
+                }
+            }else{
+                return;
             }
-        }else{
-            return;
+        }catch(MaxAttemptsExceededException $e){
+            $this->release(5);
         }
     }
 }
