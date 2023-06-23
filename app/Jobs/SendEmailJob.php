@@ -20,6 +20,8 @@ class SendEmailJob implements ShouldQueue
   
     protected $details;
     public $tries = 10;
+    public $maxTries = 10;
+    
     /**
      * Create a new job instance.
      *

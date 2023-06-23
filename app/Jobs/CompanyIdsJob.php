@@ -16,6 +16,7 @@ class CompanyIdsJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $tries = 10;
+    public $maxTries = 10;
     /**
      * Create a new job instance.
      *
