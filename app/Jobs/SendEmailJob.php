@@ -14,7 +14,7 @@ use App\GCList;
 use Illuminate\Queue\MaxAttemptsExceededException;
 
 
-class SendEmailJob 
+class SendEmailJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
   
