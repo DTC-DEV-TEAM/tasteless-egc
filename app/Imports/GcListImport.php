@@ -101,6 +101,7 @@ class GcListImport implements
             'name' => $row['name'],
             'phone' => $row['phone'],
             'email' => $row['email'],
+            'is_fetch' => 0,
             'customer_reference_number' => $row['customer_reference_number'],
             'campaign_id' => $this->gc_information['campaign_id'],
             'qr_reference_number' => $generated_qr_code

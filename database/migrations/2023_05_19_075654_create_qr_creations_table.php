@@ -22,7 +22,7 @@ class CreateQrCreationsTable extends Migration
             $table->integer('number_of_gcs')->nullable();
             $table->string('batch_number')->nullable();
             $table->string('batch_group')->nullable();
-            // $table->string('id_store_concept')->nullable();
+            $table->string('is_fetch')->nullable();
             $table->string('company_id')->nullable();
             $table->string('upload_limit')->nullable();
             $table->string('upload_limit_control')->nullable();

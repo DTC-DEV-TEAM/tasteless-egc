@@ -5,15 +5,18 @@
 	use Request;
 	use CRUDBooster;
 	use App\Jobs\CompanyIdsJob;
+	use App\Jobs\GCListFetchJob;
 	use App\Jobs\CampaignCreationFetchApi;
 	use App\Jobs\StoreConceptFetchApi;
 
 	class AdminCompanyDashboardController extends \crocodicstudio\crudbooster\controllers\CBController {
 
 		function __construct(){
+
 			StoreConceptFetchApi::dispatch();
 			CompanyIdsJob::dispatch();
 			CampaignCreationFetchApi::dispatch();
+			GCListFetchJob::dispatch();
 		}
 
 		public function cbInit() {

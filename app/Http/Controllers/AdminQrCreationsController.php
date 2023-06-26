@@ -5,17 +5,18 @@ use Session;
 use Request;
 use CRUDBooster;
 use Mail;
+use Exception;
 use App\GCList;
 use App\IdType;
 use App\QrCreation;
 use App\EmailTesting;
 use App\Mail\QrEmail;
 use App\Jobs\SendEmailJob;
+use App\Jobs\GCListFetchJob;
 use App\Jobs\StoreConceptFetchApi;
 use App\Imports\GcListImport;
 use App\Exports\GCListTemplateExport;
 use App\Jobs\CampaignCreationFetchApi;
-use Exception;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request as IlluminateRequest;
 use Illuminate\Support\Facades\Request as Input;
@@ -269,6 +270,7 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 
 			CampaignCreationFetchApi::dispatch();
 			StoreConceptFetchApi::dispatch();
+			GCListFetchJob::dispatch();
 			
 			$cb_id = CRUDBooster::myId(); 
 			$cb_companyId = DB::table('cms_users')
