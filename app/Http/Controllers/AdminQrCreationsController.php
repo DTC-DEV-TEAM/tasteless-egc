@@ -28,8 +28,6 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 	
 	public function __construct() {
 		
-			CampaignCreationFetchApi::dispatch();
-			StoreConceptFetchApi::dispatch();
 			DB::getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping("enum", "string");
 		}
 
@@ -268,6 +266,9 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 		*/
 
 		public function hook_query_index(&$query) {
+
+			CampaignCreationFetchApi::dispatch();
+			StoreConceptFetchApi::dispatch();
 			
 			$cb_id = CRUDBooster::myId(); 
 			$cb_companyId = DB::table('cms_users')
