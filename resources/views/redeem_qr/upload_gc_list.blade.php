@@ -91,12 +91,12 @@
             </div>
             @if($row->upload_limit_control != null)
             <div class="campaign-id-info">
-              <label for="">Batch Number</label>
+              <label for="">Number of GC List</label>
               <p>{{ $row->upload_limit_control }}</p>
             </div>
             @else
             <div class="campaign-id-info">
-              <label for="">Batch Number</label>
+              <label for="">Number of GC List</label>
               <p>{{ $row->batch_number }}</p>
             </div>
             @endif
