@@ -59,9 +59,9 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			$this->col[] = ["label"=>"Campaign Id","name"=>"campaign_id"];
 			$this->col[] = ["label"=>"Gc Description","name"=>"gc_description"];
 			$this->col[] = ["label"=>"Gc Value","name"=>"gc_value"];
-			$this->col[] = ["label"=>"Number Of Gcs","name"=>"number_of_gcs"];
+			$this->col[] = ["label"=>"Number Of Gcs","name"=>"batch_number"];
 			$this->col[] = ["label"=>"Batch Group","name"=>"batch_group"];
-			$this->col[] = ["label"=>"Batch Number","name"=>"batch_number"];
+			// $this->col[] = ["label"=>"Batch Number","name"=>"batch_number"];
 			$this->col[] = ["label"=>"Company Tag","name"=>"company_id","join"=>"company_ids,company_name"];
 			// $this->col[] = ["label"=>"Store Concept","name"=>"id_store_concept","join"=>"store_concepts,name"];
 			// $this->col[] = ["label"=>"Batch Number","name"=>"campaign_id","join"=>"qr_creations,batch_number"];
@@ -75,7 +75,7 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			$this->form[] = ['label'=>'Gc Value','name'=>'gc_value','type'=>'number','validation'=>'required|integer|min:0','width'=>'col-sm-6'];
 			$this->form[] = ['label'=>'Number Of Gcs','name'=>'number_of_gcs','type'=>'number','validation'=>'required|integer|min:0','width'=>'col-sm-6'];
 			$this->form[] = ['label'=>'Batch Group','name'=>'batch_group','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-6'];
-			$this->form[] = ['label'=>'Batch Number','name'=>'batch_number','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-6'];
+			// $this->form[] = ['label'=>'Batch Number','name'=>'batch_number','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-6'];
 			$this->form[] = ['label'=>'Company Name','name'=>'company_id','type'=>'select','validation'=>'required|min:1|max:255',"datatable"=>"company_ids,company_name",'width'=>'col-sm-6'];
 			$this->form[] = ['label'=>'Upload Limit','name'=>'upload_limit','type'=>'text','validation'=>'required|min:0','width'=>'col-sm-6'];
 
