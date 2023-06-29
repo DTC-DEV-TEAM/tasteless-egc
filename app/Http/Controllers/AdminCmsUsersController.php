@@ -101,7 +101,10 @@ class AdminCmsUsersController extends CBController {
 	
 	public function hook_query_index(&$query) {
 		//Your code here
-		$query->where('company_id', '!=', null);
+		if(CRUDBooster::myPrivilegeName()=='Admin'){
+
+			$query->where('company_id', '!=', null);
+		}
 	}
 
 	public function getProfile() {			
