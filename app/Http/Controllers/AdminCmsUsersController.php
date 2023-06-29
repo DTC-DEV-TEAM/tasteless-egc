@@ -42,27 +42,66 @@ class AdminCmsUsersController extends CBController {
 		$this->form[] = array("label"=>"Password Confirmation","name"=>"password_confirmation","type"=>"password","help"=>"Please leave empty if not change");
 		# END FORM DO NOT REMOVE THIS LINE
 
-		$this->script_js = "
+		if(CRUDBooster::myPrivilegeName()=='Admin'){
+
+			$this->script_js = "
 		
-			$(document).ready(function(){
+				$(document).ready(function(){
 
-				$('#company_id').attr('required', false);
+					$('#company_id').attr('required', false);
 
-				$('#form-group-company_id').hide();
-				
-				$('#id_cms_privileges').on('change', function(){
+					$('#form-group-company_id').hide();
 
-					const company_id = $(this).val();
-					if(company_id == 2){
-						$('#form-group-company_id').show();
-						$('#company_id').attr('required', true);
-					}else{
-						$('#form-group-company_id').hide();
-						$('#company_id').attr('required', false);
-					}
+					$('#id_cms_privileges option').each(function(){
+
+						if($(this).val() == 1 || $(this).val() == 3){
+
+							$(this).remove();
+						}	
+					});
+					
+					$('#id_cms_privileges').on('change', function(){
+
+						const company_id = $(this).val();
+						if(company_id == 2){
+							$('#form-group-company_id').show();
+							$('#company_id').attr('required', true);
+						}else{
+							$('#form-group-company_id').hide();
+							$('#company_id').attr('required', false);
+						}
+					});
 				});
-			});
-		";
+			";	
+		}else{
+			
+			$this->script_js = "
+		
+				$(document).ready(function(){
+
+					$('#company_id').attr('required', false);
+
+					$('#form-group-company_id').hide();
+					
+					$('#id_cms_privileges').on('change', function(){
+
+						const company_id = $(this).val();
+						if(company_id == 2){
+							$('#form-group-company_id').show();
+							$('#company_id').attr('required', true);
+						}else{
+							$('#form-group-company_id').hide();
+							$('#company_id').attr('required', false);
+						}
+					});
+				});
+			";
+		}
+	}
+	
+	public function hook_query_index(&$query) {
+		//Your code here
+		$query->where('company_id', '!=', null);
 	}
 
 	public function getProfile() {			
