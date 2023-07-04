@@ -40,5 +40,9 @@ Route::post('admin/g_c_list/edit/save_invoice_number', [AdminGCListsController::
 // Redemption Period Ended
 Route::post('admin/g_c_list/edit/close_transaction', [AdminGCListsController::class, 'closeTransaction'])->name('close_transaction');
 
+Route::get('/email_testing', function(){
+    return view('email_testing.email_testing');
+});
+
 
 

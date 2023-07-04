@@ -23,6 +23,10 @@ use Illuminate\Support\Facades\Request as Input;
 use Illuminate\Support\Facades\Session as UserSession;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Validators\ValidationException;
+use Spatie\ImageOptimizer\OptimizerChainFactory;
+use Intervention\Image\Facades\Image;
+
+
 
 
 class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers\CBController {
@@ -329,8 +333,38 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			
 			if($email['selected_button'] == 'Create Email Template'){
 
-				$postdata['status_id'] = 2;
+				if($email['email_option'] == 2){
+					
+					$qr_creation = QrCreation::find($id);
+					$email_img = $email['mail_img'];
+					$random_str = $email['subject_of_the_email'];
 
+					if(!$email_img){
+						$postdata['html_email'] = null;
+					}else{
+
+						$filename = 'email_img'."$qr_creation_id".'_'.$random_str.'.'.$email_img->getClientOriginalExtension();
+						$image = Image::make($email_img);
+						$image->save(public_path('uploaded_item/email_img/' . $filename));
+						$optimizerChain = OptimizerChainFactory::create();
+						$optimizerChain->optimize(public_path('uploaded_item/email_img/' . $filename));
+						
+						$qr_creation->html_email_img = $filename;
+						$qr_creation->save();
+
+						$postdata['html_email'] = null;
+					}
+				}else{
+
+					if(!$email['email_content']){
+						return CRUDBooster::redirect(CRUDBooster::mainpath("edit/$id"), sprintf("Email content must not leave empty."), "danger");
+					}
+
+					$postdata['html_email_img'] = null;
+				}
+
+				$postdata['status_id'] = 2;
+				
 				QrCreation::find($id)->update([
 					'title_of_the_email' => $email['title_of_the_email'],
 					'subject_of_the_email' => $email['subject_of_the_email'],
@@ -412,7 +446,7 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			$validatedData = $request->validate([
 				'excel_file' => 'required|mimes:xls,xlsx',
 			]);
-		
+			
 			$campaign_id = $request->all()['campaign_id'];
 			$uploaded_excel = $request->file('excel_file');
 			
@@ -421,6 +455,7 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 	
 			// Send Email
 			$generated_qr_info = QrCreation::find($campaign_id);
+			$email_content = $generated_qr_info->html_email_img;
 
 			$gc_list_user = GCList::where('campaign_id', $campaign_id)
 				->where('email_is_sent', 0)
@@ -439,7 +474,6 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 				$gc_description = $generated_qr_info->gc_description;
 				$email_template_id = $gcList->email_template_id;
 
-				// $email_testing = EmailTesting::find($email_template_id);
 				$email_template = $generated_qr_info->html_email;
 				$email_subject = $generated_qr_info->subject_of_the_email;
 
@@ -452,17 +486,35 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 					[$name, $campaign_id_qr, $gc_description, $qr_code ],
 					$email_template
 				);
+				$html_email_img = $generated_qr_info->html_email_img;
 				
-				$data = array(
-					'name'=> $name,
-					'id' => $id,
-					'qr_reference_number'=>$generated_qr_code,
-					'campaign_id_qr' => $campaign_id_qr,
-					'gc_description' => $gc_description,
-					'email' => $email,
-					'html_email' => $html_email,
-					'email_subject' => $email_subject
-				);
+				// If email content is image
+				if($email_content){
+
+					$data = array(
+						'id' => $id,
+						'qr_reference_number'=>$generated_qr_code,
+						'campaign_id_qr' => $campaign_id_qr,
+						'gc_description' => $gc_description,
+						'qr_code' => $qr_code,
+						'email' => $email,
+						'html_email_img' => $html_email_img,
+						'email_subject' => $email_subject
+					);
+				}else{
+
+					$data = array(
+						'name'=> $name,
+						'id' => $id,
+						'qr_reference_number'=>$generated_qr_code,
+						'campaign_id_qr' => $campaign_id_qr,
+						'gc_description' => $gc_description,
+						'email' => $email,
+						'html_email' => $html_email,
+						'email_subject' => $email_subject
+					);
+
+				}
 
 				dispatch(new SendEmailJob($data));
 			}
@@ -480,38 +532,65 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			$subject_of_the_email = $email['subject_of_the_email'];
 			$test_email = $email['test_email'];
 			$email_content = $email['email_content'];
+			$email_option = $email['email_option'];
+			$qr_creation_id = $email['qr_creation_id'];
+			$qr_creation = QrCreation::find($qr_creation_id);
 
-			$url = "Sample Email";
-			$qrCodeApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode($url);
-			$qr_code = "<div id='qr-code-download'><div id='download_qr'><a href='$qrCodeApiUrl' download='qr_code.png'> <img src='$qrCodeApiUrl' alt='QR Code'> </a></div></div>";
-			
+			if($email_option == 1){
 
-			// $startTag = '<img src="data:image';
-			// $endTag = ';">';
-		  
-			// $startPos = strpos($email_content, $startTag);
-			// $endPos = strpos($email_content, $endTag, $startPos + strlen($startTag) + 1);
-		  
-			// $imageData = substr($email_content, $startPos, $endPos - $startPos + strlen($endTag));
-			// $imageData = str_replace('\\', '', $imageData);
+				$qr_creation->html_email_img = null;
+				$qr_creation->save();
 
-			$html_email = str_replace(
-				['[name]', '[campaign_id]', '[gc_description]', '[qr_code]'],
-				['Test Name', 'Test Campaign ID', 'Test Description', $qr_code],
-				$email_content
-			);
-			
-			$data = array(
-				'html_email' => $html_email,
-				'subject_of_the_email' => $subject_of_the_email
-			);
+				$url = "Sample Email";
+				$qrCodeApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode($url);
+				$qr_code = "<div id='qr-code-download'><div id='download_qr'><a href='$qrCodeApiUrl' download='qr_code.png'> <img src='$qrCodeApiUrl' alt='QR Code'> </a></div></div>";
+	
+				$html_email = str_replace(
+					['[name]', '[campaign_id]', '[gc_description]', '[qr_code]'],
+					['Test Name', 'Test Campaign ID', 'Test Description', $qr_code],
+					$email_content
+				);
+				
+				$data = array(
+					'html_email' => $html_email,
+					'subject_of_the_email' => $subject_of_the_email
+				);
+	
+				Mail::send(['html' => 'email_testing.email_testing'], $data, function($message) use ($test_email, $data) {
+					$message->to($test_email)->subject($data['subject_of_the_email']);
+					$message->from(env('MAIL_USERNAME'), env('APP_NAME'));
+				});
+			}else{
+				
+				$email_img = $email['mail_img'];
 
-			Mail::send(['html' => 'email_testing.email_testing'], $data, function($message) use ($test_email, $data) {
-				$message->to($test_email)->subject($data['subject_of_the_email']);
-				$message->from(env('MAIL_USERNAME'), env('APP_NAME'));
-			});
+				$filename = 'email_img'."$qr_creation_id".'.'.$email_img->getClientOriginalExtension();
+				$image = Image::make($email_img);
+				$image->save(public_path('uploaded_item/email_img/' . $filename));
+				$optimizerChain = OptimizerChainFactory::create();
+				$optimizerChain->optimize(public_path('uploaded_item/email_img/' . $filename));
 
-			return response()->json(['success'=>'success', 'img'=>$imageData]);
+				$qr_creation->html_email_img = $filename;
+				$qr_creation->save();
+
+				$img_sent = $qr_creation->html_email_img;
+
+				$url = "Sample Email";
+				$qrCodeApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode($url);
+				$data = array(
+					'html_email_img' => $qr_creation->html_email_img,
+					'subject_of_the_email' => $subject_of_the_email,
+					'qr_code' => "<div id='qr-code-download'><div id='download_qr'><a href='$qrCodeApiUrl' download='qr_code.png'> <img src='$qrCodeApiUrl' alt='QR Code'> </a></div></div>"
+				);
+
+				// Mail::send(['html' => 'email_testing.email_testing'], $data, function($message) use ($test_email, $data) {
+				// 	$message->to($test_email)->subject($data['subject_of_the_email']);
+				// 	$message->from(env('MAIL_USERNAME'), env('APP_NAME'));
+				// });
+
+			}
+
+			return response()->json(['success'=>'success', 'email_img'=>$img_sent]);
 		}
 
 		public function backToEmailTemplate($id) {
