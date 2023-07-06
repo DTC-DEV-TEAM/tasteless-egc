@@ -19,6 +19,7 @@ use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 use Spatie\ImageOptimizer\OptimizerChainFactory;
 use App\EmailTesting;
+use App\Jobs\GCListFetchJob;
 
 
 	class AdminGCListsController extends \crocodicstudio\crudbooster\controllers\CBController {
@@ -34,26 +35,26 @@ use App\EmailTesting;
 			$this->button_bulk_action = true;
 			$this->button_action_style = "button_icon";
 			$this->button_add = false;
-			$this->button_edit = true;
-			$this->button_delete = true;
+			$this->button_edit = false;
+			$this->button_delete = false;
 			$this->button_detail = true;
 			$this->button_show = true;
 			$this->button_filter = true;
 			$this->button_import = false;
-			$this->button_export = false;
+			$this->button_export = true;
 			$this->table = "g_c_lists";
 			# END CONFIGURATION DO NOT REMOVE THIS LINE
 
 			# START COLUMNS DO NOT REMOVE THIS LINE
 			$this->col = [];
-			$this->col[] = ["label"=>"ID","name"=>"id"];
 			$this->col[] = ["label"=>"Name","name"=>"name"];
 			$this->col[] = ["label"=>"Phone","name"=>"phone"];
 			$this->col[] = ["label"=>"Email","name"=>"email"];
-			$this->col[] = ["label"=>"Campaign ID", "name"=>"campaign_id", "join"=>"qr_creations,campaign_id"];
-			$this->col[] = ["label"=>"GC Description", "name"=>"campaign_id", "join"=>"qr_creations,gc_description"];
+			$this->col[] = ["label"=>"Campaign ID","name"=>"campaign_id","join"=>"qr_creations,campaign_id"];
+			$this->col[] = ["label"=>"GC Description","name"=>"campaign_id","join"=>"qr_creations,gc_description"];
+			$this->col[] = ["label"=>"GC Value","name"=>"campaign_id","join"=>"qr_creations,gc_value"];
 			$this->col[] = ["label"=>"Batch Group","name"=>"campaign_id","join"=>"qr_creations,batch_group"];
-			$this->col[] = ["label"=>"Batch Number","name"=>"campaign_id","join"=>"qr_creations,batch_number"];
+			$this->col[] = ["label"=>"Status","name"=>"status"];
 			# END COLUMNS DO NOT REMOVE THIS LINE
 
 			# START FORM DO NOT REMOVE THIS LINE
@@ -62,6 +63,13 @@ use App\EmailTesting;
 			$this->form[] = ['label'=>'Phone','name'=>'phone','type'=>'number','validation'=>'required|numeric','width'=>'col-sm-10','placeholder'=>'You can only enter the number only'];
 			$this->form[] = ['label'=>'Email','name'=>'email','type'=>'email','validation'=>'required|min:1|max:255|email|unique:g_c_lists','width'=>'col-sm-10','placeholder'=>'Please enter a valid email address'];
 			# END FORM DO NOT REMOVE THIS LINE
+
+			# OLD START FORM
+			//$this->form = [];
+			//$this->form[] = ['label'=>'Name','name'=>'name','type'=>'text','validation'=>'required|string|min:3|max:70','width'=>'col-sm-10','placeholder'=>'You can only enter the letter only'];
+			//$this->form[] = ['label'=>'Phone','name'=>'phone','type'=>'number','validation'=>'required|numeric','width'=>'col-sm-10','placeholder'=>'You can only enter the number only'];
+			//$this->form[] = ['label'=>'Email','name'=>'email','type'=>'email','validation'=>'required|min:1|max:255|email|unique:g_c_lists','width'=>'col-sm-10','placeholder'=>'Please enter a valid email address'];
+			# OLD END FORM
 
 			/* 
 	        | ---------------------------------------------------------------------- 
@@ -127,11 +135,11 @@ use App\EmailTesting;
 	        | 
 	        */
 	        $this->index_button = array();
-			if(CRUDBooster::getCurrentMethod() == 'getIndex'){
+			// if(CRUDBooster::getCurrentMethod() == 'getIndex'){
 
-				$this->index_button[] = ['label'=>'Scan QR','url'=>CRUDBooster::mainpath("scan_qr"),"icon"=>"fa fa-search", 'color'=>'primary'];
+				// $this->index_button[] = ['label'=>'Scan QR','url'=>CRUDBooster::mainpath("scan_qr"),"icon"=>"fa fa-search", 'color'=>'primary'];
 				// $this->index_button[] = ['label'=>'Upload GC List','url'=>CRUDBooster::mainpath("upload_gc_list"),"icon"=>"fa fa-plus", 'color'=>'primary'];
-			}
+			// }
 
 
 
@@ -251,27 +259,20 @@ use App\EmailTesting;
 	    | @query = current sql query 
 	    |
 	    */
-	    public function hook_query_index(&$query) {
+	    public function hook_query_index(&$query) {;
 
-			// $query->where('invoice_number', null)->where(function($sub_query) {
-			// 	$sub_query->where('uploaded_img', null)->orWhere('status', null);
-			// })->orderBy('id', 'asc');
+			GCListFetchJob::dispatch();
 
-			$query->where('uploaded_img', null);
+			$cb_id = CRUDBooster::myId(); 
+			$cb_companyId = DB::table('cms_users')
+				->where('id', $cb_id)
+				->value('company_id');
 
+			if(CRUDBooster::myPrivilegeName() != 'Super Administrator'){
 
-			$faker = Factory::create();
-
-			// for($i=0; $i<50; $i++){
-			// 	GCList::create([
-			// 		'name' => $faker->name,
-			// 		'phone' => $faker->phoneNumber,
-			// 		'email' => $faker->email,
-			// 		'campaign_id' => 1,
-			// 		'qr_reference_number' => Str::random(10)
-			// 	]);
-			// }
-
+				$query->where('qr_creations.company_id', $cb_companyId);
+			}
+			
 	    }
 
 	    /*
@@ -282,6 +283,14 @@ use App\EmailTesting;
 	    */    
 	    public function hook_row_index($column_index,&$column_value) {	        
 	    	//Your code here
+			if($column_index == '9'){
+				if($column_value == ''){
+					$column_value = '<span class="label" style="background-color: rgb(34 211 238); color: white; font-size: 12px;">UNCLAIMED</span>';
+				}else if($column_value == 'CLAIMED'){
+					$column_value = '<span class="label" style="background-color: rgb(74 222 128);
+					; color: white; font-size: 12px;">CLAIMED</span>';
+				}
+			}
 	    }
 
 	    /*
