@@ -32,7 +32,7 @@ use Intervention\Image\Facades\Image;
 class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers\CBController {
 	
 	public function __construct() {
-		
+			
 			DB::getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping("enum", "string");
 		}
 
@@ -274,15 +274,21 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			CampaignCreationFetchApi::dispatch();
 			StoreConceptFetchApi::dispatch();
 			GCListFetchJob::dispatch();
-			
+
+			if(CRUDBooster::myPrivilegeName() != 'Company' && CRUDBooster::myPrivilegeName() != 'Super Administrator'){
+				
+				return CRUDBooster::redirect(CRUDBooster::adminPath(),'Excel file uploaded successfully. QR codes have been sent to the email addresses.', 'danger')->send();
+			}
+
 			$cb_id = CRUDBooster::myId(); 
 			$cb_companyId = DB::table('cms_users')
 				->where('id', $cb_id)
 				->value('company_id');
 
 			if(CRUDBooster::myPrivilegeName() == 'Company'){
-				$query->where('company_id', $cb_companyId);
+				$query->where('campaign_status', 3)->where('company_id', $cb_companyId);
 			}
+			$query->where('campaign_status', 3);
 		}
 
 		/*
@@ -343,11 +349,14 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 						$postdata['html_email'] = null;
 					}else{
 
+						$email_img = $email['mail_img'];
+
 						$filename = 'email_img'."$qr_creation_id".'_'.$random_str.'.'.$email_img->getClientOriginalExtension();
 						$image = Image::make($email_img);
+						$image->encode($email_img->getClientOriginalExtension(), 100);
 						$image->save(public_path('uploaded_item/email_img/' . $filename));
-						$optimizerChain = OptimizerChainFactory::create();
-						$optimizerChain->optimize(public_path('uploaded_item/email_img/' . $filename));
+						// $optimizerChain = OptimizerChainFactory::create();
+						// $optimizerChain->optimize(public_path('uploaded_item/email_img/' . $filename));
 						
 						$qr_creation->html_email_img = $filename;
 						$qr_creation->save();
@@ -499,7 +508,8 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 						'qr_code' => $qr_code,
 						'email' => $email,
 						'html_email_img' => $html_email_img,
-						'email_subject' => $email_subject
+						'email_subject' => $email_subject,
+						'store_logo' => $generated_qr_info->store_logo
 					);
 				}else{
 
@@ -535,7 +545,7 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			$email_option = $email['email_option'];
 			$qr_creation_id = $email['qr_creation_id'];
 			$qr_creation = QrCreation::find($qr_creation_id);
-
+			
 			if($email_option == 1){
 
 				$qr_creation->html_email_img = null;
@@ -566,9 +576,10 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 
 				$filename = 'email_img'."$qr_creation_id".'.'.$email_img->getClientOriginalExtension();
 				$image = Image::make($email_img);
+				$image->encode($email_img->getClientOriginalExtension(), 100);
 				$image->save(public_path('uploaded_item/email_img/' . $filename));
-				$optimizerChain = OptimizerChainFactory::create();
-				$optimizerChain->optimize(public_path('uploaded_item/email_img/' . $filename));
+				// $optimizerChain = OptimizerChainFactory::create();
+				// $optimizerChain->optimize(public_path('uploaded_item/email_img/' . $filename));
 
 				$qr_creation->html_email_img = $filename;
 				$qr_creation->save();
@@ -580,7 +591,8 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 				$data = array(
 					'html_email_img' => $qr_creation->html_email_img,
 					'subject_of_the_email' => $subject_of_the_email,
-					'qr_code' => "<div id='qr-code-download'><div id='download_qr'><a href='$qrCodeApiUrl' download='qr_code.png'> <img src='$qrCodeApiUrl' alt='QR Code'> </a></div></div>"
+					'qr_code' => "<div id='qr-code-download'><div id='download_qr'><a href='$qrCodeApiUrl' download='qr_code.png'> <img src='$qrCodeApiUrl' alt='QR Code'> </a></div></div>",
+					'store_logo' => $qr_creation->store_logo
 				);
 
 				Mail::send(['html' => 'email_testing.email_testing'], $data, function($message) use ($test_email, $data) {
