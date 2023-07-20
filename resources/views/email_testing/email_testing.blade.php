@@ -7,52 +7,184 @@
 
     <style>
         /* Inline CSS styles */
+        @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400&display=swap'); 
+
+        html{
+            width: 100%;
+        }
         body {
             font-family: Arial, sans-serif;
             color: #333;
-            background-color: #f7f7f7;
+            
         }
+
         .container {
-            padding: 20px;
-            background-color: #ffffff;
+            width: 100%;
+            text-align: center;
+       }
+        .container1 {
+            width: 100%;
+        }
+
+        .test{
+            max-height:0;
+            position: relative;
+            opacity: 0.999;
+            max-width: 800px;
             text-align: center;
         }
-        .container1 {
-            padding: 20px;
-            background-color: #ffffff;
+
+        .test1{
+            max-height:0;
+            position: relative;
+            opacity: 0.999;
+            max-width: 800px;
+            text-align: left;
         }
 
-        /* #qr-code-download{
-            display: flex;
-            justify-content: center;
-        } */
+        .position{
+            margin-top: 62px;
+            margin-left: 427px;
+            text-align: right;
+            display: inline-block;
+        }
 
-        #download_qr{
-            padding: 20px;
+        .position2{
+            margin-top: 59.5px;
+            margin-left: 422px;
+            text-align: right;
+            display: inline-block;
+        }
+
+        .position3{
+            margin-top: 36.5px;
+            margin-left: 401px;
+            text-align: right;
+            display: inline-block;
+        }
+
+        .position_campaign_value{
+            margin-top: 10px;
+            margin-left: 30px;
+            text-align: right;
+            display: inline-block;
+        }
+
+        .position_campaign_value span{
+            font-weight: bold;
+            font-family: 'Lato', sans-serif;
+            color: white;
+            font-size: 40px; 
+        }
+
+        @media only screen and (max-width: 600px) {
+            .position_campaign_value{
+                margin-top: 20px;
+                margin-left: 30px;
+                text-align: right;
+                display: inline-block;
+            }
+
+            .position_campaign_value span{
+                font-weight: bold;
+                font-family: 'Lato', sans-serif;
+                font-size: 65px; 
+            }
         }
 
     </style>
 </head>
-<body>
+<body> 
     @if ($html_email_img)
-    <div class="container">
-        {{-- {!! html_entity_decode($html_email) !!} --}}
-        {{-- <img src="{{ $message->embed(public_path() . "/uploaded_item/email_img/email_img3_0df24f.jpg") }}" style="height: 500px; width: 100%; object-fit: contain; text-align: center; margin-top: 15px;" /> --}}
-        
-        <img src="{{ $message->embed(public_path() . "/uploaded_item/email_img/$html_email_img") }}" style=" max-width: 800px; object-fit: contain; text-align: center; margin-top: 15px;" />
+    <table cellpadding="0" cellspacing="0" style="border-collapse: collapse; width: 100%; width: 800px; margin: auto;">
+        <tr>
+            <td align="center">
+                <div class="container">
+                    <img src="{{ $message->embed(public_path() . '/uploaded_item/email_img/' . $html_email_img) }}" style="height: 800px; width: 800px; object-fit: contain; text-align: center; margin-top: 15px;" />
+                </div>
+            </td>
+        </tr>
+        @if($store_logo == 1)
+        <tr>
+            <td align="center">
+                <div class="test" style="margin: auto;">
+                    <div class="position">
+                        {!! $qr_code !!}
+                    </div>
+                </div>
+                <div class="test1" style="margin: auto;">
+                    <div class="position_campaign_value">
+                        <span>₱500</span>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td align="center">
+                <div style="width: 100%; text-align:center;">
+                    <img src="{{ $message->embed(public_path() . '/store_logo/img/digital_walker.png') }}" style="height: 300px; min-width: 800px; object-fit: contain; text-align: center; pointer-events: none;" />
+                </div>
+            </td>
+        </tr>
+        @endif
+        @if($store_logo == 2)
+        <tr>
+            <td align="center">
+                <div class="test" style="margin: auto;">
+                    <div class="position2">
+                        {!! $qr_code !!}
+                    </div>
+                </div>
+                <div class="test1" style="margin: auto;">
+                    <div class="position_campaign_value">
+                        <span style="color: black;">₱500</span>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td align="center">
+                <div style="width: 100%; text-align:center;">
+                    <img src="{{ $message->embed(public_path() . '/store_logo/img/beyond_the_box.png') }}" style="height: 300px; min-width: 800px; object-fit: contain; text-align: center; pointer-events: none;" />
+                </div>
+            </td>
+        </tr>
+        @endif
+        @if($store_logo == 3)
+        <tr>
+            <td align="center">
+                <div class="test" style="margin: auto;">
+                    <div class="position3">
+                        {!! $qr_code !!}
+                    </div>
+                </div>
+                <div class="test1" style="margin: auto;">
+                    <div class="position_campaign_value">
+                        <span>₱500</span>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td align="center">
+                <div style="width: 100%; text-align:center;">
+                    <img src="{{ $message->embed(public_path() . '/store_logo/img/btb_and_dw.png') }}" style="height: 300px; min-width: 800px; object-fit: contain; text-align: center; pointer-events: none;" />
+                </div>
+            </td>
+        </tr>
+        @endif
+    </table>
+    <table cellpadding="0" cellspacing="0" style="border-collapse: collapse; width: 100%; max-width: 800px; margin: auto;">
+        <tr>
+            <td align="center" style="background-color: #EBEBEC;">
+                <div>
+                    <p>This is an auto-generated email. Please do not reply to this message.</p>
+                    <p>&copy; digitsph</p>
+                </div>
+            </td>
+        </tr>
+    </table>
 
-        <table cellpadding="0" cellspacing="0" style="border-collapse: collapse; width:100%; max-width: 800px; margin: auto; box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;">
-            <tr>
-                <td style="border-radius: 5px; background: #8e9eab;
-                background: -webkit-linear-gradient(to right, #eef2f3, #8e9eab); 
-                background: linear-gradient(to right, #eef2f3, #8e9eab); padding: 10px; ">
-                    {!! $qr_code !!}
-                    <span style="display: block; font-weight: bold;">Campaign ID: Sample campaign id</span>
-                    <span style="display: block; font-weight: bold;">GC Description: Sample GC Description</span>
-                </td>
-            </tr>
-        </table>  
-    </div>
     @else
     <div class="container1">
         {!! html_entity_decode($html_email) !!}
@@ -78,7 +210,9 @@
                     
                 });
             });
-        });
+        });   
+
+
     </script>
 
 
