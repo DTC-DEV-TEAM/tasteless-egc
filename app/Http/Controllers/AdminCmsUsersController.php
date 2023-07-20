@@ -20,6 +20,7 @@ class AdminCmsUsersController extends CBController {
 		$this->button_action_style = 'button_icon';	
 		$this->button_import 	   = FALSE;	
 		$this->button_export 	   = FALSE;	
+		$this->button_edit = CRUDBooster::myPrivilegeName() == 'Admin' ? false : true;
 		# END CONFIGURATION DO NOT REMOVE THIS LINE
 	
 		# START COLUMNS DO NOT REMOVE THIS LINE
@@ -63,7 +64,7 @@ class AdminCmsUsersController extends CBController {
 					$('#id_cms_privileges').on('change', function(){
 
 						const company_id = $(this).val();
-						if(company_id == 2){
+						if(company_id == 2 || company_id == 4){
 							$('#form-group-company_id').show();
 							$('#company_id').attr('required', true);
 						}else{
