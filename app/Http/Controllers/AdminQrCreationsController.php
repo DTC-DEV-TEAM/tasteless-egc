@@ -288,6 +288,7 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			if(CRUDBooster::myPrivilegeName() == 'Company'){
 				$query->where('campaign_status', 3)->where('company_id', $cb_companyId);
 			}
+			
 			$query->where('campaign_status', 3);
 		}
 
@@ -481,6 +482,7 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 				$generated_qr_code = $gcList->qr_reference_number;
 				$campaign_id_qr = $generated_qr_info->campaign_id;
 				$gc_description = $generated_qr_info->gc_description;
+				$gc_value = $generated_qr_info->gc_value;
 				$email_template_id = $gcList->email_template_id;
 
 				$email_template = $generated_qr_info->html_email;
@@ -506,6 +508,7 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 						'campaign_id_qr' => $campaign_id_qr,
 						'gc_description' => $gc_description,
 						'qr_code' => $qr_code,
+						'gc_value' => $gc_value,
 						'email' => $email,
 						'html_email_img' => $html_email_img,
 						'email_subject' => $email_subject,
@@ -551,7 +554,7 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 				$qr_creation->html_email_img = null;
 				$qr_creation->save();
 
-				$url = "Sample Email";
+				$url = "https://egc.digits.com.ph/admin/login";
 				$qrCodeApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode($url);
 				$qr_code = "<div id='qr-code-download'><div id='download_qr'><a href='$qrCodeApiUrl' download='qr_code.png'> <img src='$qrCodeApiUrl' alt='QR Code'> </a></div></div>";
 	
@@ -586,7 +589,7 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 
 				$img_sent = $qr_creation->html_email_img;
 
-				$url = "Sample Email";
+				$url = "https://egc.digits.com.ph/admin/login";
 				$qrCodeApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode($url);
 				$data = array(
 					'html_email_img' => $qr_creation->html_email_img,
