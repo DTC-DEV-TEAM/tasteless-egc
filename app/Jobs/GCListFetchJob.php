@@ -61,7 +61,9 @@ class GCListFetchJob implements ShouldQueue
 				foreach ($gc_list_fetch['data'] as $item) {
                     
 					GCList::find($item['id'])->update([
-						'is_fetch' => $item['is_fetch']
+                        
+						'is_fetch' => $item['is_fetch'],
+                        'status' => $item['status']
 					]);
 				}
 			}else{
