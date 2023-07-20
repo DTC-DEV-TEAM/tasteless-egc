@@ -64,13 +64,13 @@
                             <select class="form-control" id="email_option" name="email_option" required>
                                 <option value="" selected disabled>Choose one</option>
                                 @if (!$row->html_email && !$row->html_email_img)   
-                                <option value="1">Text</option>
+                                <option value="1" disabled>Text</option>
                                 <option value="2">Image</option>
                                 @elseif ($row->html_email)
                                 <option value="1" selected>Text</option>
                                 <option value="2">Image</option>
                                 @elseif ($row->html_email_img)
-                                <option value="1">Text</option>
+                                <option value="1" disabled>Text</option>
                                 <option value="2" selected>Image</option>
                                 @endif
                             </select>
@@ -86,27 +86,36 @@
                 </div>
                 <hr>
                 <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-6 hide">
                         <div class="form-group">
                             <label class="add_email_header" for="">Gmail Preview</label>
                             <img src="{{ asset('img/sample_email1.PNG') }}" alt="" style="width: 100%; object-fit: contain; border: 1px solid rgba(0,0,0,.1);">
                         </div>
                     </div>
                     <div class="col-lg-6 mail_img_content" style="display: none;">
-                        <div class="form-group">
+                        @if($row->html_email_img)
+                        <label class="add_email_header" for="">Upload new image</label>
+                        @else
+                        <label class="add_email_header" for="">Upload Image</label>
+                        @endif
+                        <div class="form-group" style="display:flex; flex-direction:column; align-items: center;">
                             @if($row->html_email_img)
-                            <label class="add_email_header" for="">Upload new image</label>
                             <input type="file" class="form-control" name="mail_img">
-                            <img id="uploaded_img" src="{{ asset("uploaded_item/email_img/$row->html_email_img") }}" alt="No image" style="height: 500px; width: 100%; object-fit: contain; text-align: center; margin-top: 15px; box-shadow: rgba(0, 0, 0, 0.15) 2.4px 2.4px 3.2px;">
+                            <img id="uploaded_img" src="{{ asset("uploaded_item/email_img/$row->html_email_img") }}" alt="No image" style="max-height: 500px; object-fit: contain; width: 100%; max-width: 500px; text-align: center; margin-top: 15px;">
                             @else
-                            <label class="add_email_header" for="">Upload Image</label>
                             <input type="file" class="form-control" name="mail_img" required>
-                            <img id="uploaded_img" src="" alt="" style="height: 500px; width: 100%; object-fit: contain; text-align: center; margin-top: 15px; box-shadow: rgba(0, 0, 0, 0.15) 2.4px 2.4px 3.2px;">
+                            <img id="uploaded_img" src="" alt="" style="height: 500px; width: 100%; object-fit: contain; text-align: center; margin-top: 15px;">
+                            @endif
+                            @if($row->store_logo == 1)
+                            <img id="uploaded_img" src="{{ asset("store_logo/img/digital_walker.png") }}" alt="No image" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;">
+                            @elseif($row->store_logo == 2)
+                            <img id="uploaded_img" src="{{ asset("store_logo/img/beyond_the_box.png") }}" alt="No image" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;">
+                            @elseif ($row->store_logo == 3)
+                            <img id="uploaded_img" src="{{ asset("store_logo/img/btb_and_dw.png") }}" alt="No image" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;">
                             @endif
                         </div>
                     </div>
                 </div>
-                <hr>
                 <div class="row show_email" style="display: none;">
                     <div class="col-lg-6">
                         <div class="form-group">
