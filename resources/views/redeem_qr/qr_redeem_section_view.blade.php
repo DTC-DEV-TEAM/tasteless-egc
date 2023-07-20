@@ -35,19 +35,19 @@
             <td>{{ $row->gc_description }}</td>
           </tr>
           <tr>
-            <td class="label-bold">Redemption Start Date</td>
-            <td>{{ $row->redemption_start }}</td>
+            <td class="label-bold">GC value</td>
+            <td>{{ $row->gc_value }}</td>
           </tr>
           <tr>
-            <td class="label-bold">Redemption End Date</td>
-            <td>{{ $row->redemption_end }}</td>
+            <td class="label-bold">Batch Group</td>
+            <td>{{ $row->batch_group }}</td>
           </tr>
           <tr>
-            <td class="label-bold">Redeemed</td>
-            @if ($row->redeem)
-            <td>Yes</td>
+            <td class="label-bold">Status</td>
+            @if ($row->status)
+            <td>CLAIMED</td>
             @else
-            <td>No</td>
+            <td>UNCLAIMED</td>
             @endif
           </tr>
           </table>
