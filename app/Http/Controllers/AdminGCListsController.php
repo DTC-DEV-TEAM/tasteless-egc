@@ -47,14 +47,14 @@ use App\Jobs\GCListFetchJob;
 
 			# START COLUMNS DO NOT REMOVE THIS LINE
 			$this->col = [];
+			$this->col[] = ["label"=>"Status","name"=>"status"];
+			$this->col[] = ["label"=>"Campaign ID","name"=>"campaign_id","join"=>"qr_creations,campaign_id"];
 			$this->col[] = ["label"=>"Name","name"=>"name"];
 			$this->col[] = ["label"=>"Phone","name"=>"phone"];
 			$this->col[] = ["label"=>"Email","name"=>"email"];
-			$this->col[] = ["label"=>"Campaign ID","name"=>"campaign_id","join"=>"qr_creations,campaign_id"];
 			$this->col[] = ["label"=>"GC Description","name"=>"campaign_id","join"=>"qr_creations,gc_description"];
 			$this->col[] = ["label"=>"GC Value","name"=>"campaign_id","join"=>"qr_creations,gc_value"];
 			$this->col[] = ["label"=>"Batch Group","name"=>"campaign_id","join"=>"qr_creations,batch_group"];
-			$this->col[] = ["label"=>"Status","name"=>"status"];
 			# END COLUMNS DO NOT REMOVE THIS LINE
 
 			# START FORM DO NOT REMOVE THIS LINE
@@ -283,7 +283,7 @@ use App\Jobs\GCListFetchJob;
 	    */    
 	    public function hook_row_index($column_index,&$column_value) {	        
 	    	//Your code here
-			if($column_index == '9'){
+			if($column_index == '2'){
 				if($column_value == ''){
 					$column_value = '<span class="label" style="background-color: rgb(34 211 238); color: white; font-size: 12px;">UNCLAIMED</span>';
 				}else if($column_value == 'CLAIMED'){
