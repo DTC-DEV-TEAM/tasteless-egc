@@ -26,6 +26,8 @@ class CreateQrCreationsTable extends Migration
             $table->string('company_id')->nullable();
             $table->string('upload_limit')->nullable();
             $table->string('upload_limit_control')->nullable();
+            $table->string('store_logo')->nullable();
+            $table->integer('campaign_status')->nullable();
             $table->string('title_of_the_email')->nullable();
             $table->string('subject_of_the_email')->nullable();
             $table->string('html_email_img')->nullable();
