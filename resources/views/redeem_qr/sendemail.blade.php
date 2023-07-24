@@ -7,13 +7,11 @@
 
     <style>
         /* Inline CSS styles */
-        @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400&display=swap'); 
-
         html{
             width: 100%;
         }
         body {
-            font-family: Arial, sans-serif;
+            /* font-family: Arial, sans-serif; */
             color: #333;
             
         }
@@ -30,7 +28,7 @@
             max-height:0;
             position: relative;
             opacity: 0.999;
-            max-width: 800px;
+            width: 800px;
             text-align: center;
         }
 
@@ -38,7 +36,7 @@
             max-height:0;
             position: relative;
             opacity: 0.999;
-            max-width: 800px;
+            width: 800px;
             text-align: left;
         }
 
@@ -64,31 +62,51 @@
         }
 
         .position_campaign_value{
-            margin-top: 10px;
-            margin-left: 30px;
-            text-align: right;
+            margin-top: 180px;
             display: inline-block;
+            width: 510px;
+            text-align: center;
+        }
+        
+        .position_campaign_value span{
+            font-weight: 700;
+            color: white;
+            font-size: 60px; 
+            color: #d85a5f;
         }
 
-        .position_campaign_value span{
-            font-weight: bold;
-            font-family: 'Lato', sans-serif;
+        .position_campaign_value2{
+            margin-top: 180px;
+            display: inline-block;
+            width: 508px;
+            text-align: center;
+        }
+        
+        .position_campaign_value2 span{
+            font-weight: 700;
+            /* font-family: 'Lato', sans-serif; */
+            color: rgb(0, 0, 0);
+            font-size: 60px; 
+        }
+
+        .position_campaign_value3{
+            margin-top: 180px;
+            display: inline-block;
+            width: 400px;
+            text-align: center;
+        }
+        
+        .position_campaign_value3 span{
+            font-weight: 700;
+            /* font-family: 'Lato', sans-serif; */
             color: white;
-            font-size: 40px; 
+            font-size: 60px; 
+            color: #3ccbd2;
         }
 
         @media only screen and (max-width: 600px) {
-            .position_campaign_value{
-                margin-top: 20px;
-                margin-left: 30px;
-                text-align: right;
-                display: inline-block;
-            }
-
-            .position_campaign_value span{
-                font-weight: bold;
-                font-family: 'Lato', sans-serif;
-                font-size: 65px; 
+            .position_campaign_value, .position_campaign_value3, .position_campaign_value3{
+                margin-top: 200px;
             }
         }
 
@@ -100,7 +118,7 @@
         <tr>
             <td align="center">
                 <div class="container">
-                    <img src="{{ $message->embed(public_path() . '/uploaded_item/email_img/' . $html_email_img) }}" style="height: 800px; width: 800px; object-fit: contain; text-align: center; margin-top: 15px;" />
+                    <img src="{{ $message->embed(public_path() . '/uploaded_item/email_img/' . $html_email_img) }}" style="max-height: 800px; max-width: 800px; object-fit: contain; text-align: center; margin-top: 15px;" />
                 </div>
             </td>
         </tr>
@@ -136,7 +154,7 @@
                     </div>
                 </div>
                 <div class="test1" style="margin: auto;">
-                    <div class="position_campaign_value">
+                    <div class="position_campaign_value2">
                         <span style="color: black;">₱{{ $gc_value }}</span>
                     </div>
                 </div>
@@ -159,7 +177,7 @@
                     </div>
                 </div>
                 <div class="test1" style="margin: auto;">
-                    <div class="position_campaign_value">
+                    <div class="position_campaign_value3">
                         <span>₱{{ $gc_value }}</span>
                     </div>
                 </div>
