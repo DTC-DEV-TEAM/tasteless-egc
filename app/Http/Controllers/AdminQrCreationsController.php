@@ -595,7 +595,8 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 					'html_email_img' => $qr_creation->html_email_img,
 					'subject_of_the_email' => $subject_of_the_email,
 					'qr_code' => "<div id='qr-code-download'><div id='download_qr'><a href='$qrCodeApiUrl' download='qr_code.png'> <img src='$qrCodeApiUrl' alt='QR Code'> </a></div></div>",
-					'store_logo' => $qr_creation->store_logo
+					'store_logo' => $qr_creation->store_logo,
+					'gc_value' => $qr_creation->gc_value
 				);
 
 				Mail::send(['html' => 'email_testing.email_testing'], $data, function($message) use ($test_email, $data) {
