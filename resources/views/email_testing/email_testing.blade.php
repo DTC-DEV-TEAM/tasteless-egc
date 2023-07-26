@@ -120,7 +120,7 @@
         <tr>
             <td align="center">
                 <div class="container">
-                    <img src="{{ $message->embed(public_path() . '/uploaded_item/email_img/' . $html_email_img) }}" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 15px;" />
+                    <img src="{{ $message->embed(public_path() . '/uploaded_item/email_img/' . $html_email_img) }}" style="max-height: 800px; width: 100%; min-width: 800px; object-fit: contain; text-align: center; margin-top: 15px;" />
                 </div>
             </td>
         </tr>
