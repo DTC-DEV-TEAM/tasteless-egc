@@ -117,13 +117,6 @@
 <body> 
     @if ($html_email_img)
     <table cellpadding="0" cellspacing="0" style="border-collapse: collapse; width: 100%; width: 800px; margin: auto;">
-        <tr>
-            <td align="center">
-                <div class="container">
-                    <img src="{{ $message->embed(public_path() . '/uploaded_item/email_img/' . $html_email_img) }}" style="max-height: 800px; width: 100%; min-width: 800px; object-fit: contain; text-align: center; margin-top: 15px;" />
-                </div>
-            </td>
-        </tr>
         @if($store_logo == 1)
         <tr>
             <td align="center">
@@ -143,6 +136,13 @@
             <td align="center">
                 <div style="width: 100%; text-align:center;">
                     <img src="{{ $message->embed(public_path() . '/store_logo/img/digital_walker.png') }}" style="height: 300px; min-width: 800px; object-fit: contain; text-align: center; pointer-events: none;" />
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td align="center">
+                <div class="container">
+                    <img src="{{ $message->embed(public_path() . '/store_logo/img/digital_walker_claiming.png' ) }}" style="max-height: 800px; width: 100%; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
                 </div>
             </td>
         </tr>
@@ -169,6 +169,13 @@
                 </div>
             </td>
         </tr>
+        <tr>
+            <td align="center">
+                <div class="container">
+                    <img src="{{ $message->embed(public_path() . '/store_logo/img/beyond_the_box_claiming.png' ) }}" style="max-height: 800px; width: 100%; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
+                </div>
+            </td>
+        </tr>
         @endif
         @if($store_logo == 3)
         <tr>
@@ -192,7 +199,21 @@
                 </div>
             </td>
         </tr>
+        <tr>
+            <td align="center">
+                <div class="container">
+                    <img src="{{ $message->embed(public_path() . '/store_logo/img/beyond_the_box_claiming.png' ) }}" style="max-height: 800px; width: 100%; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
+                </div>
+            </td>
+        </tr>
         @endif
+        <tr>
+            <td align="center">
+                <div class="container">
+                    <img src="{{ $message->embed(public_path() . '/uploaded_item/email_img/' . $html_email_img) }}" style="max-height: 800px; width: 100%; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
+                </div>
+            </td>
+        </tr>
     </table>
     <table cellpadding="0" cellspacing="0" style="border-collapse: collapse; width: 100%; max-width: 800px; margin: auto;">
         <tr>
