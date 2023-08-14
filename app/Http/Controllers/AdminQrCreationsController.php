@@ -25,9 +25,9 @@ use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Validators\ValidationException;
 use Spatie\ImageOptimizer\OptimizerChainFactory;
 use Intervention\Image\Facades\Image;
-
-
-
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers\CBController {
 	
@@ -332,8 +332,8 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 		| @id       = current id 
 		| 
 		*/
-		public function hook_before_edit(&$postdata,$id) {        
-
+		public function hook_before_edit(&$postdata,$id) { 
+			
 			$email = Input::all();
 			$cb_id = CRUDBooster::myId();
 			$cb_company_id = DB::table('cms_users')->where('id', $cb_id)->value('company_id');
@@ -341,11 +341,10 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			if($email['selected_button'] == 'Create Email Template'){
 
 				if($email['email_option'] == 2){
-					
 					$qr_creation = QrCreation::find($id);
 					$email_img = $email['mail_img'];
 					$random_str = $email['subject_of_the_email'];
-
+					
 					if(!$email_img){
 						$postdata['html_email'] = null;
 					}else{
@@ -354,11 +353,10 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 
 						$filename = 'email_img'."$qr_creation_id".'_'.$random_str.'.'.$email_img->getClientOriginalExtension();
 						$image = Image::make($email_img);
+
 						$image->encode($email_img->getClientOriginalExtension(), 100);
-						$image->save(public_path('uploaded_item/email_img/' . $filename));
-						// $optimizerChain = OptimizerChainFactory::create();
-						// $optimizerChain->optimize(public_path('uploaded_item/email_img/' . $filename));
 						
+						$image->save(public_path('uploaded_item/email_img/' . $filename));
 						$qr_creation->html_email_img = $filename;
 						$qr_creation->save();
 
@@ -373,7 +371,7 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 					$postdata['html_email_img'] = null;
 				}
 
-				$postdata['status_id'] = 2;
+				$postdata['status_id'] = 2;	
 				
 				QrCreation::find($id)->update([
 					'title_of_the_email' => $email['title_of_the_email'],
@@ -512,8 +510,10 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 						'email' => $email,
 						'html_email_img' => $html_email_img,
 						'email_subject' => $email_subject,
-						'store_logo' => $generated_qr_info->store_logo
+						'store_logo' => $generated_qr_info->store_logo,
+						'qrCodeApiUrl' => $qrCodeApiUrl
 					);
+
 				}else{
 
 					$data = array(
@@ -529,7 +529,10 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 
 				}
 
-				dispatch(new SendEmailJob($data));
+				// new SendEmailJob($data);
+
+				SendEmailJob::dispatch($data);
+				// dispatch(new SendEmailJob($data));
 			}
 			
 			$generated_qr_info->status_id = 1;
@@ -549,6 +552,7 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			$qr_creation_id = $email['qr_creation_id'];
 			$qr_creation = QrCreation::find($qr_creation_id);
 			
+			// Text Email
 			if($email_option == 1){
 
 				$qr_creation->html_email_img = null;
@@ -573,25 +577,33 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 					$message->to($test_email)->subject($data['subject_of_the_email']);
 					$message->from(env('MAIL_USERNAME'), env('APP_NAME'));
 				});
-			}else{
+			}
+			// Image
+			else{
 				
 				$email_img = $email['mail_img'];
-
-				$filename = 'email_img'."$qr_creation_id".'.'.$email_img->getClientOriginalExtension();
-				$image = Image::make($email_img);
-				$image->encode($email_img->getClientOriginalExtension(), 100);
-				$image->save(public_path('uploaded_item/email_img/' . $filename));
-				// $optimizerChain = OptimizerChainFactory::create();
-				// $optimizerChain->optimize(public_path('uploaded_item/email_img/' . $filename));
-
-				$qr_creation->html_email_img = $filename;
-				$qr_creation->save();
-
-				$img_sent = $qr_creation->html_email_img;
-
 				$url = "https://egc.digits.com.ph/admin/login";
 				$qrCodeApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode($url);
+
+				if($email_img){
+
+					$filename = 'email_img'."$qr_creation_id".'.'.$email_img->getClientOriginalExtension();
+					$image = Image::make($email_img);
+					$image->encode($email_img->getClientOriginalExtension(), 100);
+
+					$image->save(public_path('uploaded_item/email_img/' . $filename));
+					self::manipulate_image($qr_creation->gc_value, $qrCodeApiUrl, $store->logo);
+					
+					$qr_creation->html_email_img = $filename;
+					$qr_creation->save();
+				}
+				
+				$img_sent = $qr_creation->html_email_img;
+				$real_image = self::manipulate_image($qr_creation->gc_value, $qrCodeApiUrl, $qr_creation->store_logo);
+
+				
 				$data = array(
+					'qr_code_generated' => $real_image,
 					'html_email_img' => $qr_creation->html_email_img,
 					'subject_of_the_email' => $subject_of_the_email,
 					'qr_code' => "<div id='qr-code-download'><div id='download_qr'><a href='$qrCodeApiUrl' download='qr_code.png'> <img src='$qrCodeApiUrl' alt='QR Code'> </a></div></div>",
@@ -604,6 +616,8 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 					$message->from(env('MAIL_USERNAME'), env('APP_NAME'));
 				});
 
+				unlink(public_path($data['qr_code_generated']));
+
 			}
 
 			return response()->json(['success'=>'success', 'email_img'=>$img_sent]);
@@ -613,6 +627,98 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			
 			QrCreation::find($id)->update(['status_id' => 1]);
 			return redirect()->back();
+		}
+
+		public function manipulate_image($amount, $qr_api, $store_logo){
+
+			$dw_path = 'store_logo/img/digital_walker';
+			$btb_path = 'store_logo/img/beyond_the_box';
+			$dw_btb_path = 'store_logo/img/btb_and_dw';
+			
+			$dw_image = Image::make(public_path($dw_path.'.png'));
+			$btb_image = Image::make(public_path($btb_path.'.png'));
+			$dw_btb_image = Image::make(public_path($dw_btb_path.'.png'));
+
+			$save_path = 'e_gift_card/img/';
+
+			if($store_logo == 1){
+
+				$logo_path = $dw_image;
+				$filename = $save_path.Str::random(10).'.png';
+				$value_width = 510;
+				$qr_x_position = 85;
+				$qr_y_position = 35;
+				$color = '#d85a5f';
+				$shadow = '#000000';
+
+				self::saveImage($amount, $qr_api, $logo_path, $value_width, $filename, $qr_x_position, $qr_y_position, $color, $shadow);
+			}
+
+			elseif($store_logo == 2){
+
+				$logo_path = $btb_image;
+				$filename = $save_path.Str::random(10).'.png';
+				$value_width = 510;
+				$qr_x_position = 89;
+				$qr_y_position = 35;
+				$color = '#1a1a1a';
+				$shadow = null;
+
+				self::saveImage($amount, $qr_api, $logo_path, $value_width, $filename, $qr_x_position, $qr_y_position, $color, $shadow);
+			}
+
+			
+			elseif($store_logo == 3){
+
+				$logo_path = $dw_btb_image;
+				$filename = $save_path.Str::random(10).'.png';
+				$value_width = 400;
+				$qr_x_position = 99;
+				$qr_y_position = 60;
+				$color = '#23CBD3';
+				$shadow = null;
+
+				self::saveImage($amount, $qr_api, $logo_path, $value_width, $filename, $qr_x_position, $qr_y_position, $color, $shadow);
+			}
+
+			return $filename;
+		}
+
+		public function saveImage($amount, $qr_api, $logo_path, $value_width, $filename, $qr_x_position, $qr_y_position, $color, $shadow){
+
+			$text_width = 0; // Initialize outside the closure
+	
+			$logo_path->text('P'.$amount, 0, -10, function($font) use (&$text_width, $value_width) {
+				$font->file(public_path('font/OpenSans-ExtraBold.ttf'));
+				$font->size(55);
+				
+				$textSize = $font->getBoxSize()['width'];
+				
+				$calculate_position = ($value_width - $textSize) / 2;
+				$text_width = $calculate_position; // Modify the value inside the closure
+			});
+
+			if($shadow){
+				$real_image = $logo_path->text('P'.$amount, $text_width, 240, function($font) use ($color, $shadow){
+					$font->file(public_path('font/OpenSans-ExtraBold.ttf'));
+					$font->size(55);
+					$font->color($shadow);
+				});
+			}
+
+			$real_image = $logo_path->text('P'.$amount, $text_width, 237, function($font) use ($color, $shadow){
+				$font->file(public_path('font/OpenSans-ExtraBold.ttf'));
+				$font->size(55);
+				$font->color($color);
+			});
+
+			$qrCodeApiLink = $qr_api;
+			$content = file_get_contents($qrCodeApiLink);
+			$qrCodeImage = Image::make($content);
+
+			// Overlay the QR code onto the main image as a watermark
+			$real_image->insert($qrCodeImage, 'bottom-right', $qr_x_position, $qr_y_position)
+				->save(public_path($filename));
 		}
 
 	}
