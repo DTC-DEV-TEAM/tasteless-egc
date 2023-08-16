@@ -10,6 +10,7 @@
         html{
             width: 100%;
         }
+
         body {
             /* font-family: Arial, sans-serif; */
             color: #333;
@@ -19,7 +20,8 @@
         .container {
             width: 100%;
             text-align: center;
-       }
+        }
+        
         .container1 {
             width: 100%;
         }
@@ -114,16 +116,9 @@
 </head>
 <body> 
     @if ($html_email_img)
-    <table cellpadding="0" cellspacing="0" style="border-collapse: collapse; width: 100%; width: 800px; margin: auto;">
-        <tr>
-            <td align="center">
-                <div class="container">
-                    <img src="{{ $message->embed(public_path() . '/uploaded_item/email_img/' . $html_email_img) }}" style="max-height: 800px; width: 100%; min-width: 800px; object-fit: contain; text-align: center; margin-top: 15px;" />
-                </div>
-            </td>
-        </tr>
+    <table cellpadding="0" cellspacing="0" style="border-collapse: collapse; width: 800px; margin: auto;">
         @if($store_logo == 1)
-        <tr>
+        {{-- <tr>
             <td align="center">
                 <div class="test" style="margin: auto;">
                     <div class="position">
@@ -136,17 +131,25 @@
                     </div>
                 </div>
             </td>
-        </tr>
+        </tr> --}}
         <tr>
             <td align="center">
                 <div style="width: 100%; text-align:center;">
-                    <img src="{{ $message->embed(public_path() . '/store_logo/img/digital_walker.png') }}" style="height: 300px; min-width: 800px; object-fit: contain; text-align: center; pointer-events: none;" />
+                    <img src="{{ $message->embed(public_path() . "/$qr_code_generated") }}" width="800" style="height: 300px; min-width: 800px; object-fit: contain; text-align: center; pointer-events: none;" />
+                    {{-- <img src="{{ $message->embed(public_path() . '/store_logo/img/digital_walker.png' ) }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" /> --}}
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td align="center">
+                <div class="container">
+                    <img src="{{ $message->embed(public_path() . '/store_logo/img/digital_walker_claiming.png' ) }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
                 </div>
             </td>
         </tr>
         @endif
         @if($store_logo == 2)
-        <tr>
+        {{-- <tr>
             <td align="center">
                 <div class="test" style="margin: auto;">
                     <div class="position2">
@@ -159,17 +162,25 @@
                     </div>
                 </div>
             </td>
-        </tr>
+        </tr> --}}
         <tr>
             <td align="center">
                 <div style="width: 100%; text-align:center;">
-                    <img src="{{ $message->embed(public_path() . '/store_logo/img/beyond_the_box.png') }}" style="height: 300px; min-width: 800px; object-fit: contain; text-align: center; pointer-events: none;" />
+                    <img src="{{ $message->embed(public_path() . "/$qr_code_generated") }}" width="800" style="height: 300px; min-width: 800px; object-fit: contain; text-align: center; pointer-events: none;" />
+                    {{-- <img src="{{ $message->embed(public_path() . '/store_logo/img/beyond_the_box.png') }}" width="800" style="height: 300px; min-width: 800px; object-fit: contain; text-align: center; pointer-events: none;" /> --}}
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td align="center">
+                <div class="container">
+                    <img src="{{ $message->embed(public_path() . '/store_logo/img/beyond_the_box_claiming.png' ) }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
                 </div>
             </td>
         </tr>
         @endif
         @if($store_logo == 3)
-        <tr>
+        {{-- <tr>
             <td align="center">
                 <div class="test" style="margin: auto;">
                     <div class="position3">
@@ -182,22 +193,37 @@
                     </div>
                 </div>
             </td>
-        </tr>
+        </tr> --}}
         <tr>
             <td align="center">
                 <div style="width: 100%; text-align:center;">
-                    <img src="{{ $message->embed(public_path() . '/store_logo/img/btb_and_dw.png') }}" style="height: 300px; min-width: 800px; object-fit: contain; text-align: center; pointer-events: none;" />
+                    <img src="{{ $message->embed(public_path() . "/$qr_code_generated") }}" width="800" style="height: 300px; min-width: 800px; object-fit: contain; text-align: center; pointer-events: none;" />
+                    {{-- <img src="{{ $message->embed(public_path() . '/store_logo/img/btb_and_dw.png') }}" width="800" style="height: 300px; min-width: 800px; object-fit: contain; text-align: center; pointer-events: none;" /> --}}
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td align="center">
+                <div class="container">
+                    <img src="{{ $message->embed(public_path() . '/store_logo/img/beyond_the_box_claiming.png' ) }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
                 </div>
             </td>
         </tr>
         @endif
+        <tr>
+            <td align="center">
+                <div class="container">
+                    <img src="{{ $message->embed(public_path() . '/uploaded_item/email_img/' . $html_email_img) }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
+                </div>
+            </td>
+        </tr>
     </table>
-    <table cellpadding="0" cellspacing="0" style="border-collapse: collapse; width: 100%; max-width: 800px; margin: auto;">
+    <table cellpadding="0" cellspacing="0" width="800" style="border-collapse: collapse; min-width: 800px; margin: auto;">
         <tr>
             <td align="center" style="background-color: #EBEBEC;">
                 <div>
-                    <p>This is an auto-generated email. Please do not reply to this message.</p>
-                    <p>&copy; digitsph</p>
+                    <p style="font-weight: bold">This is an auto-generated email. Please do not reply to this message.</p>
+                    <p style="font-weight: bold">&copy; digitsph</p>
                 </div>
             </td>
         </tr>
@@ -228,8 +254,7 @@
                     
                 });
             });
-        });   
-
+        });  
 
     </script>
 
