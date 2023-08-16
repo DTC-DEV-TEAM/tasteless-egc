@@ -12,6 +12,7 @@ use App\Mail\QrEmail;
 use Illuminate\Support\Facades\Mail;
 use App\GCList;
 use Illuminate\Queue\MaxAttemptsExceededException;
+use App\Http\Controllers\AdminQrCreationsController;
 
 
 class SendEmailJob implements ShouldQueue
@@ -41,11 +42,14 @@ class SendEmailJob implements ShouldQueue
     {
 
         try{
+            $path = (new AdminQrCreationsController)->manipulate_image($this->details['gc_value'], $this->details['qrCodeApiUrl'], $this->details['store_logo']);
+
+            $this->details['qr_code_generated'] = $path;
 
             $email = new QrEmail($this->details);
             
             Mail::to($this->details['email'])->send($email);
-            
+
         }catch(MaxAttemptsExceededException $e){
             $this->retryUntil(now()->addSeconds(pow(2, $this->attempts())));
         }
