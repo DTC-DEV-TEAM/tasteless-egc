@@ -95,25 +95,33 @@
                     <div class="col-lg-6 mail_img_content" style="display: none;">
                         @if($row->html_email_img)
                         <label class="add_email_header" for="">Upload new image</label>
+                        <input type="file" class="form-control" name="mail_img">
                         @else
                         <label class="add_email_header" for="">Upload Image</label>
+                        <input type="file" class="form-control" name="mail_img" required>
                         @endif
+
                         <div class="form-group" style="display:flex; flex-direction:column; align-items: center;">
-                            @if($row->html_email_img)
-                            <input type="file" class="form-control" name="mail_img">
-                            <img id="uploaded_img" src="{{ asset("uploaded_item/email_img/$row->html_email_img") }}" alt="No image" style="max-height: 500px; object-fit: contain; width: 100%; max-width: 500px; text-align: center; margin-top: 15px;">
-                            @else
-                            <input type="file" class="form-control" name="mail_img" required>
-                            <img id="uploaded_img" src="" alt="" style="height: 500px; width: 100%; object-fit: contain; text-align: center; margin-top: 15px;">
-                            @endif
-                            @if($row->store_logo == 1)
-                            <img id="uploaded_img" src="{{ asset("store_logo/img/digital_walker.png") }}" alt="No image" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;">
-                            @elseif($row->store_logo == 2)
-                            <img id="uploaded_img" src="{{ asset("store_logo/img/beyond_the_box.png") }}" alt="No image" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;">
-                            @elseif ($row->store_logo == 3)
-                            <img id="uploaded_img" src="{{ asset("store_logo/img/btb_and_dw.png") }}" alt="No image" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;">
-                            @endif
+
+                        @if($row->store_logo == 1)
+                        <img class="uploaded_img" src="{{ asset("store_logo/img/digital_walker.png") }}" alt="No image" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;">
+                        <img class="uploaded_img" src="{{ asset("store_logo/img/digital_walker_claiming.png") }}" alt="No image" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;">
+                        @elseif($row->store_logo == 2)
+                        <img class="uploaded_img" src="{{ asset("store_logo/img/beyond_the_box.png") }}" alt="No image" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;">
+                        <img class="uploaded_img" src="{{ asset("store_logo/img/beyond_the_box_claiming.png") }}" alt="No image" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;">
+                        @elseif ($row->store_logo == 3)
+                        <img class="uploaded_img" src="{{ asset("store_logo/img/btb_and_dw.png") }}" alt="No image" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;">
+                        <img class="uploaded_img" src="{{ asset("store_logo/img/beyond_the_box_claiming.png") }}" alt="No image" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;">
+                        @endif
+
+                        @if($row->html_email_img)
+                        <img id="uploaded_img" src="{{ asset("uploaded_item/email_img/$row->html_email_img") }}" alt="No image" style="max-height: 500px; object-fit: contain; width: 100%; max-width: 500px; text-align: center; margin-top: 5px;">
+                        @else
+                        <img id="uploaded_img" src="" alt="" style="height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;">
+                        @endif
+
                         </div>
+
                     </div>
                 </div>
                 <div class="row show_email" style="display: none;">
@@ -216,7 +224,7 @@
                 formData.append('subject_of_the_email', subject_of_the_email);
                 formData.append('test_email', test_email);
                 formData.append('email_content', email_content);
-                formData.append('mail_img', mail_img);
+                formData.append('mail_img', mail_img || '');
                 formData.append('email_option', email_content_val);
                 formData.append('qr_creation_id', '{{ $row->id }}');
 
@@ -240,7 +248,6 @@
                         )
                     
                         if(response.email_img){
-
                             $('#uploaded_img').attr('src', '{{ asset('uploaded_item/email_img/') }}' + '/' + response.email_img+ '?' + timestamp);
                         }
                     },
