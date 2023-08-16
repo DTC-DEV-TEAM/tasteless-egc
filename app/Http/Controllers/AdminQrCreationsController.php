@@ -272,8 +272,8 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 		public function hook_query_index(&$query) {
 
 			CampaignCreationFetchApi::dispatch();
-			StoreConceptFetchApi::dispatch();
-			GCListFetchJob::dispatch();
+			// StoreConceptFetchApi::dispatch();
+			// GCListFetchJob::dispatch();
 
 			if(CRUDBooster::myPrivilegeName() != 'Company' && CRUDBooster::myPrivilegeName() != 'Super Administrator'){
 				
@@ -529,10 +529,7 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 
 				}
 
-				// new SendEmailJob($data);
-
 				SendEmailJob::dispatch($data);
-				// dispatch(new SendEmailJob($data));
 			}
 			
 			$generated_qr_info->status_id = 1;
@@ -711,6 +708,13 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 				$font->size(55);
 				$font->color($color);
 			});
+
+			$rectangleImage = Image::canvas(210, 210, 'rgba(255, 255, 255, 1)');
+			$rectangleImage->rectangle(0, 0, 209, 209, function ($draw) {
+				$draw->border(1, '#000');
+			});
+
+			$real_image->insert($rectangleImage, 'bottom-right', $qr_x_position-5, $qr_y_position-5);
 
 			$qrCodeApiLink = $qr_api;
 			$content = file_get_contents($qrCodeApiLink);
