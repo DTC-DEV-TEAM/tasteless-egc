@@ -8,6 +8,7 @@ use App\Jobs\GCListFetchJob;
 use App\Jobs\StoreConceptFetchApi;
 use App\QrCreation;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\File;
 
 class RunApis extends Command
 {
@@ -48,6 +49,13 @@ class RunApis extends Command
         CampaignCreationFetchApi::dispatch();
         GCListFetchJob::dispatch();
 
+        $path = public_path('e_gift_card/img');
+        $files = File::files($path);
+
+        $filePaths = collect($files)->map->getPathname()->toArray();
+        
+        File::delete($filePaths);
+        
         return 0;
     }
 }
