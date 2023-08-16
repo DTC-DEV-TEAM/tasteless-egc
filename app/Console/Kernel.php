@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('command:runapis')->dailyAt('00:00');
+        $schedule->command('command:runapis')->daily();
         $schedule->command('command:runjobs')->everyMinute();
     }
 
