@@ -218,7 +218,7 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			|
 			*/
 			$this->load_js = array();
-			
+			$this->load_js[] = asset("https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js");
 			
 			
 			/*
@@ -242,7 +242,7 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			|
 			*/
 			$this->load_css = array();
-			
+			$this->load_css[] = asset("https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css");
 			
 		}
 
@@ -437,7 +437,7 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 
 			if($data['row']->status_id == 1){
 				$data['page_title'] = 'Email Template';
-				return $this->view('email_testing.add_email',$data);
+				return $this->view('email_testing.email-templates',$data);
 			}else {
 				return $this->view('redeem_qr.upload_gc_list',$data);
 			}
@@ -541,6 +541,8 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 		public function EmailTesting(IlluminateRequest $request){
 
 			$email = $request->all();
+
+			dd($email);
 
 			$subject_of_the_email = $email['subject_of_the_email'];
 			$test_email = $email['test_email'];

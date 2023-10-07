@@ -6,6 +6,9 @@ use Session;
 	use Illuminate\Support\Facades\Request as Input;
 	use DB;
 	use CRUDBooster;
+	use App\EmailTesting;
+	use App\Models\EmailTemplateImg;
+	use URL;
 
 	class AdminEmailTestingsController extends \crocodicstudio\crudbooster\controllers\CBController {
 
@@ -45,6 +48,7 @@ use Session;
 			$this->form = [];
 			$this->form[] = ['label'=>'Email Subject','name'=>'subject_of_the_email','type'=>'text','validation'=>'required|min:1|max:255','width'=>'col-sm-3'];
 			$this->form[] = ['label'=>'Html Email','name'=>'html_email','type'=>'wysiwyg','validation'=>'required|string','width'=>'col-sm-8'];
+			
 			# END FORM DO NOT REMOVE THIS LINE
 
 			# OLD START FORM
@@ -116,8 +120,9 @@ use Session;
 	        | 
 	        */
 	        $this->index_button = array();
-
-
+			if(CRUDBooster::getCurrentMethod() == 'getIndex'){
+				$this->index_button[] = ["label"=>"Create Template","icon"=>"fa fa-plus-circle","url"=>CRUDBooster::mainpath('add-template'),"color"=>"success"];
+			}
 
 	        /* 
 	        | ---------------------------------------------------------------------- 
@@ -267,7 +272,6 @@ use Session;
 	    public function hook_before_add(&$postdata) {        
 	        //Your code here
 			$email = Input::all();
-
 			$postdata['title_of_the_email'] = $email['title_of_the_email'];
 			$postdata['subject_of_the_email'] = $email['subject_of_the_email'];
 			$postdata['html_email'] = $email['email_content'];
@@ -283,7 +287,28 @@ use Session;
 	    | 
 	    */
 	    public function hook_after_add($id) {        
-	        //Your code here
+			$fields = Input::all();
+			$header = EmailTesting::where(['created_by' => CRUDBooster::myId()])->orderBy('id','desc')->first();
+
+			$files 	= $fields['mail_img'];
+			$images = [];
+			if (!empty($files)) {
+				$counter = 0;
+				foreach($files as $file){
+					$counter++;
+					$name = $header->id .'-'. time().rand(1,50) . '.' . $file->getClientOriginalExtension();
+					$filename = $name;
+					$file->move('email_template_img',$filename);
+					$images[]= $filename;
+
+					$header_images = new EmailTemplateImg;
+					$header_images->header_id 		        = $header->id;
+					$header_images->file_name 		        = $filename;
+					$header_images->ext 		            = $file->getClientOriginalExtension();
+					$header_images->created_by 		        = CRUDBooster::myId();
+					$header_images->save();
+				}
+			}
 
 	    }
 
@@ -296,7 +321,10 @@ use Session;
 	    | 
 	    */
 	    public function hook_before_edit(&$postdata,$id) {        
-	        //Your code here
+			$email = Input::all();
+			$postdata['title_of_the_email'] = $email['title_of_the_email'];
+			$postdata['subject_of_the_email'] = $email['subject_of_the_email'];
+			$postdata['html_email'] = $email['email_content'];
 			date_default_timezone_set("Asia/Manila");
 			date_default_timezone_get();
 			$postdata['updated_by'] = CRUDBooster::myId();
@@ -312,8 +340,26 @@ use Session;
 	    | 
 	    */
 	    public function hook_after_edit($id) {
-	        //Your code here 
+			$fields = Input::all();
+			$files 	= $fields['mail_img'];
+			$images = [];
+			if (!empty($files)) {
+				$counter = 0;
+				foreach($files as $file){
+					$counter++;
+					$name = $id .'-'. time().rand(1,50) . '.' . $file->getClientOriginalExtension();
+					$filename = $name;
+					$file->move('email_template_img',$filename);
+					$images[]= $filename;
 
+					$header_images = new EmailTemplateImg;
+					$header_images->header_id 		        = $id;
+					$header_images->file_name 		        = $filename;
+					$header_images->ext 		            = $file->getClientOriginalExtension();
+					$header_images->created_by 		        = CRUDBooster::myId();
+					$header_images->save();
+				}
+			}
 	    }
 
 	    /* 
@@ -340,22 +386,136 @@ use Session;
 
 	    }
 
-		public function getAdd() {
+		public function getAddTemplate() {
 			//Create an Auth
 			if(!CRUDBooster::isCreate() && $this->global_privilege==FALSE || $this->button_add==FALSE) {    
 				CRUDBooster::redirect(CRUDBooster::adminPath(),trans("crudbooster.denied_access"));
 			}
 			
 			$data = [];
-			$data['page_title'] = 'Email Testing';
+			$data['page_title'] = 'Create Email Template';
 			
 			//Please use view method instead view method from laravel
 			return $this->view('email_testing.add_email',$data);
 		}
 
+		public function getEdit($id) {
+			if(!CRUDBooster::isCreate() && $this->global_privilege==FALSE || $this->button_add==FALSE) {    
+				CRUDBooster::redirect(CRUDBooster::adminPath(),trans("crudbooster.denied_access"));
+			}
+			
+			$data = [];
+			$data['page_title'] = 'Edit Email Template';
 
+			$data['email_template'] = EmailTesting::datas($id);
+			$data['email_template_imgs'] = EmailTemplateImg::images($id);
+			return $this->view('email_testing.edit-email',$data);
+		}
 
-	    //By the way, you can still create your own method in here... :) 
+		public function deleteImages(Request $reuqest) {
+			$id = $reuqest->id;
+		
+			$getImages = DB::table('email_template_img')->where('id',$id)->first();
+
+			//foreach($getImages as $img){
+				$removeImg = public_path('email_template_img/').$getImages->file_name;
+				if(file_exists($removeImg)){
+					@unlink($removeImg);
+		
+				}
+			//}
+			
+			DB::table('email_template_img')->where('id',$id)->delete();
+
+			$message = ['status'=>'success', 'message' => 'Deleted!'];
+
+			echo json_encode($message);
+		}
+
+		public function selectedHeader(Request $request) {
+			$fields 		= Input::all();
+			$id = $fields['id'];
+	
+			$search 		= $fields['header_request_id'];
+
+			$data['emailContent'] = '';
+
+			$data['EmailHeader'] = EmailTesting::where('id',$id)->first();
+			$data['EmailHeaderImgs'] = EmailTemplateImg::where('header_id',$id)->get();
+		
+			$data['emailContent'] .= '
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label class="add_email_header"> <span></span> Template Name</label>
+								<input type="hidden" class="form-control" id="email_testings_id" name="email_testings_id" value="'.$data['EmailHeader']->id.'">
+								<input type="text" class="form-control" name="title_of_the_email" value="'.$data['EmailHeader']->title_of_the_email.'" readonly>
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							<div class="form-group">
+								<label class="add_email_header" for="">Subject</label>
+								<input type="text" class="form-control" name="subject_of_the_email" value="'.$data['EmailHeader']->subject_of_the_email.'" readonly>
+							</div>
+						</div>
+					</div>
+
+					<div class="row show_email">
+						<div class="col-lg-12">
+							<div class="form-group">
+								<label class="add_email_header" for="">Email Content</label>
+								<textarea id="email-test" name="email_content" readonly>
+									'.$data['EmailHeader']->html_email .'
+								</textarea>
+							</div>
+						</div>
+					</div>
+					<hr>
+			';
+
+			$tableRow = 1;
+			$total = 0;
+			$data['emailContent'] .='
+				<label> Images</label>
+					<div class="row">
+						<div class="col-md-12">
+			';
+			foreach($data['EmailHeaderImgs'] as $image){
+				$tableRow++;
+				$total++;
+				$data['emailContent'] .='		
+					<div class="col-md-4">		
+						<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('email_template_img').'/'.$image->file_name .'"> 
+					</div>
+				';
+			}
+			$data['emailContent'] .='
+						</div>
+					</div>
+			';
+
+			$data['emailContent'] .= "
+				<script type='text/javascript'>
+					let clicked_btn;
+					$('#email-test').summernote('disable');
+					$('#email-sample').summernote();
+					const note_editable_check_text = $('.note-editable').eq(0).text();
+					$('.note-editable').eq(1).attr('contenteditable', 'false');
+					$('.note-editable').eq(0).attr('contenteditable', 'false');
+					if (/\w/gi.test(note_editable_check_text)) {
+						$('.note-editable').eq(0).css('height', '100%');
+					}else{
+						$('.note-editable').eq(0).css('height', '300px');
+					}
+					
+				</script>
+			";
+
+			return $data;
+			
+
+		}
 
 
 	}

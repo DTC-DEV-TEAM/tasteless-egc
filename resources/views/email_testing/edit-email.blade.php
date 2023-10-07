@@ -58,8 +58,8 @@
     
     <p><a title='Return' href='{{ CRUDBooster::mainpath() }}'><i class='fa fa-chevron-circle-left '></i>&nbsp; Back To Email Home</a></p>
     <div class='panel panel-default'>
-        <div class='panel-heading'>Add Form</div>
-        <form method='post' action='{{CRUDBooster::mainpath('add-save')}}' autocomplete="off" enctype='multipart/form-data'>
+        <div class='panel-heading'>Edit Form</div>
+        <form method='post' action='{{CRUDBooster::mainpath('edit-save/'.$email_template->id)}}' autocomplete="off" enctype='multipart/form-data'>
         @csrf
         <div class='panel-body'>
                 <br>
@@ -67,14 +67,14 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="add_email_header"> <span></span> Template Name</label>
-                            <input type="text" class="form-control" name="title_of_the_email" value="{{ $row->title_of_the_email }}" required>
+                            <input type="text" class="form-control" name="title_of_the_email" value="{{ $email_template->title_of_the_email }}" required>
                         </div>
                     </div>
     
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="add_email_header" for="">Subject</label>
-                            <input type="text" class="form-control" name="subject_of_the_email" value="{{ $row->subject_of_the_email }}" required>
+                            <input type="text" class="form-control" name="subject_of_the_email" value="{{ $email_template->subject_of_the_email }}" required>
                         </div>
                     </div>
                 </div>
@@ -106,25 +106,48 @@
                         </div>
                     </div>
                 </div> --}}
-                <hr>
-             
+
                 <div class="row show_email">
-                    <div class="col-lg-6">
+                    <div class="col-lg-12">
                         <div class="form-group">
                             <label class="add_email_header" for="">Email Content</label>
                             <textarea id="email-test" name="email_content">
-                                {{ $row->html_email }}
+                                {{ $email_template->html_email }}
                             </textarea>
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    {{-- <div class="col-lg-6">
                         <div class="form-group">
                             <label class="add_email_header" for="">Sample Email Content</label>
                             <textarea id="email-sample">
                                 <h4><b>QR Code Redemption</b></h4><p>Dear [name],</p><p>We are pleased to provide you with your exclusive QR code for redemption. This QR code represents exciting offers and discounts that you can avail yourself of at our selected stores. Simply present this QR code at the designated store to claim your special offers.</p><p>QR Information</p><p>[qr_code]</p><p>Campaign ID: [campaign_id]</p><p>GC Description: [gc_description]</p><p>We kindly ask you to bring a valid government ID when redeeming your code. This is necessary for identification purposes and to ensure a smooth and secure process. We also request that you review the terms and conditions that apply to the code redemption process. You can find the detailed terms and conditions by visiting the following link: [Insert link to terms and conditions]<p></p><p>If you have any questions or need assistance, please don't hesitate to contact our customer support team. We are here to ensure a smooth and rewarding redemption experience for you.</p><p>Thank you for choosing our services. We appreciate your business and look forward to serving you again in the future.</p><p><br></p><p>Best regards,</p><p>BPG Department</p><p>Digits Trading Corp</p>
                             </textarea>
                         </div>
+                    </div> --}}
+                </div>
+    
+                <div class="row" style="margin-left:10px text-align:center">
+                    <div class="col-md-12">
+                        <?php   $count = 1; ?>
+                        @foreach($email_template_imgs as $email_template_img)       
+                       
+                            <div class="col-md-4" style="position: relative">           
+                                @if ($email_template_img->file_name)
+                                <span><button class="btn btn-xs btn-danger imgValue" id="deleteImg{{$count}}" data-id="{{$count}}" value="{{$email_template_img->id}}" style="position:absolute; bottom:0; right: -10px; z-index: 100"><i class="fa fa-trash"></i></button></span>    
+                                <img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain;" src="{{URL::to('email_template_img').'/'.$email_template_img->file_name}}"> 
+                                        
+                                @else
+                                
+                                @endif     
+                            </div>            
+                            <?php   $count++; ?>                        
+                        @endforeach
+                        <br><br>
+                        {{-- @if($email_template_imgs->isNotEmpty())
+                        <button class="btn btn-xs btn-danger" id="deleteImg" ><i class="fa fa-trash"></i> Delete Images</button>
+                        @endif --}}
                     </div>
+                   
                 </div>
 
                 <div class="row">
@@ -136,36 +159,17 @@
                     </div>
                     <hr>
                     <div class="col-lg-6 mail_img_content">
-                        <label class="add_email_header" for="">Upload Image</label>
-                        <input type="file" name="mail_img[]" id="mail_img" multiple required>
+                        <label class="add_email_header" for="">Add New Images</label>
+                        <input type="file" name="mail_img[]" id="mail_img" multiple>
                         <div class="gallery" style="margin-bottom:5px; margin-top:15px"></div>
                         <a class="btn btn-xs btn-danger" style="display:none; margin-left:10px" id="removeImageHeader" href="#"><i class="fa fa-remove"></i></a>
-         
-                        {{-- <div class="form-group" style="display:flex; flex-direction:column; align-items: center;">
-                            @if($row->store_logo == 1)
-                                <img class="uploaded_img" src="{{ asset("store_logo/img/digital_walker.png") }}" alt="No image" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;">
-                                <img class="uploaded_img" src="{{ asset("store_logo/img/digital_walker_claiming.png") }}" alt="No image" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;">
-                            @elseif($row->store_logo == 2)
-                                <img class="uploaded_img" src="{{ asset("store_logo/img/beyond_the_box.png") }}" alt="No image" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;">
-                                <img class="uploaded_img" src="{{ asset("store_logo/img/beyond_the_box_claiming.png") }}" alt="No image" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;">
-                            @elseif ($row->store_logo == 3)
-                                <img class="uploaded_img" src="{{ asset("store_logo/img/btb_and_dw.png") }}" alt="No image" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;">
-                                <img class="uploaded_img" src="{{ asset("store_logo/img/beyond_the_box_claiming.png") }}" alt="No image" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;">
-                            @endif
-
-                            @if($row->html_email_img)
-                                <img id="uploaded_img" src="{{ asset("uploaded_item/email_img/$row->html_email_img") }}" alt="No image" style="max-height: 500px; object-fit: contain; width: 100%; max-width: 500px; text-align: center; margin-top: 5px;">
-                            @else
-                                <img id="uploaded_img" src="" alt="" style="height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;">
-                            @endif
-                        </div> --}}
-
+                     
                     </div>
                 </div>
             </div>
             <div class='panel-footer'>
                 <a href="{{ CRUDBooster::mainpath() }}" class="btn btn-default">Cancel</a>
-                <input class='btn btn-success pull-right' id='create_email' value='Create Email Template' name="selected_button" style="margin-left: 10px; width: 160px;" readonly/>
+                <input class='btn btn-success pull-right' id='create_email' value='Edit Email Template' name="selected_button" style="margin-left: 10px; width: 160px;" readonly/>
                 <input class='btn btn-primary pull-right' id='testing' value='Send Test Email' name="selected_button" readonly/>
                 <button class="hide" id="hidden-submit" type="submit">submit</button>
             </div>
@@ -225,11 +229,12 @@
         $('#create_email').click(function(event){
             Swal.fire({
                 title: 'Are you sure?',
+                text: "You won't be able to revert this!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, create it!',
+                confirmButtonText: 'Yes, update it!',
                 returnFocus: false,
             }).then((result) => {
                 if (result.isConfirmed) {
@@ -260,6 +265,65 @@
                 }
             })      
         })
+
+        //delete img
+ 
+        $('.imgValue').click(function(event){
+            event.preventDefault()
+            var id =  $(this).attr("data-id");
+            var id_value =  $("#deleteImg"+id).val();
+            console.log(id_value);
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                returnFocus: false,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ route('delete-images') }}",
+                        dataType: 'json',
+                        type: 'POST',
+                        data: {
+                            id: id_value
+                        },
+                        success: function(response){
+                            if(response.status == 'success'){
+                                Swal.fire({
+                                    type: response.status,
+                                    title: response.message,
+                                    icon: 'success'
+                                }).then(function(){
+                                    location.reload();
+                                });
+                            }else{
+                                Swal.fire({
+                                    type: 'error',
+                                    title: 'Something went wrong. Please contact the administrator!',
+                                    icon: 'error'
+                                }).then(function(){
+                                    location.reload();
+                                });
+                            }
+                        },
+                        error: function(error){
+                            console.log(error);
+                            Swal.fire(
+                                'Error Occured!',
+                                'Make sure the input data are correct.',
+                                'error'
+                            )
+                        }
+                
+                    })
+                }
+            })      
+        })
+       
         
         $('form').on('submit', function(event){
             if(clicked_btn == 'test_email'){

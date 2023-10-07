@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminGCListsController;
 use App\Http\Controllers\AdminQrCreationsController;
+use App\Http\Controllers\AdminEmailTestingsController;
 use Illuminate\Support\Facades\Route;
 use App\EmailTesting;
 
@@ -39,3 +40,8 @@ Route::post('admin/g_c_list/edit/redeem_code', [AdminGCListsController::class, '
 Route::post('admin/g_c_list/edit/save_invoice_number', [AdminGCListsController::class, 'inputInvoice'])->name('input_invoice');
 // Redemption Period Ended
 Route::post('admin/g_c_list/edit/close_transaction', [AdminGCListsController::class, 'closeTransaction'])->name('close_transaction');
+
+Route::get(config('crudbooster.ADMIN_PATH').'email_testings/add-template', [AdminEmailTestingsController::class, 'getAddTemplate'])->name('add-template');
+Route::post(config('crudbooster.ADMIN_PATH').'delete-images', [AdminEmailTestingsController::class, 'deleteImages'])->name('delete-images');
+
+Route::post(config('crudbooster.ADMIN_PATH').'/selectedHeader',[AdminEmailTestingsController::class, 'selectedHeader'])->name('selected-header');
