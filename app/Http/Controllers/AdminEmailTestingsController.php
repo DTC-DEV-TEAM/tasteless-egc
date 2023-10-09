@@ -446,6 +446,7 @@ use Session;
 			$data['EmailHeaderImgs'] = EmailTemplateImg::where('header_id',$id)->get();
 		
 			$data['emailContent'] .= '
+			    <div style="border: 1px solid black; padding: 10px; border-radius:5px">
 					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
@@ -495,6 +496,7 @@ use Session;
 			$data['emailContent'] .='
 						</div>
 					</div>
+				</div>
 			';
 
 			$data['emailContent'] .= "

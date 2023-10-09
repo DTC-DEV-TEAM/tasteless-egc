@@ -46,7 +46,7 @@
         <input type="hidden" value="{{$row->id}}" name="qr_creation_id" id="qr_creation_id">
         <div class='panel-body'>
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <div class="form-group">
                         <label class="require control-label"> <span style="color: red">*</span> Select Template:</label>
                         <select class="selected_template" data-placeholder="Please select email template"  style="width: 100%;" name="selected_template" id="selected_template">
@@ -55,6 +55,12 @@
                                  <option value="{{$template->id}}">{{$template->title_of_the_email}}</option>                           
                             @endforeach
                         </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="require control-label"> <span style="color: red">*</span> Date to send:</label>
+                        <input type="datetime-local" name="date_to_send" id="date_to_send" class="form-control">
                     </div>
                 </div>
             </div>
