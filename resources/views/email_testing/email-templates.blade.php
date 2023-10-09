@@ -37,11 +37,12 @@
 
 @section('content')
     <!-- Your html goes here -->
-    
+
     <p><a title='Return' href='{{ CRUDBooster::mainpath() }}'><i class='fa fa-chevron-circle-left '></i>&nbsp; Back To Email Home</a></p>
     <div class='panel panel-default'>
         <div class='panel-heading'>Email Templates Form</div>
-        <form method='post' action='#' autocomplete="off" enctype='multipart/form-data'>
+        <form method='post' action='{{CRUDBooster::mainpath('edit-save/'.$row->id)}}' autocomplete="off" enctype='multipart/form-data'>
+        @csrf
         <input type="hidden" value="{{csrf_token()}}" name="_token" id="token">
         <input type="hidden" value="{{$row->id}}" name="qr_creation_id" id="qr_creation_id">
         <div class='panel-body'>
@@ -52,7 +53,8 @@
                         <select class="selected_template" data-placeholder="Please select email template"  style="width: 100%;" name="selected_template" id="selected_template">
                             <option value=""></option>
                             @foreach($email_templates as $template)                       
-                                 <option value="{{$template->id}}">{{$template->title_of_the_email}}</option>                           
+                                {{-- <option value="{{$template->id}}">{{$template->title_of_the_email}}</option>      --}}
+                                <option value="{{$template->id}}" {{ $row->selected_template == $template->id ? 'selected':'' }}>{{ $template->title_of_the_email }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -60,28 +62,30 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="require control-label"> <span style="color: red">*</span> Date to send:</label>
-                        <input type="datetime-local" name="date_to_send" id="date_to_send" class="form-control">
+                        <input type="datetime-local" name="date_to_send" id="date_to_send" class="form-control" value="{{ $row->date_to_send }}">
                     </div>
                 </div>
             </div>
 
-         
             <div class="email-content" id="email-content">
 
             </div>
-           
+
         </div>
             <div class='panel-footer'>
                 <a href="{{ CRUDBooster::mainpath() }}" class="btn btn-default">Cancel</a>
                 {{-- <input class='btn btn-success pull-right' id='create_email' value='Edit Email Template' name="selected_button" style="margin-left: 10px; width: 160px;" readonly/> --}}
-                <input class='btn btn-primary pull-right' id='testing' value='Send Test Email' name="selected_button" readonly/>
+                {{-- <input class='btn btn-primary pull-right' id='testing' value='Send Test Email' name="selected_button" readonly/> --}}
+                <input class='btn btn-success pull-right' id='create_email' value='Create Email Template' name="selected_button" style="margin-left: 10px; width: 160px;" readonly/>
                 <button class="hide" id="hidden-submit" type="submit">submit</button>
             </div>
         </form>
     </div>
 
     <script>
+
     $(document).ready(function() {
+        
         $('#selected_template').select2();
         let clicked_btn;
         $('#email-test').summernote();
@@ -96,7 +100,6 @@
         }
 
         $('#testing').click(function(event){
-            alert('test');
             Swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
@@ -110,6 +113,24 @@
                 if (result.isConfirmed) {
                     $('#test_email').attr('required', true);
                     clicked_btn = 'test_email';
+                    $('#hidden-submit').click();
+                }
+            })      
+        })
+
+        $('#create_email').click(function(event){
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, Send test email!',
+                returnFocus: false,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    clicked_btn = 'Create Email Template';
                     $('#hidden-submit').click();
                 }
             })      
@@ -203,6 +224,7 @@
 
         });
 
+        $('.selected_template').trigger('change');
     });
 
    

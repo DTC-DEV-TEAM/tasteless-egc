@@ -28,6 +28,7 @@ use Intervention\Image\Facades\Image;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
+use App\Models\EmailTemplateImg;
 
 class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers\CBController {
 	
@@ -337,47 +338,54 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			$email = Input::all();
 			$cb_id = CRUDBooster::myId();
 			$cb_company_id = DB::table('cms_users')->where('id', $cb_id)->value('company_id');
-			
+			$qr_creation = QrCreation::find($id);
+
 			if($email['selected_button'] == 'Create Email Template'){
 
-				if($email['email_option'] == 2){
-					$qr_creation = QrCreation::find($id);
-					$email_img = $email['mail_img'];
-					$random_str = $email['subject_of_the_email'];
-					
-					if(!$email_img){
-						$postdata['html_email'] = null;
-					}else{
-
-						$email_img = $email['mail_img'];
-
-						$filename = 'email_img'."$qr_creation_id".'_'.$random_str.'.'.$email_img->getClientOriginalExtension();
-						$image = Image::make($email_img);
-
-						$image->encode($email_img->getClientOriginalExtension(), 100);
-						
-						$image->save(public_path('uploaded_item/email_img/' . $filename));
-						$qr_creation->html_email_img = $filename;
-						$qr_creation->save();
-
-						$postdata['html_email'] = null;
-					}
-				}else{
-
-					if(!$email['email_content']){
-						return CRUDBooster::redirect(CRUDBooster::mainpath("edit/$id"), sprintf("Email content must not leave empty."), "danger");
-					}
-
-					$postdata['html_email_img'] = null;
-				}
-
-				$postdata['status_id'] = 2;	
-				
-				QrCreation::find($id)->update([
-					'title_of_the_email' => $email['title_of_the_email'],
-					'subject_of_the_email' => $email['subject_of_the_email'],
-					'html_email' => $email['email_content'],	
+				$qr_creation->update([
+					'selected_template' => $email['selected_template'],
+					'date_to_send' => $email['date_to_send'],
+					'status_id' => 2
 				]);
+
+
+				// if($email['email_option'] == 2){
+				// 	$qr_creation = QrCreation::find($id);
+				// 	$email_img = $email['mail_img'];
+				// 	$random_str = $email['subject_of_the_email'];
+					
+				// 	if(!$email_img){
+				// 		$postdata['html_email'] = null;
+				// 	}else{
+
+				// 		$email_img = $email['mail_img'];
+
+				// 		$filename = 'email_img'."$qr_creation_id".'_'.$random_str.'.'.$email_img->getClientOriginalExtension();
+				// 		$image = Image::make($email_img);
+
+				// 		$image->encode($email_img->getClientOriginalExtension(), 100);
+						
+				// 		$image->save(public_path('uploaded_item/email_img/' . $filename));
+				// 		$qr_creation->html_email_img = $filename;
+				// 		$qr_creation->save();
+
+				// 		$postdata['html_email'] = null;
+				// 	}
+				// }else{
+
+				// 	if(!$email['email_content']){
+				// 		return CRUDBooster::redirect(CRUDBooster::mainpath("edit/$id"), sprintf("Email content must not leave empty."), "danger");
+				// 	}
+
+				// 	$postdata['html_email_img'] = null;
+				// }
+				// $postdata['status_id'] = 2;	
+				
+				// QrCreation::find($id)->update([
+				// 	'title_of_the_email' => $email['title_of_the_email'],
+				// 	'subject_of_the_email' => $email['subject_of_the_email'],
+				// 	'html_email' => $email['email_content'],	
+				// ]);
 			}
 		}
 		
@@ -448,6 +456,96 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			return Excel::download(new GCListTemplateExport, 'gc_list_template.xlsx');
 		}
 
+		// public function uploadGCListPost(IlluminateRequest $request){
+
+		// 	// Validate file type
+		// 	$validatedData = $request->validate([
+		// 		'excel_file' => 'required|mimes:xls,xlsx',
+		// 	]);
+			
+		// 	$campaign_id = $request->all()['campaign_id'];
+		// 	$uploaded_excel = $request->file('excel_file');
+			
+		// 	$import = new GcListImport(compact('campaign_id'));
+		// 	$rows = Excel::import($import, $uploaded_excel);
+	
+		// 	// Send Email
+		// 	$generated_qr_info = QrCreation::find($campaign_id);
+		// 	$email_content = $generated_qr_info->html_email_img;
+
+		// 	$gc_list_user = GCList::where('campaign_id', $campaign_id)
+		// 		->where('email_is_sent', 0)
+		// 		->pluck('id')
+		// 		->all();
+			
+		// 	foreach($gc_list_user as $user){
+
+		// 		$gcList = GCList::find($user);
+				
+		// 		$id = $gcList->id;
+		// 		$name = $gcList->name;
+		// 		$email = $gcList->email;
+		// 		$generated_qr_code = $gcList->qr_reference_number;
+		// 		$campaign_id_qr = $generated_qr_info->campaign_id;
+		// 		$gc_description = $generated_qr_info->gc_description;
+		// 		$gc_value = $generated_qr_info->gc_value;
+		// 		$email_template_id = $gcList->email_template_id;
+
+		// 		$email_template = $generated_qr_info->html_email;
+		// 		$email_subject = $generated_qr_info->subject_of_the_email;
+
+		// 		$url = "/g_c_lists/edit/$id?value=$generated_qr_code";
+		// 		$qrCodeApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode($url);
+		// 		$qr_code = "<div id='qr-code-download'><div id='download_qr'><a href='$qrCodeApiUrl' download='qr_code.png'> <img src='$qrCodeApiUrl' alt='QR Code'> </a></div></div>";
+				
+		// 		$html_email = str_replace(
+		// 			['[name]', '[campaign_id]', '[gc_description]', '[qr_code]'],
+		// 			[$name, $campaign_id_qr, $gc_description, $qr_code ],
+		// 			$email_template
+		// 		);
+		// 		$html_email_img = $generated_qr_info->html_email_img;
+				
+		// 		// If email content is image
+		// 		if($email_content){
+
+		// 			$data = array(
+		// 				'id' => $id,
+		// 				'qr_reference_number'=>$generated_qr_code,
+		// 				'campaign_id_qr' => $campaign_id_qr,
+		// 				'gc_description' => $gc_description,
+		// 				'qr_code' => $qr_code,
+		// 				'gc_value' => $gc_value,
+		// 				'email' => $email,
+		// 				'html_email_img' => $html_email_img,
+		// 				'email_subject' => $email_subject,
+		// 				'store_logo' => $generated_qr_info->store_logo,
+		// 				'qrCodeApiUrl' => $qrCodeApiUrl
+		// 			);
+
+		// 		}else{
+
+		// 			$data = array(
+		// 				'name'=> $name,
+		// 				'id' => $id,
+		// 				'qr_reference_number'=>$generated_qr_code,
+		// 				'campaign_id_qr' => $campaign_id_qr,
+		// 				'gc_description' => $gc_description,
+		// 				'email' => $email,
+		// 				'html_email' => $html_email,
+		// 				'email_subject' => $email_subject
+		// 			);
+
+		// 		}
+
+		// 		// SendEmailJob::dispatch($data);
+		// 	}
+			
+		// 	$generated_qr_info->status_id = 1;
+		// 	$generated_qr_info->save();
+
+		// 	return CRUDBooster::redirect(CRUDBooster::mainpath(),'Excel file uploaded successfully. QR codes have been sent to the email addresses.', 'success')->send();
+		// }
+
 		public function uploadGCListPost(IlluminateRequest $request){
 
 			// Validate file type
@@ -496,44 +594,67 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 					$email_template
 				);
 				$html_email_img = $generated_qr_info->html_email_img;
+
+				// if($email_content){
+
+				// 	$data = array(
+				// 		'id' => $id,
+				// 		'qr_reference_number'=>$generated_qr_code,
+				// 		'campaign_id_qr' => $campaign_id_qr,
+				// 		'gc_description' => $gc_description,
+				// 		'qr_code' => $qr_code,
+				// 		'gc_value' => $gc_value,
+				// 		'email' => $email,
+				// 		'html_email_img' => $html_email_img,
+				// 		'email_subject' => $email_subject,
+				// 		'store_logo' => $generated_qr_info->store_logo,
+				// 		'qrCodeApiUrl' => $qrCodeApiUrl
+				// 	);
+				// }
+
 				
-				// If email content is image
-				if($email_content){
 
-					$data = array(
-						'id' => $id,
-						'qr_reference_number'=>$generated_qr_code,
-						'campaign_id_qr' => $campaign_id_qr,
-						'gc_description' => $gc_description,
-						'qr_code' => $qr_code,
-						'gc_value' => $gc_value,
-						'email' => $email,
-						'html_email_img' => $html_email_img,
-						'email_subject' => $email_subject,
-						'store_logo' => $generated_qr_info->store_logo,
-						'qrCodeApiUrl' => $qrCodeApiUrl
-					);
-
-				}else{
-
-					$data = array(
-						'name'=> $name,
-						'id' => $id,
-						'qr_reference_number'=>$generated_qr_code,
-						'campaign_id_qr' => $campaign_id_qr,
-						'gc_description' => $gc_description,
-						'email' => $email,
-						'html_email' => $html_email,
-						'email_subject' => $email_subject
-					);
-
+				$generated_qr_info->status_id = 2;
+				$generated_qr_info->save();
+	
+				$emailTesting = EmailTesting::find($gcList->email_template_id)->first();
+				$emailTestingImg = EmailTemplateImg::where('header_id', $emailTesting->id)->get();
+				
+				$subject_of_the_email = $gcList->email_template_id;
+				$email_content = $emailTesting->html_email;
+				
+				$html_email_img = [];
+				
+				foreach($emailTestingImg as $file){
+					$filename = $file->file_name;
+					$html_email_img[]= $filename;
 				}
+				
+				$html_email = str_replace(
+					['[name]', '[campaign_id]', '[gc_description]'],
+					[$name, $campaign_id_qr, $gc_description],
+					$email_content
+				);
+				
+				$data = array(
+					'id' => $id,
+					'html_email' => $html_email,
+					'email_subject' => $email_subject,
+					'html_email_img' => $html_email_img,
+					'email' => $email,
+					'qrCodeApiUrl' => $qrCodeApiUrl,
+					'qr_code' => $qr_code,
+					'gc_value' => $gc_value,
+					'store_logo' => $generated_qr_info->store_logo,
+					'gc_description' => $gc_description,
+					'qr_reference_number'=>$generated_qr_code,
+					'campaign_id_qr' => $campaign_id_qr,
+				);
 
+				// dd($data);
+				
 				SendEmailJob::dispatch($data);
 			}
-			
-			$generated_qr_info->status_id = 1;
-			$generated_qr_info->save();
 
 			return CRUDBooster::redirect(CRUDBooster::mainpath(),'Excel file uploaded successfully. QR codes have been sent to the email addresses.', 'success')->send();
 		}

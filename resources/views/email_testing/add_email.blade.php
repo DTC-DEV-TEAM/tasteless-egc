@@ -170,7 +170,7 @@
                         var reader = new FileReader();
 
                         reader.onload = function(event) {
-                            $($.parseHTML('<img width="400px;" height="200px" class="header_images" hspace="10" data-action="zoom">')).attr('src', event.target.result).appendTo(placeToInsertImagePreview);
+                            $($.parseHTML('<img style="max-width: 500px; max-width: 500px; object-fit: contain;" class="header_images" hspace="10" data-action="zoom">')).attr('src', event.target.result).appendTo(placeToInsertImagePreview);
                         }
 
                         reader.readAsDataURL(input.files[i]);

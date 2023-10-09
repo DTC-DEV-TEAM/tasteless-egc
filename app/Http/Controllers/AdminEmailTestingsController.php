@@ -300,7 +300,7 @@ use Session;
 					$counter++;
 					$name = $header->id .'-'. time().rand(1,50) . '.' . $file->getClientOriginalExtension();
 					$filename = $name;
-					$file->move('email_template_img',$filename);
+					$file->move('email_template_img/img',$filename);
 					$images[]= $filename;
 
 					$header_images = new EmailTemplateImg;
@@ -351,7 +351,7 @@ use Session;
 					$counter++;
 					$name = $id .'-'. time().rand(1,50) . '.' . $file->getClientOriginalExtension();
 					$filename = $name;
-					$file->move('email_template_img',$filename);
+					$file->move('email_template_img/img',$filename);
 					$images[]= $filename;
 
 					$header_images = new EmailTemplateImg;

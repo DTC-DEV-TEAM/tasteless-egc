@@ -102,9 +102,11 @@ class GcListImport implements
             'phone' => $row['phone'],
             'email' => $row['email'],
             'is_fetch' => 0,
-            'customer_reference_number' => $row['customer_reference_number'],
+            'customer_reference_number' => null,
             'campaign_id' => $this->gc_information['campaign_id'],
-            'qr_reference_number' => $generated_qr_code
+            'qr_reference_number' => $generated_qr_code,
+            'email_template_id' => $qr_creation->selected_template,
+            'date_to_send' => $qr_creation->date_to_send
         ]);
 
         $gcList->save();
