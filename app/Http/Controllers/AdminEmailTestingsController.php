@@ -9,6 +9,8 @@ use Session;
 	use App\EmailTesting;
 	use App\Models\EmailTemplateImg;
 	use URL;
+	use Mail;
+	use Intervention\Image\Facades\Image;
 
 	class AdminEmailTestingsController extends \crocodicstudio\crudbooster\controllers\CBController {
 
@@ -515,6 +517,54 @@ use Session;
 			return $data;
 			
 
+		}
+
+		public function sendEmailTesting(Request $request){
+
+			$fields = $request->all();
+
+			$subject_of_the_email = $fields['subject_of_the_email'];
+			$myEmail = DB::table('cms_users')->where('id',CRUDBooster::myId())->first();
+			$test_email = $myEmail->email;
+			$email_content = $fields['email_content'];
+			$email_option = $fields['email_option'];
+			$qr_creation_id = $fields['qr_creation_id'];
+			$files 	= $fields['mail_img'];
+			$counter = 0;
+			$html_email_img = [];
+			foreach($files as $file){
+				$counter++;
+				$name = $file->getClientOriginalName().'.'.$file->getClientOriginalExtension();
+				$filename = $name;
+				$image = Image::make($file);
+				$image->encode($file->getClientOriginalExtension(), 100);
+				$image->save(public_path('uploaded_item/send_test_images/' . $filename));
+				$html_email_img[]= $filename;
+			}
+	
+			$html_email = str_replace(
+				['[name]', '[campaign_id]', '[gc_description]'],
+				['Test Name', 'Test Campaign ID', 'Test Description'],
+				$email_content
+			);
+			
+			$data = array(
+				'html_email' => $html_email,
+				'subject_of_the_email' => $subject_of_the_email,
+				'html_email_img' => $html_email_img,
+				'test_email' => $test_email,
+			);
+
+			Mail::send(['html' => 'email_testing.send-test-email'], $data, function($message) use ($test_email, $data) {
+				$message->to($test_email)->subject($data['subject_of_the_email']);
+				$message->from(env('MAIL_USERNAME'), env('APP_NAME'));
+			});
+
+			foreach($html_email_img as $img){
+				unlink(public_path('uploaded_item/send_test_images/'.$img));
+			}
+			
+			return response()->json(['success'=>'success', 'email_img'=>$img_sent]);
 		}
 
 

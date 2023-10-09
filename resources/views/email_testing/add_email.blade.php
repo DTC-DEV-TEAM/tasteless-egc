@@ -64,68 +64,38 @@
         <div class='panel-body'>
                 <br>
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-6" style="border-right: 1px solid #000">
                         <div class="form-group">
                             <label class="add_email_header"> <span></span> Template Name</label>
                             <input type="text" class="form-control" name="title_of_the_email" value="{{ $row->title_of_the_email }}" required>
                         </div>
-                    </div>
-    
-                    <div class="col-md-6">
+
                         <div class="form-group">
                             <label class="add_email_header" for="">Subject</label>
                             <input type="text" class="form-control" name="subject_of_the_email" value="{{ $row->subject_of_the_email }}" required>
                         </div>
-                    </div>
-                </div>
 
-                {{-- <div class="row">
-                    <div class="col-lg-3">
-                        <div class="form-group">
-                            <label class="add_email_header" for="">Email content</label>
-                            <select class="form-control" id="email_option" name="email_option" required>
-                                <option value="" selected disabled>Choose one</option>
-                                @if (!$row->html_email && !$row->html_email_img)   
-                                <option value="1" disabled>Text</option>
-                                <option value="2">Image</option>
-                                @elseif ($row->html_email)
-                                <option value="1" selected>Text</option>
-                                <option value="2">Image</option>
-                                @elseif ($row->html_email_img)
-                                <option value="1" disabled>Text</option>
-                                <option value="2" selected>Image</option>
-                                @endif
-                            </select>
+                        <div class="show_email">
+                            <div class="form-group">
+                                <label class="add_email_header" for="">Email Content</label>
+                                <textarea id="email-test" name="email_content">
+                                    {{ $row->html_email }}
+                                </textarea>
+                            </div>  
                         </div>
                     </div>
-                    <div class="col-lg-3">
-                        <div class="form-group">
-                            <label class="add_email_header" for="">Your Test Email</label>
-                            <input type="text" class="form-control" id="test_email" name="test_email" placeholder="youremail@gmail.com" required>
-                            <p style="margin-top:10px; color: red;">Required only for testing button.</p>
-                        </div>
-                    </div>
-                </div> --}}
-                <hr>
-             
-                <div class="row show_email">
-                    <div class="col-lg-6">
-                        <div class="form-group">
-                            <label class="add_email_header" for="">Email Content</label>
-                            <textarea id="email-test" name="email_content">
-                                {{ $row->html_email }}
-                            </textarea>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
+                
+                    <div class="col-md-6">
                         <div class="form-group">
                             <label class="add_email_header" for="">Sample Email Content</label>
                             <textarea id="email-sample">
-                                <h4><b>QR Code Redemption</b></h4><p>Dear [name],</p><p>We are pleased to provide you with your exclusive QR code for redemption. This QR code represents exciting offers and discounts that you can avail yourself of at our selected stores. Simply present this QR code at the designated store to claim your special offers.</p><p>QR Information</p><p>[qr_code]</p><p>Campaign ID: [campaign_id]</p><p>GC Description: [gc_description]</p><p>We kindly ask you to bring a valid government ID when redeeming your code. This is necessary for identification purposes and to ensure a smooth and secure process. We also request that you review the terms and conditions that apply to the code redemption process. You can find the detailed terms and conditions by visiting the following link: [Insert link to terms and conditions]<p></p><p>If you have any questions or need assistance, please don't hesitate to contact our customer support team. We are here to ensure a smooth and rewarding redemption experience for you.</p><p>Thank you for choosing our services. We appreciate your business and look forward to serving you again in the future.</p><p><br></p><p>Best regards,</p><p>BPG Department</p><p>Digits Trading Corp</p>
+                                <h4><b>QR Code Redemption</b></h4><p>Dear [name],</p><p>We are pleased to provide you with your exclusive QR code for redemption. This QR code represents exciting offers and discounts that you can avail yourself of at our selected stores. Simply present this QR code at the designated store to claim your special offers.</p><p>Campaign ID: [campaign_id]</p><p>GC Description: [gc_description]</p><p>We kindly ask you to bring a valid government ID when redeeming your code. This is necessary for identification purposes and to ensure a smooth and secure process. We also request that you review the terms and conditions that apply to the code redemption process. You can find the detailed terms and conditions by visiting the following link: [Insert link to terms and conditions]<p></p><p>If you have any questions or need assistance, please don't hesitate to contact our customer support team. We are here to ensure a smooth and rewarding redemption experience for you.</p><p>Thank you for choosing our services. We appreciate your business and look forward to serving you again in the future.</p><p><br></p><p>Best regards,</p><p>BPG Department</p><p>Digits Trading Corp</p>
                             </textarea>
                         </div>
                     </div>
                 </div>
+
+     
 
                 <div class="row">
                     <div class="col-lg-6 hide">
@@ -138,9 +108,7 @@
                     <div class="col-lg-6 mail_img_content">
                         <label class="add_email_header" for="">Upload Image</label>
                         <input type="file" name="mail_img[]" id="mail_img" multiple required>
-                        <div class="gallery" style="margin-bottom:5px; margin-top:15px"></div>
-                        <a class="btn btn-xs btn-danger" style="display:none; margin-left:10px" id="removeImageHeader" href="#"><i class="fa fa-remove"></i></a>
-         
+                        
                         {{-- <div class="form-group" style="display:flex; flex-direction:column; align-items: center;">
                             @if($row->store_logo == 1)
                                 <img class="uploaded_img" src="{{ asset("store_logo/img/digital_walker.png") }}" alt="No image" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;">
@@ -159,13 +127,16 @@
                                 <img id="uploaded_img" src="" alt="" style="height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;">
                             @endif
                         </div> --}}
-
+                    </div>
+                    <div class="col-md-12">
+                        <div class="gallery" style="margin-bottom:5px; margin-top:15px; text-align:center"></div>
+                        <a class="btn btn-xs btn-danger" style="display:none; margin-left:10px" id="removeImageHeader" href="#"><i class="fa fa-remove"></i></a>
                     </div>
                 </div>
             </div>
             <div class='panel-footer'>
                 <a href="{{ CRUDBooster::mainpath() }}" class="btn btn-default">Cancel</a>
-                <input class='btn btn-success pull-right' id='create_email' value='Create Email Template' name="selected_button" style="margin-left: 10px; width: 160px;" readonly/>
+                <input class='btn btn-success pull-right' id='create_email' value='Create Email Template' name="selected_button" style="margin-left: 10px;" readonly/>
                 <input class='btn btn-primary pull-right' id='testing' value='Send Test Email' name="selected_button" readonly/>
                 <button class="hide" id="hidden-submit" type="submit">submit</button>
             </div>
@@ -199,7 +170,7 @@
                         var reader = new FileReader();
 
                         reader.onload = function(event) {
-                            $($.parseHTML('<img height="120px" class="header_images" width="180px;" hspace="10" data-action="zoom">')).attr('src', event.target.result).appendTo(placeToInsertImagePreview);
+                            $($.parseHTML('<img width="400px;" height="200px" class="header_images" hspace="10" data-action="zoom">')).attr('src', event.target.result).appendTo(placeToInsertImagePreview);
                         }
 
                         reader.readAsDataURL(input.files[i]);
@@ -242,10 +213,10 @@
         })
 
         $('#testing').click(function(event){
-            alert('test');
+            //alert('test');
             Swal.fire({
                 title: 'Are you sure?',
-                text: "You won't be able to revert this!",
+                // text: "You won't be able to revert this!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -268,21 +239,26 @@
                 event.preventDefault();
 
                 const subject_of_the_email = $("input[name='subject_of_the_email']").val();
-                const test_email = $("input[name='test_email']").val();
+                //const test_email = $("input[name='test_email']").val();
                 const email_content = $("textarea[name='email_content']").val();
-                const mail_img = $("input[name='mail_img']")[0].files[0];
+                //const mail_img = $("input[name='mail_img']")[0].files[0];
                 const email_content_val = $('#email_option').val();
                 
                 const formData = new FormData();
                 formData.append('subject_of_the_email', subject_of_the_email);
-                formData.append('test_email', test_email);
+                //formData.append('test_email', test_email);
                 formData.append('email_content', email_content);
-                formData.append('mail_img', mail_img || '');
+                    const totalImages = $("input[name='mail_img[]']")[0].files.length;
+                    let images = $("input[name='mail_img[]']")[0];
+                    for (let i = 0; i < totalImages; i++) {
+                        formData.append('mail_img[]', images.files[i]);
+                    }
+                //formData.append('mail_img', mail_img || '');
                 formData.append('email_option', email_content_val);
                 formData.append('qr_creation_id', '{{ $row->id }}');
 
                 $.ajax({
-                    url: "{{ route('emailtesting') }}",
+                    url: "{{ route('send-email-testing') }}",
                     dataType: 'json',
                     type: 'POST',
                     processData: false,

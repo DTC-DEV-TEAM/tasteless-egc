@@ -170,7 +170,7 @@
             <div class='panel-footer'>
                 <a href="{{ CRUDBooster::mainpath() }}" class="btn btn-default">Cancel</a>
                 <input class='btn btn-success pull-right' id='create_email' value='Edit Email Template' name="selected_button" style="margin-left: 10px; width: 160px;" readonly/>
-                <input class='btn btn-primary pull-right' id='testing' value='Send Test Email' name="selected_button" readonly/>
+                {{-- <input class='btn btn-primary pull-right' id='testing' value='Send Test Email' name="selected_button" readonly/> --}}
                 <button class="hide" id="hidden-submit" type="submit">submit</button>
             </div>
         </form>

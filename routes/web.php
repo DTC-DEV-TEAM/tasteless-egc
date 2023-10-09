@@ -29,6 +29,7 @@ Route::get('admin/qr_creations/upload_gc_list', [AdminQrCreationsController::cla
 Route::post('admin/qr_creations/upload_gc_list/excel', [AdminQrCreationsController::class, 'uploadGCListPost'])->name('import_file');
 // Email Testing
 Route::post('/admin/qr_creations/email_testing', [AdminQrCreationsController::class, 'EmailTesting'])->name('emailtesting');
+
 // Back
 Route::get('admin/qr_creations/back_to_email_template/{id}', [AdminQrCreationsController::class, 'backToEmailTemplate'])->name('email_template');
 // Export File
@@ -45,3 +46,6 @@ Route::get(config('crudbooster.ADMIN_PATH').'email_testings/add-template', [Admi
 Route::post(config('crudbooster.ADMIN_PATH').'delete-images', [AdminEmailTestingsController::class, 'deleteImages'])->name('delete-images');
 
 Route::post(config('crudbooster.ADMIN_PATH').'/selectedHeader',[AdminEmailTestingsController::class, 'selectedHeader'])->name('selected-header');
+
+//Send Email testing
+Route::post(config('crudbooster.ADMIN_PATH').'send-email-testing', [AdminEmailTestingsController::class, 'sendEmailTesting'])->name('send-email-testing');
