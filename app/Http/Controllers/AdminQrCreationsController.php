@@ -31,6 +31,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use App\Models\EmailTemplateImg;
+use App\StoreConcept;
 
 class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers\CBController {
 	
@@ -431,7 +432,19 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			if(!CRUDBooster::isCreate() && $this->global_privilege==FALSE || $this->button_add==FALSE) {    
 				CRUDBooster::redirect(CRUDBooster::adminPath(),trans("crudbooster.denied_access"));
 			}
-			// EmailScheduler::dispatch();
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 			$cb_id = CRUDBooster::myId();
 			$cb_company_id = DB::table('cms_users')->where('id', $cb_id)->value('company_id');
@@ -564,6 +577,9 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 	
 			// Send Email
 			$generated_qr_info = QrCreation::find($campaign_id);
+			$generated_qr_info->update([
+				'status_id' => 2
+			]);
 			// $email_content = $generated_qr_info->html_email_img;
 
 			// $gc_list_user = GCList::where('campaign_id', $campaign_id)
