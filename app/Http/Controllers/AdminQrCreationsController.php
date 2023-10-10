@@ -1,5 +1,6 @@
 <?php namespace App\Http\Controllers;
 
+use App\DateToSendCampaigns;
 use DB;
 use Session;
 use Request;
@@ -17,6 +18,7 @@ use App\Jobs\StoreConceptFetchApi;
 use App\Imports\GcListImport;
 use App\Exports\GCListTemplateExport;
 use App\Jobs\CampaignCreationFetchApi;
+use App\Jobs\EmailScheduler;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request as IlluminateRequest;
 use Illuminate\Support\Facades\Request as Input;
@@ -429,6 +431,7 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			if(!CRUDBooster::isCreate() && $this->global_privilege==FALSE || $this->button_add==FALSE) {    
 				CRUDBooster::redirect(CRUDBooster::adminPath(),trans("crudbooster.denied_access"));
 			}
+			// EmailScheduler::dispatch();
 
 			$cb_id = CRUDBooster::myId();
 			$cb_company_id = DB::table('cms_users')->where('id', $cb_id)->value('company_id');
@@ -561,100 +564,90 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 	
 			// Send Email
 			$generated_qr_info = QrCreation::find($campaign_id);
-			$email_content = $generated_qr_info->html_email_img;
+			// $email_content = $generated_qr_info->html_email_img;
 
-			$gc_list_user = GCList::where('campaign_id', $campaign_id)
-				->where('email_is_sent', 0)
-				->pluck('id')
-				->all();
+			// $gc_list_user = GCList::where('campaign_id', $campaign_id)
+			// 	->where('email_is_sent', 0)
+			// 	->pluck('id')
+			// 	->all();
 			
-			foreach($gc_list_user as $user){
+			// foreach($gc_list_user as $user){
 
-				$gcList = GCList::find($user);
+			// 	$gcList = GCList::find($user);
 				
-				$id = $gcList->id;
-				$name = $gcList->name;
-				$email = $gcList->email;
-				$generated_qr_code = $gcList->qr_reference_number;
-				$campaign_id_qr = $generated_qr_info->campaign_id;
-				$gc_description = $generated_qr_info->gc_description;
-				$gc_value = $generated_qr_info->gc_value;
-				$email_template_id = $gcList->email_template_id;
+			// 	$id = $gcList->id;
+			// 	$name = $gcList->name;
+			// 	$email = $gcList->email;
+			// 	$generated_qr_code = $gcList->qr_reference_number;
+			// 	$campaign_id_qr = $generated_qr_info->campaign_id;
+			// 	$gc_description = $generated_qr_info->gc_description;
+			// 	$gc_value = $generated_qr_info->gc_value;
+			// 	$email_template_id = $gcList->email_template_id;
 
-				$email_template = $generated_qr_info->html_email;
-				$email_subject = $generated_qr_info->subject_of_the_email;
+			// 	$email_template = $generated_qr_info->html_email;
+			// 	$email_subject = $generated_qr_info->subject_of_the_email;
 
-				$url = "/g_c_lists/edit/$id?value=$generated_qr_code";
-				$qrCodeApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode($url);
-				$qr_code = "<div id='qr-code-download'><div id='download_qr'><a href='$qrCodeApiUrl' download='qr_code.png'> <img src='$qrCodeApiUrl' alt='QR Code'> </a></div></div>";
+			// 	$url = "/g_c_lists/edit/$id?value=$generated_qr_code";
+			// 	$qrCodeApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode($url);
+			// 	$qr_code = "<div id='qr-code-download'><div id='download_qr'><a href='$qrCodeApiUrl' download='qr_code.png'> <img src='$qrCodeApiUrl' alt='QR Code'> </a></div></div>";
 				
-				$html_email = str_replace(
-					['[name]', '[campaign_id]', '[gc_description]', '[qr_code]'],
-					[$name, $campaign_id_qr, $gc_description, $qr_code ],
-					$email_template
-				);
-				$html_email_img = $generated_qr_info->html_email_img;
+			// 	$html_email = str_replace(
+			// 		['[name]', '[campaign_id]', '[gc_description]', '[qr_code]'],
+			// 		[$name, $campaign_id_qr, $gc_description, $qr_code ],
+			// 		$email_template
+			// 	);
+			// 	$html_email_img = $generated_qr_info->html_email_img;
 
-				// if($email_content){
-
-				// 	$data = array(
-				// 		'id' => $id,
-				// 		'qr_reference_number'=>$generated_qr_code,
-				// 		'campaign_id_qr' => $campaign_id_qr,
-				// 		'gc_description' => $gc_description,
-				// 		'qr_code' => $qr_code,
-				// 		'gc_value' => $gc_value,
-				// 		'email' => $email,
-				// 		'html_email_img' => $html_email_img,
-				// 		'email_subject' => $email_subject,
-				// 		'store_logo' => $generated_qr_info->store_logo,
-				// 		'qrCodeApiUrl' => $qrCodeApiUrl
-				// 	);
-				// }
-
-				
-
-				$generated_qr_info->status_id = 2;
-				$generated_qr_info->save();
+			// 	$generated_qr_info->status_id = 2;
+			// 	$generated_qr_info->save();
 	
-				$emailTesting = EmailTesting::find($gcList->email_template_id)->first();
-				$emailTestingImg = EmailTemplateImg::where('header_id', $emailTesting->id)->get();
+			// 	$emailTesting = EmailTesting::where('id',$gcList->email_template_id)->first();
+			// 	$emailTestingImg = EmailTemplateImg::where('header_id', $emailTesting->id)->get();
 				
-				$subject_of_the_email = $gcList->email_template_id;
-				$email_content = $emailTesting->html_email;
+			// 	$subject_of_the_email = $gcList->email_template_id;
+			// 	$email_content = $emailTesting->html_email;
 				
-				$html_email_img = [];
+			// 	$html_email_img = [];
 				
-				foreach($emailTestingImg as $file){
-					$filename = $file->file_name;
-					$html_email_img[]= $filename;
-				}
-				
-				$html_email = str_replace(
-					['[name]', '[campaign_id]', '[gc_description]'],
-					[$name, $campaign_id_qr, $gc_description],
-					$email_content
-				);
-				
-				$data = array(
-					'id' => $id,
-					'html_email' => $html_email,
-					'email_subject' => $email_subject,
-					'html_email_img' => $html_email_img,
-					'email' => $email,
-					'qrCodeApiUrl' => $qrCodeApiUrl,
-					'qr_code' => $qr_code,
-					'gc_value' => $gc_value,
-					'store_logo' => $generated_qr_info->store_logo,
-					'gc_description' => $gc_description,
-					'qr_reference_number'=>$generated_qr_code,
-					'campaign_id_qr' => $campaign_id_qr,
-				);
+			// 	foreach($emailTestingImg as $file){
+			// 		$filename = $file->file_name;
+			// 		$html_email_img[]= $filename;
+			// 	}
 
-				// dd($data);
+			// 	if(count($html_email_img) != 1){
+			// 		$qr_img = array_shift($html_email_img);
+			// 	}else{
+			// 		$qr_img = $html_email_img[0];
+			// 	}
+
+			// 	$html_email = str_replace(
+			// 		['[name]', '[campaign_id]', '[gc_description]'],
+			// 		[$name, $campaign_id_qr, $gc_description],
+			// 		$email_content
+			// 	);
 				
-				SendEmailJob::dispatch($data);
-			}
+			// 	$data = array(
+			// 		'id' => $id,
+			// 		'html_email' => $html_email,
+			// 		'email_subject' => $email_subject,
+			// 		'html_email_img' => $html_email_img,
+			// 		'email' => $email,
+			// 		'qrCodeApiUrl' => $qrCodeApiUrl,
+			// 		'qr_code' => $qr_code,
+			// 		'gc_value' => $gc_value,
+			// 		'store_logo' => $generated_qr_info->store_logo,
+			// 		'gc_description' => $gc_description,
+			// 		'qr_reference_number'=>$generated_qr_code,
+			// 		'campaign_id_qr' => $campaign_id_qr,
+			// 		'qr_img' => $qr_img
+			// 	);
+			// 	SendEmailJob::dispatch($data);
+			// }
+
+			DateToSendCampaigns::updateOrCreate(['date_to_send' => $generated_qr_info->date_to_send],
+				['campaign_id'=>$generated_qr_info->id,
+				'date_to_send'=>$generated_qr_info->date_to_send]
+			);
 
 			return CRUDBooster::redirect(CRUDBooster::mainpath(),'Excel file uploaded successfully. QR codes have been sent to the email addresses.', 'success')->send();
 		}
@@ -749,21 +742,23 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			return redirect()->back();
 		}
 
-		public function manipulate_image($amount, $qr_api, $store_logo){
+		public function manipulate_image($qr_img, $amount, $qr_api, $store_logo){
 
 			$dw_path = 'store_logo/img/digital_walker';
 			$btb_path = 'store_logo/img/beyond_the_box';
 			$dw_btb_path = 'store_logo/img/btb_and_dw';
+			$dyanamic_img_path = 'email_template_img/img/';
 			
 			$dw_image = Image::make(public_path($dw_path.'.png'));
 			$btb_image = Image::make(public_path($btb_path.'.png'));
 			$dw_btb_image = Image::make(public_path($dw_btb_path.'.png'));
+			$dynamic_image = Image::make(public_path($dyanamic_img_path.$qr_img));
 
 			$save_path = 'e_gift_card/img/';
 
 			if($store_logo == 1){
 
-				$logo_path = $dw_image;
+				$logo_path = $dynamic_image;
 				$filename = $save_path.Str::random(10).'.png';
 				$value_width = 510;
 				$qr_x_position = 85;

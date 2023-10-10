@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\EmailScheduler;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
@@ -39,6 +40,7 @@ class RunJobs extends Command
      */
     public function handle()
     {
+        EmailScheduler::dispatch();
         Artisan::call('queue:restart');
         Artisan::call('queue:work');
         // Retry all failed jobs

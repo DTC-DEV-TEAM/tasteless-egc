@@ -1,6 +1,9 @@
 <?php namespace App\Http\Controllers;
 
-	use DB;
+use App\DateToSendCampaigns;
+use App\EmailTesting;
+use App\GCList;
+use DB;
 	use Session;
 	use Request;
 	use CRUDBooster;
@@ -9,6 +12,9 @@
 	use App\Jobs\CampaignCreationFetchApi;
 	use App\Jobs\StoreConceptFetchApi;
 	use App\Http\Controllers\DateTimeZone;
+use App\Jobs\SendEmailJob;
+use App\Models\EmailTemplateImg;
+use App\QrCreation;
 
 	class AdminCompanyDashboardController extends \crocodicstudio\crudbooster\controllers\CBController {
 

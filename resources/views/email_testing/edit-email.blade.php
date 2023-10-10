@@ -134,7 +134,7 @@
                             <div class="col-md-4" style="position: relative">           
                                 @if ($email_template_img->file_name)
                                 <span><button class="btn btn-xs btn-danger imgValue" id="deleteImg{{$count}}" data-id="{{$count}}" value="{{$email_template_img->id}}" style="position:absolute; bottom:0; right: -10px; z-index: 100"><i class="fa fa-trash"></i></button></span>    
-                                <img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain;" src="{{URL::to('email_template_img').'/'.$email_template_img->file_name}}"> 
+                                <img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain;" src="{{URL::to('email_template_img/img').'/'.$email_template_img->file_name}}"> 
                                         
                                 @else
                                 

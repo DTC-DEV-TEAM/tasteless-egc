@@ -420,7 +420,7 @@ use Session;
 			$getImages = DB::table('email_template_img')->where('id',$id)->first();
 
 			//foreach($getImages as $img){
-				$removeImg = public_path('email_template_img/').$getImages->file_name;
+				$removeImg = public_path('email_template_img/img/').$getImages->file_name;
 				if(file_exists($removeImg)){
 					@unlink($removeImg);
 		
@@ -489,7 +489,7 @@ use Session;
 				$total++;
 				$data['emailContent'] .='		
 					<div class="col-md-4">		
-						<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('email_template_img').'/'.$image->file_name .'"> 
+						<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('email_template_img/img').'/'.$image->file_name .'"> 
 					</div>
 				';
 			}
