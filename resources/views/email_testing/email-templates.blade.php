@@ -76,7 +76,7 @@
                 <a href="{{ CRUDBooster::mainpath() }}" class="btn btn-default">Cancel</a>
                 {{-- <input class='btn btn-success pull-right' id='create_email' value='Edit Email Template' name="selected_button" style="margin-left: 10px; width: 160px;" readonly/> --}}
                 {{-- <input class='btn btn-primary pull-right' id='testing' value='Send Test Email' name="selected_button" readonly/> --}}
-                <input class='btn btn-success pull-right' id='create_email' value='Create Email Template' name="selected_button" style="margin-left: 10px; width: 160px;" readonly/>
+                <input class='btn btn-primary pull-right' id='create_email' value='Submit' name="selected_button" style="margin-left: 10px; width: 160px;" readonly/>
                 <button class="hide" id="hidden-submit" type="submit">submit</button>
             </div>
         </form>
@@ -126,11 +126,11 @@
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, Send test email!',
+                confirmButtonText: 'Yes, create it!',
                 returnFocus: false,
             }).then((result) => {
                 if (result.isConfirmed) {
-                    clicked_btn = 'Create Email Template';
+                    $('#create_email').val('Create Email Template');
                     $('#hidden-submit').click();
                 }
             })      
