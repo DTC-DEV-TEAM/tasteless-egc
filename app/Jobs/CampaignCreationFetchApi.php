@@ -59,7 +59,7 @@ class CampaignCreationFetchApi implements ShouldQueue
 
                     $item['status_id'] = 1;
                     
-                    QrCreation::updateOrCreate(
+                    QrCreation::firstOrCreate(
                         ['id' => $item['id']],
                         $item
                     );
