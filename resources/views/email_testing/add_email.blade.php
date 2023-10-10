@@ -37,6 +37,12 @@
         input[type=file]::file-selector-button:hover {
             opacity: 0.7;
         }
+
+        .card_note{
+            font-style: italic;
+            color: red;
+        }
+
     </style>
 @endpush
 
@@ -106,9 +112,8 @@
                     </div>
                     <hr>
                     <div class="col-lg-6 mail_img_content">
-                        <label class="add_email_header" for="">Upload Image</label>
+                        <label class="add_email_header" for="">Attach Image. <span class="card_note">(Note: The Gift Card must be selected first or in first row)</span></label>
                         <input type="file" name="mail_img[]" id="mail_img" multiple required>
-                        
                         {{-- <div class="form-group" style="display:flex; flex-direction:column; align-items: center;">
                             @if($row->store_logo == 1)
                                 <img class="uploaded_img" src="{{ asset("store_logo/img/digital_walker.png") }}" alt="No image" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;">
@@ -194,6 +199,7 @@
         });
 
         $('#create_email').click(function(event){
+            event.preventDefault()
             Swal.fire({
                 title: 'Are you sure?',
                 icon: 'warning',
@@ -210,7 +216,7 @@
                     $('#hidden-submit').click();
                 }
             })
-        })
+        });
 
         $('#testing').click(function(event){
             //alert('test');
