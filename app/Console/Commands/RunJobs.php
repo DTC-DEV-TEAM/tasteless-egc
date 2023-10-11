@@ -40,7 +40,7 @@ class RunJobs extends Command
      */
     public function handle()
     {
-        EmailScheduler::dispatch();
+        // EmailScheduler::dispatch();
         Artisan::call('queue:restart');
         Artisan::call('queue:work');
         // Retry all failed jobs
