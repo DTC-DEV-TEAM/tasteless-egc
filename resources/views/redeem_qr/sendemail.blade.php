@@ -32,6 +32,34 @@
                 </div>
             </td>
         </tr>
+        @if ($store_logo == 1)
+        <tr align="center">
+            <div class="container">
+                <img src="{{ $message->embed(public_path() . '/store_logo/img/' . 'digital_walker_claiming.png') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
+            </div>
+        </tr>
+        @endif
+        @if ($store_logo == 2)
+        <tr align="center">
+            <div class="container">
+                <img src="{{ $message->embed(public_path() . '/store_logo/img/' . 'beyond_the_box_claiming.png') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
+            </div>
+        </tr>
+        @endif
+        @if ($store_logo == 3)
+        <tr align="center">
+            <div class="container">
+                <img src="{{ $message->embed(public_path() . '/store_logo/img/' . 'beyond_the_box_claiming.png') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
+            </div>
+        </tr>
+        @endif
+        @if ($store_logo == 4)
+        <tr align="center">
+            <div class="container">
+                <img src="{{ $message->embed(public_path() . '/store_logo/img/' . 'digital_walker_claiming.png') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
+            </div>
+        </tr>
+        @endif
         <tr>
             <td align="center">
                 <div class="container">
