@@ -437,11 +437,13 @@ use Session;
 		public function selectedHeader(Request $request) {
 			$fields 		= Input::all();
 			$id = $fields['id'];
+			$campaign_id = $fields['campaign_id'];
 	
 			$search 		= $fields['header_request_id'];
 
 			$data['emailContent'] = '';
 
+			$data['CampaignId'] = QrCreation::where('id', $campaign_id)->first();
 			$data['EmailHeader'] = EmailTesting::where('id',$id)->first();
 			$data['EmailHeaderImgs'] = EmailTemplateImg::where('header_id',$id)->get();
 		
@@ -484,6 +486,53 @@ use Session;
 					<div class="row">
 						<div class="col-md-12">
 			';
+
+			// DW
+			if($data['CampaignId']->store_logo == 1){
+				$data['emailContent'] .='		
+					<div class="col-md-4">		
+						<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'digital_walker.png' .'"> 
+					</div>
+					<div class="col-md-4">		
+						<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'digital_walker_claiming.png' .'"> 
+					</div>
+				';
+			}
+			// BTB
+			else if($data['CampaignId']->store_logo == 2){
+				$data['emailContent'] .='		
+					<div class="col-md-4">		
+						<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'beyond_the_box.png' .'"> 
+					</div>
+					<div class="col-md-4">		
+						<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'beyond_the_box_claiming.png' .'"> 
+					</div>
+				';
+			}
+			// BTB and DW
+			else if($data['CampaignId']->store_logo == 3){
+				$data['emailContent'] .='		
+					<div class="col-md-4">		
+						<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'btb_and_dw.png' .'"> 
+					</div>
+					<div class="col-md-4">		
+						<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'beyond_the_box_claiming.png' .'"> 
+					</div>
+				';
+			}
+			// Open Source
+			else if($data['CampaignId']->store_logo == 4){
+				$data['emailContent'] .='		
+				<div class="col-md-4">		
+					<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'digital_walker.png' .'"> 
+				</div>
+				<div class="col-md-4">		
+					<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'digital_walker_claiming.png' .'"> 
+				</div>
+				';
+			}
+
+
 			foreach($data['EmailHeaderImgs'] as $image){
 				$tableRow++;
 				$total++;
