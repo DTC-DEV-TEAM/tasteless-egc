@@ -39,19 +39,18 @@ class CompanyIdsJob implements ShouldQueue
             
             sleep(1);
             // Localhost fetch CompanyIds
-
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
             ])->post('https://devp.digitstrading.ph/api/get-token', [
                 'secret' => '9384c81fb1f9e661946976585fb0d75a',
             ]);
-            
+
             $get_token = $response->json('data.access_token');
 
-            $campaign_request = Http::withHeaders([
+            $company_ids = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $get_token['data']['access_token'],
             ])->get('https://devp.digitstrading.ph/api/company_ids');
-
+            
             $company_fetch = $company_ids->json();
             
             if($company_fetch['data']){
