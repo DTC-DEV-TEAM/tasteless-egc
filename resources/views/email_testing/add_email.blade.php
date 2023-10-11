@@ -43,6 +43,20 @@
             color: red;
         }
 
+        .select2-selection__choice{
+            font-size:14px !important;
+            color:black !important;
+        }
+        .select2-selection__rendered {
+            line-height: 31px !important;
+        }
+        .select2-container .select2-selection--single {
+            height: 35px !important;
+        }
+        .select2-selection__arrow {
+            height: 34px !important;
+        }
+
     </style>
 @endpush
 
@@ -111,32 +125,42 @@
                         </div>
                     </div>
                     <hr>
+                    <div class="col-lg-6">
+                        <label> Choose Store Logo</label>
+                        <select required selected data-placeholder="Please select concept" id="store_logo" name="store_logo" class="form-select select2" style="width:100%;" required>
+                            @foreach($store_logos as $store_logo)
+                                <option value=""></option>
+                                <option value="{{ $store_logo->id }}">{{ $store_logo->name }}</option>
+                            @endforeach
+                        </select>
+                        <div class="col-md-6">
+                            <div id="btb" style="margin-bottom:5px; margin-top:15px; text-align:center; display:none">
+                                <img src="{{URL::to('store_logo/img/for-test-btb.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10"><br>
+                                <img src="{{URL::to('store_logo/img/beyond_the_box_claiming.png')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">
+                            </div>
+                            <div id="dw" style="margin-bottom:5px; margin-top:15px; text-align:center; display:none">
+                                <img src="{{URL::to('store_logo/img/for-test-dw.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">
+                                <img src="{{URL::to('store_logo/img/digital_walker_claiming.png')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">
+                            </div>
+                            <div id="btb_dw" style="margin-bottom:5px; margin-top:15px; text-align:center; display:none">
+                                <img src="{{URL::to('store_logo/img/for-test-btb-dw.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">
+                                <img src="{{URL::to('store_logo/img/beyond_the_box_claiming.png')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">
+                            </div>
+                            <div id="open_source" style="margin-bottom:5px; margin-top:15px; text-align:center; display:none">
+                                <img src="{{URL::to('store_logo/img/btb_and_dw.png')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">
+                                <img src="{{URL::to('store_logo/img/beyond_the_box_claiming.png')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-lg-6 mail_img_content">
                         <label class="add_email_header" for="">Attach Image. <span class="card_note">(Note: The Gift Card must be selected first or in first row)</span></label>
                         <input type="file" name="mail_img[]" id="mail_img" multiple required>
-                        {{-- <div class="form-group" style="display:flex; flex-direction:column; align-items: center;">
-                            @if($row->store_logo == 1)
-                                <img class="uploaded_img" src="{{ asset("store_logo/img/digital_walker.png") }}" alt="No image" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;">
-                                <img class="uploaded_img" src="{{ asset("store_logo/img/digital_walker_claiming.png") }}" alt="No image" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;">
-                            @elseif($row->store_logo == 2)
-                                <img class="uploaded_img" src="{{ asset("store_logo/img/beyond_the_box.png") }}" alt="No image" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;">
-                                <img class="uploaded_img" src="{{ asset("store_logo/img/beyond_the_box_claiming.png") }}" alt="No image" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;">
-                            @elseif ($row->store_logo == 3)
-                                <img class="uploaded_img" src="{{ asset("store_logo/img/btb_and_dw.png") }}" alt="No image" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;">
-                                <img class="uploaded_img" src="{{ asset("store_logo/img/beyond_the_box_claiming.png") }}" alt="No image" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;">
-                            @endif
-
-                            @if($row->html_email_img)
-                                <img id="uploaded_img" src="{{ asset("uploaded_item/email_img/$row->html_email_img") }}" alt="No image" style="max-height: 500px; object-fit: contain; width: 100%; max-width: 500px; text-align: center; margin-top: 5px;">
-                            @else
-                                <img id="uploaded_img" src="" alt="" style="height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;">
-                            @endif
-                        </div> --}}
+                        <div class="col-md-6">
+                            <div class="gallery" style="margin-bottom:5px; margin-top:15px; text-align:center"></div>
+                            <a class="btn btn-xs btn-danger" style="display:none; margin-left:10px" id="removeImageHeader" href="#"><i class="fa fa-remove"></i></a>
+                        </div>
                     </div>
-                    <div class="col-md-12">
-                        <div class="gallery" style="margin-bottom:5px; margin-top:15px; text-align:center"></div>
-                        <a class="btn btn-xs btn-danger" style="display:none; margin-left:10px" id="removeImageHeader" href="#"><i class="fa fa-remove"></i></a>
-                    </div>
+                   
                 </div>
             </div>
             <div class='panel-footer'>
@@ -150,7 +174,7 @@
 
     <script>
     $(document).ready(function() {
-
+        $('#store_logo').select2();
         let clicked_btn;
         $('#email-test').summernote();
         $('#email-sample').summernote();
@@ -245,7 +269,7 @@
                 event.preventDefault();
 
                 const subject_of_the_email = $("input[name='subject_of_the_email']").val();
-                //const test_email = $("input[name='test_email']").val();
+                const store_logo = $("#store_logo").val();
                 const email_content = $("textarea[name='email_content']").val();
                 //const mail_img = $("input[name='mail_img']")[0].files[0];
                 const email_content_val = $('#email_option').val();
@@ -262,7 +286,7 @@
                 //formData.append('mail_img', mail_img || '');
                 formData.append('email_option', email_content_val);
                 formData.append('qr_creation_id', '{{ $row->id }}');
-
+                formData.append('store_logo_id', store_logo);
                 $.ajax({
                     url: "{{ route('send-email-testing') }}",
                     dataType: 'json',
@@ -322,7 +346,33 @@
             $('.show_email').show();
             $("input[name='mail_img']").removeAttr('required');
         }
+
+        $('#store_logo').change(function () {
+            if(this.value == 1){
+                $('#dw').show();
+                $('#btb').hide();
+                $('#btb_dw').hide();
+                $('#open_source').hide();
+            }else if(this.value == 2){
+                $('#dw').hide();
+                $('#btb').show();
+                $('#btb_dw').hide();
+                $('#open_source').hide();
+            }else if(this.value == 3){
+                $('#dw').hide();
+                $('#btb').hide();
+                $('#btb_dw').show();
+                $('#open_source').hide();
+            }else if(this.value == 4){
+                $('#dw').hide();
+                $('#btb').hide();
+                $('#btb_dw').hide();
+                $('#open_source').show();
+            }
+        });
     });
+
+
 
 
     </script>

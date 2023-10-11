@@ -11,6 +11,7 @@ use Session;
 	use URL;
 	use Mail;
 	use Intervention\Image\Facades\Image;
+	use File;
 
 	class AdminEmailTestingsController extends \crocodicstudio\crudbooster\controllers\CBController {
 
@@ -192,8 +193,7 @@ use Session;
 	        |
 	        */
 	        $this->load_js = array();
-	        
-	        
+	        $this->load_js[] = asset("https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js");
 	        
 	        /*
 	        | ---------------------------------------------------------------------- 
@@ -216,7 +216,7 @@ use Session;
 	        |
 	        */
 	        $this->load_css = array();
-	        
+	        $this->load_css[] = asset("https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css");
 	        
 	    }
 
@@ -396,6 +396,7 @@ use Session;
 			
 			$data = [];
 			$data['page_title'] = 'Create Email Template';
+			$data['store_logos'] = DB::table('store_logos')->where('status','ACTIVE')->get();
 			
 			//Please use view method instead view method from laravel
 			return $this->view('email_testing.add_email',$data);
@@ -573,7 +574,7 @@ use Session;
 		public function sendEmailTesting(Request $request){
 
 			$fields = $request->all();
-
+			$store_logo_id = $fields['store_logo_id'];
 			$subject_of_the_email = $fields['subject_of_the_email'];
 			$myEmail = DB::table('cms_users')->where('id',CRUDBooster::myId())->first();
 			$test_email = $myEmail->email;
@@ -587,9 +588,10 @@ use Session;
 				$counter++;
 				$name = $file->getClientOriginalName().'.'.$file->getClientOriginalExtension();
 				$filename = $name;
-				$image = Image::make($file);
-				$image->encode($file->getClientOriginalExtension(), 100);
-				$image->save(public_path('uploaded_item/send_test_images/' . $filename));
+				$file->move('uploaded_item/send_test_images',$filename);
+				// $image = Image::make($file);
+				// $image->encode($file->getClientOriginalExtension(), 100);
+				// $image->save(public_path('uploaded_item/send_test_images/' . $filename));
 				$html_email_img[]= $filename;
 			}
 	
@@ -604,6 +606,7 @@ use Session;
 				'subject_of_the_email' => $subject_of_the_email,
 				'html_email_img' => $html_email_img,
 				'test_email' => $test_email,
+				'store_logo_id' => $store_logo_id
 			);
 
 			Mail::send(['html' => 'email_testing.send-test-email'], $data, function($message) use ($test_email, $data) {
