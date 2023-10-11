@@ -204,17 +204,20 @@
 
         var token = $("#token").val();
         $('.selected_template').change(function () {
+            let campaignId = $('#qr_creation_id').val();
             selected_header = this.value;
-            console.log(selected_header)
+            console.log(selected_header, campaignId);
             $.ajax({
                     type: 'POST',
                     url: ADMIN_PATH + "/selectedHeader",
                     data: {
                         "_token": token,
                         "id": selected_header,
+                        "campaign_id": campaignId,
                     },
                     success: function(data) {
                         $('.email-content').empty().append(data.emailContent);
+                        // console.log(data);
                     },
                     error: function(e) {
                         alert(e);
