@@ -69,7 +69,10 @@
             <div class="csv-instructions">
               <p style="font-size: 15px;">1. Ensure that the file you are uploading is either in CSV format or in Microsoft Excel format (XLS or XLSX).</p>
               <p style="font-size: 15px;">2. Please make sure the file contains the data you intend to upload</p>
-              <p style="font-size: 15px;">3. The uploaded file should start with the second row, as the first row is typically used for column headers or label</p>
+              <p style="font-size: 15px;">3. The uploaded file should start with the second row, as the first row is typically used for column headers or label.</p>
+              <p style="font-size: 15px;">4. To ensure that there are no conflicts in the backend process, it is advisable to set the system time ahead by at least 2 to 3 minutes relative to the current time.
+              <p style="font-size: 15px;">5. Duplicate entry is allowed per upload.
+              </p>
               <p style="font-size: 15px;"><span style="color: red; font-weight: bold;">If you have any questions or face any issues during the upload process, please feel free to ask for assistance.</span></p>
             </div>
           </div>
@@ -85,10 +88,6 @@
               <label for="">GC Description</label>
               <p>{{ $row->gc_description }}</p>
             </div>
-            <div class="campaign-id-info">
-              <label for="">Batch Group</label>
-              <p>{{ $row->batch_group }}</p>
-            </div>
             @if($row->upload_limit_control != null)
             <div class="campaign-id-info">
               <label for="">Number of GC List</label>
@@ -100,7 +99,10 @@
               <p>{{ $row->batch_number }}</p>
             </div>
             @endif
-
+            <div class="campaign-id-info">
+              <label for="">Date To Send</label>
+              <input type="datetime-local" name="date_to_send" id="date_to_send" class="form-control" value="{{ $row->date_to_send }}">
+            </div>            
             {{-- @if (!is_null($row->upload_limit_control) )
             <div class="campaign-id-info">
               <label for="">Upload Limit</label>
