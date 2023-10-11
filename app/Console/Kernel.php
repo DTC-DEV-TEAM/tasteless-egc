@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         \App\Console\Commands\RunJobs::class,
         \App\Console\Commands\RunApis::class,
+        \App\Console\Commands\RunSendEmail::class,
     ];
 
     /**
@@ -25,6 +26,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $schedule->command('command:emailjobs')->everyMinute();
         $schedule->command('command:runapis')->daily();
         $schedule->command('command:runjobs')->everyMinute();
     }
