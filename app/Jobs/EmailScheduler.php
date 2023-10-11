@@ -79,11 +79,11 @@ class EmailScheduler implements ShouldQueue
                     $html_email_img[]= $filename;
                 }
 
-                if(count($html_email_img) != 1){
-                    $qr_img = array_shift($html_email_img);
-                }else{
-                    $qr_img = $html_email_img[0];
-                }
+                // if(count($html_email_img) != 1){
+                //     $qr_img = array_shift($html_email_img);
+                // }else{
+                //     $qr_img = $html_email_img[0];
+                // }
 
                 $html_email = str_replace(
                     ['[name]', '[campaign_id]', '[gc_description]'],
@@ -104,7 +104,7 @@ class EmailScheduler implements ShouldQueue
                     'gc_description' => $gc_description,
                     'qr_reference_number'=>$generated_qr_code,
                     'campaign_id_qr' => $campaign_id_qr,
-                    'qr_img' => $qr_img
+                    // 'qr_img' => $qr_img
                 );
 
                 SendEmailJob::dispatch($data);
