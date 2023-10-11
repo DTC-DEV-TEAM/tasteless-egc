@@ -59,12 +59,12 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-md-6">
+                {{-- <div class="col-md-6">
                     <div class="form-group">
                         <label class="require control-label"> <span style="color: red">*</span> Date to send:</label>
                         <input type="datetime-local" name="date_to_send" id="date_to_send" class="form-control" value="{{ $row->date_to_send }}">
                     </div>
-                </div>
+                </div> --}}
             </div>
 
             <div class="email-content" id="email-content">
