@@ -279,11 +279,6 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			// StoreConceptFetchApi::dispatch();
 			// GCListFetchJob::dispatch();
 
-			if(CRUDBooster::myPrivilegeName() != 'Company' && CRUDBooster::myPrivilegeName() != 'Super Administrator'){
-				
-				return CRUDBooster::redirect(CRUDBooster::adminPath(),'Excel file uploaded successfully. QR codes have been sent to the email addresses.', 'danger')->send();
-			}
-
 			$cb_id = CRUDBooster::myId(); 
 			$cb_companyId = DB::table('cms_users')
 				->where('id', $cb_id)
@@ -347,7 +342,7 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 
 				$qr_creation->update([
 					'selected_template' => $email['selected_template'],
-					'date_to_send' => $email['date_to_send'],
+					// 'date_to_send' => $email['date_to_send'],
 					'status_id' => 2
 				]);
 
@@ -550,7 +545,8 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 		// }
 
 		public function uploadGCListPost(IlluminateRequest $request){
-
+			
+			$return_inputs = $request->all();
 			// Validate file type
 			$validatedData = $request->validate([
 				'excel_file' => 'required|mimes:xls,xlsx',
@@ -558,15 +554,24 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			
 			$campaign_id = $request->all()['campaign_id'];
 			$uploaded_excel = $request->file('excel_file');
+
+			$generated_qr_info = QrCreation::find($campaign_id);
+
+			$generated_qr_info->date_to_send = $return_inputs['date_to_send'];
+			$generated_qr_info->status_id = 2;
+			$generated_qr_info->save();
 			
 			$import = new GcListImport(compact('campaign_id'));
 			$rows = Excel::import($import, $uploaded_excel);
-	
-			// // Send Email
-			$generated_qr_info = QrCreation::find($campaign_id);
-			$generated_qr_info->update([
-				'status_id' => 2
-			]);
+
+
+			DateToSendCampaigns::updateOrCreate(['date_to_send' => $generated_qr_info->date_to_send],
+				['campaign_id'=>$generated_qr_info->id,
+				'date_to_send'=>$generated_qr_info->date_to_send]
+			);
+			// dd($request->all()['date_to_send']);
+
+			// dd($generated_qr_info->date_to_send);
 			// // $email_content = $generated_qr_info->html_email_img;
 
 			// $gc_list_user = GCList::where('campaign_id', $campaign_id)
@@ -627,11 +632,6 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 
 			// 	SendEmailJob::dispatch($data);
 			// }
-
-			DateToSendCampaigns::updateOrCreate(['date_to_send' => $generated_qr_info->date_to_send],
-				['campaign_id'=>$generated_qr_info->id,
-				'date_to_send'=>$generated_qr_info->date_to_send]
-			);
 
 			return CRUDBooster::redirect(CRUDBooster::mainpath(),'Excel file uploaded successfully. QR codes have been sent to the email addresses.', 'success')->send();
 		}
