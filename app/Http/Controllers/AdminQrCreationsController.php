@@ -68,6 +68,7 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			$this->col[] = ["label"=>"Gc Description","name"=>"gc_description"];
 			$this->col[] = ["label"=>"Gc Value","name"=>"gc_value"];
 			$this->col[] = ["label"=>"Number Of Gcs","name"=>"batch_number"];
+			$this->col[] = ["label"=>"Remaining Gcs","name"=>"upload_limit_control"];
 			$this->col[] = ["label"=>"Store Logo","name"=>"store_logo","join"=>"store_logos,name"];
 			$this->col[] = ["label"=>"Batch Group","name"=>"batch_group"];
 			$this->col[] = ["label"=>"Company Tag","name"=>"company_id","join"=>"company_ids,company_name"];
@@ -730,11 +731,13 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			$dw_path = 'store_logo/img/digital_walker';
 			$btb_path = 'store_logo/img/beyond_the_box';
 			$dw_btb_path = 'store_logo/img/btb_and_dw';
+			$os_path = 'store_logo/img/os';
 			$dyanamic_img_path = 'email_template_img/img/';
 			
-			$dw_image = Image::make(public_path($dw_path.'.png'));
-			$btb_image = Image::make(public_path($btb_path.'.png'));
+			$dw_image = Image::make(public_path($dw_path.'.jpg'));
+			$btb_image = Image::make(public_path($btb_path.'.jpg'));
 			$dw_btb_image = Image::make(public_path($dw_btb_path.'.png'));
+			$os_path = Image::make(public_path($os_path.'.jpg'));
 			// $dynamic_image = Image::make(public_path($dyanamic_img_path.$qr_img));
 
 			$save_path = 'e_gift_card/img/';
@@ -742,7 +745,7 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			if($store_logo == 1){
 
 				$logo_path = $dw_image;
-				$filename = $save_path.Str::random(10).'.png';
+				$filename = $save_path.Str::random(10).'.jpg';
 				$value_width = 510;
 				$qr_x_position = 85;
 				$qr_y_position = 35;
@@ -755,7 +758,7 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			elseif($store_logo == 2){
 
 				$logo_path = $btb_image;
-				$filename = $save_path.Str::random(10).'.png';
+				$filename = $save_path.Str::random(10).'.jpg';
 				$value_width = 510;
 				$qr_x_position = 89;
 				$qr_y_position = 35;
@@ -780,8 +783,8 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 
 			if($store_logo == 4){
 
-				$logo_path = $dw_image;
-				$filename = $save_path.Str::random(10).'.png';
+				$logo_path = $os_path;
+				$filename = $save_path.Str::random(10).'.jpg';
 				$value_width = 510;
 				$qr_x_position = 85;
 				$qr_y_position = 35;
