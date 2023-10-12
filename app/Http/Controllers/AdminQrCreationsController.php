@@ -68,11 +68,9 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			$this->col[] = ["label"=>"Gc Description","name"=>"gc_description"];
 			$this->col[] = ["label"=>"Gc Value","name"=>"gc_value"];
 			$this->col[] = ["label"=>"Number Of Gcs","name"=>"batch_number"];
+			$this->col[] = ["label"=>"Store Logo","name"=>"store_logo","join"=>"store_logos,name"];
 			$this->col[] = ["label"=>"Batch Group","name"=>"batch_group"];
-			// $this->col[] = ["label"=>"Batch Number","name"=>"batch_number"];
 			$this->col[] = ["label"=>"Company Tag","name"=>"company_id","join"=>"company_ids,company_name"];
-			// $this->col[] = ["label"=>"Store Concept","name"=>"id_store_concept","join"=>"store_concepts,name"];
-			// $this->col[] = ["label"=>"Batch Number","name"=>"campaign_id","join"=>"qr_creations,batch_number"];
 
 			# END COLUMNS DO NOT REMOVE THIS LINE
 
