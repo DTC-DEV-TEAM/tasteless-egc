@@ -150,7 +150,7 @@
                                 <img src="{{URL::to('store_logo/img/os_terms_and_conditions.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">            
                             </div>
                             <div id="open_source" style="margin-bottom:5px; margin-top:15px; text-align:center; display:none">
-                                <img src="{{URL::to('store_logo/img/for-test-btb-dw.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">
+                                <img src="{{URL::to('store_logo/img/for-test-os.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">
                                 <img src="{{URL::to('store_logo/img/os_claiming.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">
                                 <img src="{{URL::to('store_logo/img/os_terms_and_conditions.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">                          
                             </div>
