@@ -772,10 +772,10 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 
 				$logo_path = $dw_btb_image;
 				$filename = $save_path.Str::random(10).'.png';
-				$value_width = 400;
-				$qr_x_position = 99;
-				$qr_y_position = 60;
-				$color = '#23CBD3';
+				$value_width = 510;
+				$qr_x_position = 89;
+				$qr_y_position = 35;
+				$color = '#1a1a1a';
 				$shadow = null;
 
 				self::saveImage($amount, $qr_api, $logo_path, $value_width, $filename, $qr_x_position, $qr_y_position, $color, $shadow);
@@ -786,10 +786,10 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 				$logo_path = $os_path;
 				$filename = $save_path.Str::random(10).'.jpg';
 				$value_width = 510;
-				$qr_x_position = 85;
+				$qr_x_position = 89;
 				$qr_y_position = 35;
-				$color = '#d85a5f';
-				$shadow = '#000000';
+				$color = '#1a1a1a';
+				$shadow = null;
 
 				self::saveImage($amount, $qr_api, $logo_path, $value_width, $filename, $qr_x_position, $qr_y_position, $color, $shadow);
 			}
