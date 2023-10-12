@@ -284,9 +284,10 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 
 			if(CRUDBooster::myPrivilegeName() == 'Company'){
 				$query->where('campaign_status', 3)->where('company_id', $cb_companyId);
+			}else{
+				$query->where('campaign_status', 3);
 			}
 			
-			$query->where('campaign_status', 3);
 		}
 
 		/*
@@ -341,7 +342,7 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 				$qr_creation->update([
 					'selected_template' => $email['selected_template'],
 					// 'date_to_send' => $email['date_to_send'],
-					'status_id' => 2
+					'pending' => 1
 				]);
 
 
@@ -439,7 +440,7 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 				$data['email_templates'] = EmailTesting::where('company_id', $cb_company_id)->get();
 			}
 
-			if($data['row']->status_id == 1){
+			if($data['row']->pending == null){
 				$data['page_title'] = 'Email Template';
 				return $this->view('email_testing.email-templates',$data);
 			}else {
@@ -556,7 +557,7 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			$generated_qr_info = QrCreation::find($campaign_id);
 
 			$generated_qr_info->date_to_send = $return_inputs['date_to_send'];
-			$generated_qr_info->status_id = 2;
+			$generated_qr_info->status_id = 1;
 			$generated_qr_info->save();
 			
 			$import = new GcListImport(compact('campaign_id'));
@@ -720,7 +721,7 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 
 		public function backToEmailTemplate($id) {
 			
-			QrCreation::find($id)->update(['status_id' => 1]);
+			QrCreation::find($id)->update(['pending' => null]);
 			return redirect()->back();
 		}
 
