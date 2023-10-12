@@ -492,10 +492,13 @@ use Session;
 			if($data['CampaignId']->store_logo == 1){
 				$data['emailContent'] .='		
 					<div class="col-md-4">		
-						<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'digital_walker.png' .'"> 
+						<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'digital_walker.jpg' .'"> 
 					</div>
 					<div class="col-md-4">		
-						<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'digital_walker_claiming.png' .'"> 
+						<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'digital_walker_claiming.jpg' .'"> 
+					</div>
+					<div class="col-md-4">		
+						<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'digital_walker_terms_and_conditions.jpg' .'"> 
 					</div>
 				';
 			}
@@ -503,32 +506,41 @@ use Session;
 			else if($data['CampaignId']->store_logo == 2){
 				$data['emailContent'] .='		
 					<div class="col-md-4">		
-						<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'beyond_the_box.png' .'"> 
+						<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'beyond_the_box.jpg' .'"> 
 					</div>
 					<div class="col-md-4">		
-						<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'beyond_the_box_claiming.png' .'"> 
+						<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'beyond_the_box_claiming.jpg' .'"> 
+					</div>
+					<div class="col-md-4">		
+						<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'beyond_the_box_terms_and_conditions.jpg' .'"> 
 					</div>
 				';
 			}
 			// BTB and DW
 			else if($data['CampaignId']->store_logo == 3){
 				$data['emailContent'] .='		
-					<div class="col-md-4">		
-						<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'btb_and_dw.png' .'"> 
-					</div>
-					<div class="col-md-4">		
-						<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'beyond_the_box_claiming.png' .'"> 
-					</div>
+				<div class="col-md-4">		
+					<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'beyond_the_box.jpg' .'"> 
+				</div>
+				<div class="col-md-4">		
+					<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'beyond_the_box_claiming.jpg' .'"> 
+				</div>
+				<div class="col-md-4">		
+					<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'beyond_the_box_terms_and_conditions.jpg' .'"> 
+				</div>
 				';
 			}
 			// Open Source
 			else if($data['CampaignId']->store_logo == 4){
 				$data['emailContent'] .='		
 				<div class="col-md-4">		
-					<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'digital_walker.png' .'"> 
+					<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'os.jpg' .'"> 
 				</div>
 				<div class="col-md-4">		
-					<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'digital_walker_claiming.png' .'"> 
+					<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'os_claiming.jpg' .'"> 
+				</div>
+				<div class="col-md-4">		
+					<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'os_terms_and_conditions.jpg' .'"> 
 				</div>
 				';
 			}
