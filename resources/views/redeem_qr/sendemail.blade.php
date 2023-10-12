@@ -35,40 +35,40 @@
         @if ($store_logo == 1)
         <tr align="center">
             <div class="container">
-                <img src="{{ $message->embed(public_path() . '/store_logo/img/' . 'digital_walker_claiming.jpg') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
+                <img src="{{ $message->embed(public_path() . '/store_logo/img/' . 'digital_walker_claiming.jpg') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center;" />
             </div>
             <div class="container">
-                <img src="{{ $message->embed(public_path() . '/store_logo/img/' . 'digital_walker_terms_and_conditions.jpg') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
+                <img src="{{ $message->embed(public_path() . '/store_logo/img/' . 'digital_walker_terms_and_conditions.jpg') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center;" />
             </div>
         </tr>
         @endif
         @if ($store_logo == 2)
         <tr align="center">
             <div class="container">
-                <img src="{{ $message->embed(public_path() . '/store_logo/img/' . 'beyond_the_box_claiming.jpg') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
+                <img src="{{ $message->embed(public_path() . '/store_logo/img/' . 'beyond_the_box_claiming.jpg') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center;" />
             </div>
             <div class="container">
-                <img src="{{ $message->embed(public_path() . '/store_logo/img/' . 'beyond_the_box_terms_and_conditions.jpg') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
+                <img src="{{ $message->embed(public_path() . '/store_logo/img/' . 'beyond_the_box_terms_and_conditions.jpg') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center;" />
             </div>
         </tr>
         @endif
         @if ($store_logo == 3)
         <tr align="center">
             <div class="container">
-                <img src="{{ $message->embed(public_path() . '/store_logo/img/' . 'beyond_the_box_claiming.jpg') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
+                <img src="{{ $message->embed(public_path() . '/store_logo/img/' . 'beyond_the_box_claiming.jpg') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center;" />
             </div>
             <div class="container">
-                <img src="{{ $message->embed(public_path() . '/store_logo/img/' . 'beyond_the_box_terms_and_conditions.jpg') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
+                <img src="{{ $message->embed(public_path() . '/store_logo/img/' . 'beyond_the_box_terms_and_conditions.jpg') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center;" />
             </div>
         </tr>
         @endif
         @if ($store_logo == 4)
         <tr align="center">
             <div class="container">
-                <img src="{{ $message->embed(public_path() . '/store_logo/img/' . 'os_claiming.jpg') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
+                <img src="{{ $message->embed(public_path() . '/store_logo/img/' . 'os_claiming.jpg') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center;" />
             </div>
             <div class="container">
-                <img src="{{ $message->embed(public_path() . '/store_logo/img/' . 'os_terms_and_conditions.jpg') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
+                <img src="{{ $message->embed(public_path() . '/store_logo/img/' . 'os_terms_and_conditions.jpg') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center;" />
             </div>
         </tr>
         @endif
@@ -76,7 +76,7 @@
             <td align="center">
                 <div class="container">
                     @foreach ($html_email_img as $img)
-                        <img src="{{ $message->embed(public_path() . '/email_template_img/img/' . $img) }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
+                        <img src="{{ $message->embed(public_path() . '/email_template_img/img/' . $img) }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center;" />
                     @endforeach
                 </div>
             </td>
