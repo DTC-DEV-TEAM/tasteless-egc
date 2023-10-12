@@ -101,7 +101,7 @@
             @endif
             <div class="campaign-id-info">
               <label for="">Date To Send</label>
-              <input type="datetime-local" name="date_to_send" id="date_to_send" class="form-control" value="{{ $row->date_to_send }}">
+              <input type="datetime-local" name="date_to_send" id="date_to_send" class="form-control" value="{{ $row->date_to_send }}" required>
             </div>            
             {{-- @if (!is_null($row->upload_limit_control) )
             <div class="campaign-id-info">
