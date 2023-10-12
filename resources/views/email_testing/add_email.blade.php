@@ -154,7 +154,7 @@
                     </div>
                     <div class="col-lg-6 mail_img_content">
                         <label class="add_email_header" for="">Attach Image. <span class="card_note">(Note: The Gift Card must be selected first or in first row)</span></label>
-                        <input type="file" name="mail_img[]" id="mail_img" multiple required>
+                        <input type="file" name="mail_img[]" id="mail_img" multiple="multiple" required>
                         <div class="col-md-6">
                             <div class="gallery" style="margin-bottom:5px; margin-top:15px; text-align:center"></div>
                             <a class="btn btn-xs btn-danger" style="display:none; margin-left:10px" id="removeImageHeader" href="#"><i class="fa fa-remove"></i></a>
@@ -209,10 +209,11 @@
 
             $('#mail_img').on('change', function() {
                 imagesPreview(this, 'div.gallery');
+                $('.header_images').remove();
                 $("#removeImageHeader").toggle(); 
             });
         });
-        
+   
         //remove image header from preview
         $("#removeImageHeader").click(function(e) {
             e.preventDefault(); // prevent default action of link
