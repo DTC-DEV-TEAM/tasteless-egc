@@ -30,15 +30,19 @@
                     @if($store_logo_id == 1)
                         <img src="{{ $message->embed(public_path() . '/store_logo/img/for-test-dw.jpg') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
                         <img src="{{ $message->embed(public_path() . '/store_logo/img/digital_walker_claiming.png') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
+                        <img src="{{ $message->embed(public_path() . '/store_logo/img/digital_walker_terms_and_conditions.jpg') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
                     @elseif($store_logo_id == 2)
                         <img src="{{ $message->embed(public_path() . '/store_logo/img/for-test-btb.jpg') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
                         <img src="{{ $message->embed(public_path() . '/store_logo/img/beyond_the_box_claiming.png') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
+                        <img src="{{ $message->embed(public_path() . '/store_logo/img/beyond_the_box_terms_and_conditions.jpg') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
                     @elseif($store_logo_id == 3)
                         <img src="{{ $message->embed(public_path() . '/store_logo/img/for-test-btb-dw.jpg') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
                         <img src="{{ $message->embed(public_path() . '/store_logo/img/beyond_the_box_claiming.png') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
+                        <img src="{{ $message->embed(public_path() . '/store_logo/img/os_terms_and_conditions.jpg') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
                     @else
                         <img src="{{ $message->embed(public_path() . '/store_logo/img/for-test-btb-dw.jpg') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
                         <img src="{{ $message->embed(public_path() . '/store_logo/img/beyond_the_box_claiming.png') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
+                        <img src="{{ $message->embed(public_path() . '/store_logo/img/os_terms_and_conditions.jpg') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
                     @endif
                     @foreach ($html_email_img as $img)
                      <img src="{{ $message->embed(public_path() . '/uploaded_item/send_test_images/' . $img) }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
