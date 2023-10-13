@@ -117,7 +117,6 @@ class GcListImport implements
             '*.name' => 'required',
             '*.email' => 'required|email',
             '*.phone' => 'required',
-            '*.customer_reference_number' => 'required'
         ];
     }
     
