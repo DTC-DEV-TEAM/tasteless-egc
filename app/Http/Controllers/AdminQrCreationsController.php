@@ -52,7 +52,7 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			$this->button_action_style = "button_icon";
 			$this->button_add = false;
 			$this->button_edit = true;
-			$this->button_delete = true;
+			$this->button_delete = false;
 			$this->button_detail = true;
 			$this->button_show = true;
 			$this->button_filter = true;
