@@ -12,6 +12,20 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
+        .select2-selection__choice{
+            font-size:14px !important;
+            color:black !important;
+        }
+        .select2-selection__rendered {
+            line-height: 31px !important;
+        }
+        .select2-container .select2-selection--single {
+            height: 35px !important;
+        }
+        .select2-selection__arrow {
+            height: 34px !important;
+        }
+
         .swal2-popup {
             /* padding: 100px 0; */
             font-size: 17px !important;
@@ -60,7 +74,8 @@
     <div class='panel panel-default'>
         <div class='panel-heading'>Edit Form</div>
         <form method='post' action='{{CRUDBooster::mainpath('edit-save/'.$email_template->id)}}' autocomplete="off" enctype='multipart/form-data'>
-        @csrf
+        <input type="hidden" id="email_template_id" name="email_template_id" value="{{ $email_template->id }}">
+            @csrf
         <div class='panel-body'>
                 <br>
                 <div class="row">
@@ -126,51 +141,71 @@
                     </div> --}}
                 </div>
     
-                <div class="row" style="margin-left:10px text-align:center">
-                    <div class="col-md-12">
-                        <?php   $count = 1; ?>
-                        @foreach($email_template_imgs as $email_template_img)       
-                       
-                            <div class="col-md-4" style="position: relative">           
-                                @if ($email_template_img->file_name)
-                                <span><button class="btn btn-xs btn-danger imgValue" id="deleteImg{{$count}}" data-id="{{$count}}" value="{{$email_template_img->id}}" style="position:absolute; bottom:0; right: -10px; z-index: 100"><i class="fa fa-trash"></i></button></span>    
-                                <img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain;" src="{{URL::to('email_template_img/img').'/'.$email_template_img->file_name}}"> 
-                                        
-                                @else
-                                
-                                @endif     
-                            </div>            
-                            <?php   $count++; ?>                        
-                        @endforeach
-                        <br><br>
-                        {{-- @if($email_template_imgs->isNotEmpty())
-                        <button class="btn btn-xs btn-danger" id="deleteImg" ><i class="fa fa-trash"></i> Delete Images</button>
-                        @endif --}}
-                    </div>
+                {{-- <div class="row" style="margin-left:10px text-align:center">
+                  
                    
-                </div>
+                </div> --}}
 
                 <div class="row">
-                    <div class="col-lg-6 hide">
-                        <div class="form-group">
-                            <label class="add_email_header" for="">Gmail Preview</label>
-                            <img src="{{ asset('img/sample_email1.PNG') }}" alt="" style="width: 100%; object-fit: contain; border: 1px solid rgba(0,0,0,.1);">
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="col-lg-6 mail_img_content">
+                    <div class="col-lg-6 mail_img_content" style="border-right: 1px solid #000">
+                       
+                            <?php   $count = 1; ?>
+                            @foreach($email_template_imgs as $email_template_img)       
+                                <div class="col-md-12" style="position: relative; margin-bottom: 20px">           
+                                    @if ($email_template_img->file_name)
+                                    <span><button class="btn btn-xs btn-danger imgValue" id="deleteImg{{$count}}" data-id="{{$count}}" value="{{$email_template_img->id}}" style="position:absolute; bottom:0; right: -10px; z-index: 100"><i class="fa fa-trash"></i></button></span>    
+                                    <img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain;" src="{{URL::to('email_template_img/img').'/'.$email_template_img->file_name}}"> 
+    
+                                    @else
+                                    
+                                    @endif     
+                                </div>            
+                                <?php   $count++; ?>                        
+                            @endforeach
+                        
                         <label class="add_email_header" for="">Add New Images</label>
                         <input type="file" name="mail_img[]" id="mail_img" multiple>
                         <div class="gallery" style="margin-bottom:5px; margin-top:15px"></div>
-                        <a class="btn btn-xs btn-danger" style="display:none; margin-left:10px" id="removeImageHeader" href="#"><i class="fa fa-remove"></i></a>
-                     
+                        <a class="btn btn-xs btn-danger" style="display:none; margin-left:10px" id="removeImageHeader" href="#"><i class="fa fa-remove"></i></a>                 
+                    </div>
+
+                    <div class="col-lg-6">
+                        <label> Choose Store Logo</label>
+                        <select required selected data-placeholder="Please select concept" id="store_logo" name="store_logo" class="form-select select2" style="width:100%;" required>
+                            @foreach($store_logos as $store_logo)
+                                <option value=""></option>
+                                <option value="{{ $store_logo->id }}">{{ $store_logo->name }}</option>
+                            @endforeach
+                        </select>
+                        <div class="col-md-6">
+                            <div id="btb" style="margin-bottom:5px; margin-top:15px; text-align:center; display:none">
+                                <img src="{{URL::to('store_logo/img/for-test-btb.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10"><br>
+                                <img src="{{URL::to('store_logo/img/beyond_the_box_terms_and_conditions.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">                    
+                                <img src="{{URL::to('store_logo/img/beyond_the_box_claiming.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">
+                            </div>
+                            <div id="dw" style="margin-bottom:5px; margin-top:15px; text-align:center; display:none">
+                                <img src="{{URL::to('store_logo/img/for-test-dw.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">
+                                <img src="{{URL::to('store_logo/img/digital_walker_terms_and_conditions.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">         
+                                <img src="{{URL::to('store_logo/img/digital_walker_claiming.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">
+                            </div>
+                            <div id="btb_dw" style="margin-bottom:5px; margin-top:15px; text-align:center; display:none">
+                                <img src="{{URL::to('store_logo/img/for-test-btb-dw.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">
+                                <img src="{{URL::to('store_logo/img/os_terms_and_conditions.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">            
+                                <img src="{{URL::to('store_logo/img/beyond_the_box_claiming.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">
+                            </div>
+                            <div id="open_source" style="margin-bottom:5px; margin-top:15px; text-align:center; display:none">
+                                <img src="{{URL::to('store_logo/img/for-test-os.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">
+                                <img src="{{URL::to('store_logo/img/os_terms_and_conditions.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">                          
+                                <img src="{{URL::to('store_logo/img/os_claiming.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class='panel-footer'>
                 <a href="{{ CRUDBooster::mainpath() }}" class="btn btn-default">Cancel</a>
                 <input class='btn btn-success pull-right' id='create_email' value='Edit Email Template' name="selected_button" style="margin-left: 10px; width: 160px;" readonly/>
-                {{-- <input class='btn btn-primary pull-right' id='testing' value='Send Test Email' name="selected_button" readonly/> --}}
+                <input class='btn btn-primary pull-right' id='testing' value='Send Test Email' name="selected_button" readonly/>
                 <button class="hide" id="hidden-submit" type="submit">submit</button>
             </div>
         </form>
@@ -178,7 +213,7 @@
 
     <script>
     $(document).ready(function() {
-
+        $('#store_logo').select2();
         let clicked_btn;
         $('#email-test').summernote();
         $('#email-sample').summernote();
@@ -213,6 +248,7 @@
 
             $('#mail_img').on('change', function() {
                 imagesPreview(this, 'div.gallery');
+                $('.header_images').remove();
                 $("#removeImageHeader").toggle(); 
             });
         });
@@ -247,7 +283,6 @@
         })
 
         $('#testing').click(function(event){
-            alert('test');
             Swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
@@ -330,23 +365,30 @@
 
                 $('.sk-chase-position').show();
                 event.preventDefault();
-
+                const email_template_id = $('#email_template_id').val();
                 const subject_of_the_email = $("input[name='subject_of_the_email']").val();
-                const test_email = $("input[name='test_email']").val();
+                const store_logo = $("#store_logo").val();
                 const email_content = $("textarea[name='email_content']").val();
-                const mail_img = $("input[name='mail_img']")[0].files[0];
+                //const mail_img = $("input[name='mail_img']")[0].files[0];
                 const email_content_val = $('#email_option').val();
                 
                 const formData = new FormData();
+                formData.append('email_send_type', 'update');
+                formData.append('email_template_id', email_template_id);
                 formData.append('subject_of_the_email', subject_of_the_email);
-                formData.append('test_email', test_email);
+                //formData.append('test_email', test_email);
                 formData.append('email_content', email_content);
-                formData.append('mail_img', mail_img || '');
+                    const totalImages = $("input[name='mail_img[]']")[0].files.length;
+                    let images = $("input[name='mail_img[]']")[0];
+                    for (let i = 0; i < totalImages; i++) {
+                        formData.append('mail_img[]', images.files[i]);
+                    }
+                //formData.append('mail_img', mail_img || '');
                 formData.append('email_option', email_content_val);
                 formData.append('qr_creation_id', '{{ $row->id }}');
-
+                formData.append('store_logo_id', store_logo);
                 $.ajax({
-                    url: "{{ route('emailtesting') }}",
+                    url: "{{ route('send-email-testing') }}",
                     dataType: 'json',
                     type: 'POST',
                     processData: false,
@@ -404,6 +446,30 @@
             $('.show_email').show();
             $("input[name='mail_img']").removeAttr('required');
         }
+
+        $('#store_logo').change(function () {
+            if(this.value == 1){
+                $('#dw').show();
+                $('#btb').hide();
+                $('#btb_dw').hide();
+                $('#open_source').hide();
+            }else if(this.value == 2){
+                $('#dw').hide();
+                $('#btb').show();
+                $('#btb_dw').hide();
+                $('#open_source').hide();
+            }else if(this.value == 3){
+                $('#dw').hide();
+                $('#btb').hide();
+                $('#btb_dw').show();
+                $('#open_source').hide();
+            }else if(this.value == 4){
+                $('#dw').hide();
+                $('#btb').hide();
+                $('#btb_dw').hide();
+                $('#open_source').show();
+            }
+        });
     });
 
 

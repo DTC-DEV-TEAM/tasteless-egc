@@ -280,6 +280,7 @@
                 const email_content_val = $('#email_option').val();
                 
                 const formData = new FormData();
+                formData.append('email_send_type', 'create');
                 formData.append('subject_of_the_email', subject_of_the_email);
                 //formData.append('test_email', test_email);
                 formData.append('email_content', email_content);

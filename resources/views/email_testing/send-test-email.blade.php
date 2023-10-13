@@ -44,8 +44,13 @@
                         <img src="{{ $message->embed(public_path() . '/store_logo/img/os_terms_and_conditions.jpg') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
                         <img src="{{ $message->embed(public_path() . '/store_logo/img/os_claiming.jpg') }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
                     @endif
+                    @if($email_send_type === 'update')
+                        @foreach ($existing_filename as $existFile)
+                            <img src="{{ $message->embed(public_path() . '/email_template_img/img/' . $existFile) }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
+                        @endforeach
+                    @endif
                     @foreach ($html_email_img as $img)
-                     <img src="{{ $message->embed(public_path() . '/uploaded_item/send_test_images/' . $img) }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
+                        <img src="{{ $message->embed(public_path() . '/uploaded_item/send_test_images/' . $img) }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
                     @endforeach
                 </div>
             </td>
