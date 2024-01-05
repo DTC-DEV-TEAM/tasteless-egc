@@ -566,8 +566,11 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 
 
 			DateToSendCampaigns::updateOrCreate(['date_to_send' => $generated_qr_info->date_to_send],
-				['campaign_id'=>$generated_qr_info->id,
-				'date_to_send'=>$generated_qr_info->date_to_send]
+				[
+					'campaign_id'=>$generated_qr_info->id,
+					'date_to_send'=>$generated_qr_info->date_to_send,
+					'created_by' => CRUDBooster::myId()
+				]
 			);
 			// dd($request->all()['date_to_send']);
 
