@@ -692,7 +692,7 @@ video{
 .export-import-section{
     display: flex;
     flex-wrap: wrap;
-    margin-top: -20px;
+    margin-top: -10px;
 }
 
 .download-template{
@@ -716,7 +716,7 @@ video{
     margin-top: 14px;
 }
 
-.download-template a{
+.download-template a, .download-template button{
     padding: 11px 24px;
     border: none;
     border-radius: 5px;
@@ -726,7 +726,7 @@ video{
     filter: drop-shadow(2px 2px 1px rgba(0, 0, 0, .2));
 }
 
-.download-template a:hover{
+.download-template a:hover, .download-template button:hover{
     background-color: #f3f4f6;
     color: #0964b0;
 
