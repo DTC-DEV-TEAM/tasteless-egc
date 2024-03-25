@@ -27,6 +27,7 @@ Route::get('admin/g_c_lists/scan_qr', [AdminGCListsController::class, 'getScanQR
 Route::get('admin/qr_creations/edit/{id}', [AdminQrCreationsController::class, 'getEdit'])->name('qr_creations_edit');
 Route::get('admin/qr_creations/upload_gc_list', [AdminQrCreationsController::class, 'uploadGCList'])->name('upload_file');
 Route::post('admin/qr_creations/upload_gc_list/excel', [AdminQrCreationsController::class, 'uploadGCListPost'])->name('import_file');
+Route::post('admin/qr_creations/upload_bdo_list/excel', [AdminQrCreationsController::class, 'uploadBDOCampaign'])->name('import_file_bdo');
 // Email Testing
 Route::post('/admin/qr_creations/email_testing', [AdminQrCreationsController::class, 'EmailTesting'])->name('emailtesting');
 
@@ -34,6 +35,8 @@ Route::post('/admin/qr_creations/email_testing', [AdminQrCreationsController::cl
 Route::get('admin/qr_creations/back_to_email_template/{id}', [AdminQrCreationsController::class, 'backToEmailTemplate'])->name('email_template');
 // Export File
 Route::get('admin/g_c_lists/upload_gc_list/dowload_template', [AdminQrCreationsController::class, 'exportGCListTemplate'])->name('export_file');
+// Export File
+Route::get('admin/g_c_lists/upload_gc_list_bdo/dowload_template', [AdminQrCreationsController::class, 'exportGCListCampaignTemplate'])->name('export_file_bdo');
 // Get Edit
 Route::get('admin/g_c_lists/edit/{id}', [AdminGCListsController::class, 'getEdit'])->name('edit_redeem_code');
 // Redeeming Code
@@ -49,3 +52,8 @@ Route::post(config('crudbooster.ADMIN_PATH').'/selectedHeader',[AdminEmailTestin
 
 //Send Email testing
 Route::post(config('crudbooster.ADMIN_PATH').'send-email-testing', [AdminEmailTestingsController::class, 'sendEmailTesting'])->name('send-email-testing');
+
+
+Route::get('admin/g_c_lists/upload_gc_list/dowload_template/{campaign_id}/{campaign}', [AdminQrCreationsController::class, 'exportDataCampaign'])->name('export_data_campaign');
+Route::get('admin/g_c_lists/upload_gc_list/import_data/{campaign_id}', [AdminQrCreationsController::class, 'countImportData'])->name('count_import');
+Route::get('admin/g_c_lists/upload_gc_list/export_build_excel/{campaign_id}/{campaign}', [AdminQrCreationsController::class, 'exportBuildData'])->name('export_build_data');

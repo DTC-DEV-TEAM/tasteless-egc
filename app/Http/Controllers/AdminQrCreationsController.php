@@ -11,12 +11,16 @@ use App\GCList;
 use App\IdType;
 use App\QrCreation;
 use App\EmailTesting;
+use App\Exports\GCListBDOTemplateExport;
+use App\Exports\GCListPerCampaignDataExport;
 use App\Mail\QrEmail;
 use App\Jobs\SendEmailJob;
 use App\Jobs\GCListFetchJob;
 use App\Jobs\StoreConceptFetchApi;
 use App\Imports\GcListImport;
 use App\Exports\GCListTemplateExport;
+use App\Imports\BDOCampaignImport;
+use App\Jobs\BDOCampaignJob;
 use App\Jobs\CampaignCreationFetchApi;
 use App\Jobs\EmailScheduler;
 use Illuminate\Support\Facades\Http;
@@ -63,7 +67,7 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 
 			# START COLUMNS DO NOT REMOVE THIS LINE
 			$this->col = [];
-			// $this->col[] = ["label"=>"ID","name"=>"id"];
+			$this->col[] = ["label"=>"QR Type","name"=>"qr_type","join"=>"qr_types,name"];
 			$this->col[] = ["label"=>"Campaign Id","name"=>"campaign_id"];
 			$this->col[] = ["label"=>"Gc Description","name"=>"gc_description"];
 			$this->col[] = ["label"=>"Gc Value","name"=>"gc_value"];
@@ -435,24 +439,82 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			$data['page_title'] = 'Upload GC List';
 			$data['row'] = DB::table('qr_creations')->find($id);
 			$data['valid_ids'] = IdType::get();
+			$data['rowCount'] = GCList::where('campaign_id', $data['row']->id)->count();
+			$data['percent'] = $data['row']->total_row ? ($data['rowCount'] / $data['row']->total_row) * 100 : 0;
+
+			$file_name = $data['row']->campaign_id.'-'.$data['row']->id.'.xlsx';
+			if (Storage::exists($file_name)) {
+				$exist = true;
+			}
+			$data['download_built_export'] = $exist;
+
 			if(CRUDBooster::isSuperAdmin()){
 				$data['email_templates'] = EmailTesting::get();
 			}else{
 				$data['email_templates'] = EmailTesting::where('company_id', $cb_company_id)->get();
 			}
-
-			if($data['row']->pending == null){
-				$data['page_title'] = 'Email Template';
-				return $this->view('email_testing.email-templates',$data);
-			}else {
-				return $this->view('redeem_qr.upload_gc_list',$data);
+			
+			if($data['row']->qr_type == 1){
+				return $this->view('qr_creation.bdo_campaign',$data);
+			}else if($data['row']->qr_type == 2){
+				if($data['row']->pending == null){
+					$data['page_title'] = 'Email Template';
+					return $this->view('email_testing.email-templates',$data);
+				}else {
+					return $this->view('redeem_qr.upload_gc_list',$data);
+				}
 			}
+
+
 		}
 
 		public function exportGCListTemplate(){
-
 			return Excel::download(new GCListTemplateExport, 'gc_list_template.xlsx');
 		}
+
+		public function exportGCListCampaignTemplate(){
+			return Excel::download(new GCListBDOTemplateExport, 'gc_list_bdo_template.xlsx');
+		}
+
+		public function exportDataCampaign($campaign_id, $campaign){
+			$file_name = "$campaign-$campaign_id.xlsx";
+			(new GCListPerCampaignDataExport($campaign_id))->queue($file_name);
+
+			return back()->withSuccess('Export started!');
+		}
+
+		public function countImportData($campaign_id){
+			$rowCount = GCList::where('campaign_id', $campaign_id)->count();
+
+			return $rowCount;
+		}
+
+		public function exportBuildData($campaign_id, $campaign){
+			$file_name = "$campaign-$campaign_id.xlsx";
+			
+			// Check if the file exists
+			if (Storage::exists($file_name)) {
+				// Get the full path to the file
+				$filePath = Storage::path($file_name);
+		
+				// Download the file using Laravel's response()->download()
+				return response()->download($filePath, $file_name);
+			} else {
+				// Handle the case where the file does not exist
+				return response()->json(['error' => 'File not found.'], 404);
+			}
+		}
+
+		// public function exportDataCampaign($campaign_id){
+        // Queue the export job
+        // $filePath = (new GCListPerCampaignDataExport($campaign_id))->store('exports');
+
+        // // Generate a downloadable link
+        // $downloadLink = asset('storage/' . $filePath);
+
+        // // Redirect back with the download link
+        // return back()->with('downloadLink', $downloadLink);
+    	// }
 
 		// public function uploadGCListPost(IlluminateRequest $request){
 
@@ -564,10 +626,12 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			$import = new GcListImport(compact('campaign_id'));
 			$rows = Excel::import($import, $uploaded_excel);
 
-
 			DateToSendCampaigns::updateOrCreate(['date_to_send' => $generated_qr_info->date_to_send],
-				['campaign_id'=>$generated_qr_info->id,
-				'date_to_send'=>$generated_qr_info->date_to_send]
+				[
+					'campaign_id'=>$generated_qr_info->id,
+					'date_to_send'=>$generated_qr_info->date_to_send,
+					'created_by' => CRUDBooster::myId()
+				]
 			);
 			// dd($request->all()['date_to_send']);
 
@@ -636,11 +700,58 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			return CRUDBooster::redirect(CRUDBooster::mainpath(),'Excel file uploaded successfully. QR codes have been sent to the email addresses.', 'success')->send();
 		}
 
+		public function uploadBDOCampaign(IlluminateRequest $request){
+			$return_inputs = $request->all();
+			// Validate file type
+			$validated_data = $request->validate([
+				'excel_file' => 'required|mimes:xls,xlsx',
+			]);
+			
+			$excel_file = $return_inputs['excel_file'];
+			$campaign = QrCreation::find($return_inputs['campaign_id']);
+
+
+
+			$bdo_campaign = new BDOCampaignImport($campaign);
+			Excel::import($bdo_campaign, $excel_file);
+			$total_rows = $bdo_campaign->getTotalRows();
+
+			$campaign->total_row = $campaign->total_row+$total_rows;
+			$campaign->save();
+
+			$file_name = "$campaign->campaign_id-$campaign->id.xlsx";
+			
+			if (Storage::exists($file_name)) {
+				$filePath = Storage::path($file_name);
+				unlink($filePath);
+			}
+
+			$data = [];
+			$data['qr_creations'] = $campaign;
+			$data['total_rows'] = $total_rows;
+			$data['created_by'] = CRUDBooster::myId();
+
+			// $bdoCampaignJob = new BDOCampaignJob($data);
+			// $bdoCampaignJob->handle();
+
+			BDOCampaignJob::dispatch($data);
+
+			if ($campaign->upload_limit_control) {
+				$upload_limit_control = $campaign->upload_limit_control - $total_rows;
+			}else {
+				$upload_limit_control = $campaign->batch_number - $total_rows;
+			}
+			
+			$campaign->update([
+				'upload_limit_control' => $upload_limit_control
+			]);
+
+			return CRUDBooster::redirect(CRUDBooster::mainpath(),'Excel file uploaded successfully', 'success')->send();
+		}
+
 		public function EmailTesting(IlluminateRequest $request){
 
 			$email = $request->all();
-
-			dd($email);
 
 			$subject_of_the_email = $email['subject_of_the_email'];
 			$test_email = $email['test_email'];

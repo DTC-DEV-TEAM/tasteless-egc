@@ -106,7 +106,8 @@ class GcListImport implements
             'campaign_id' => $this->gc_information['campaign_id'],
             'qr_reference_number' => $generated_qr_code,
             'email_template_id' => $qr_creation->selected_template,
-            'date_to_send' => $qr_creation->date_to_send
+            'date_to_send' => $qr_creation->date_to_send,
+            'created_by' => CRUDBooster::myId()
         ]);
 
         $gcList->save();

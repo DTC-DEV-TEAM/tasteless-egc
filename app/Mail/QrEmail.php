@@ -31,7 +31,7 @@ class QrEmail extends Mailable implements ShouldQueue
     public function build()
     {
         
-        GCList::find($this->data['id'])->update(['email_is_sent'=>1]);      
+        // GCList::find($this->data['id'])->update(['email_is_sent'=>1]);      
 
         return $this->view('redeem_qr.sendemail', $this->data)
             ->subject($this->data['email_subject'])
