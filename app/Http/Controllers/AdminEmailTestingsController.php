@@ -412,6 +412,7 @@ use Session;
 
 			$data['email_template'] = EmailTesting::datas($id);
 			$data['email_template_imgs'] = EmailTemplateImg::images($id);
+			$data['store_logos'] = DB::table('store_logos')->where('status','ACTIVE')->get();
 			return $this->view('email_testing.edit-email',$data);
 		}
 
@@ -586,6 +587,7 @@ use Session;
 		public function sendEmailTesting(Request $request){
 
 			$fields = $request->all();
+			$email_send_type = $fields['email_send_type'];
 			$store_logo_id = $fields['store_logo_id'];
 			$subject_of_the_email = $fields['subject_of_the_email'];
 			$myEmail = DB::table('cms_users')->where('id',CRUDBooster::myId())->first();
@@ -593,20 +595,39 @@ use Session;
 			$email_content = $fields['email_content'];
 			$email_option = $fields['email_option'];
 			$qr_creation_id = $fields['qr_creation_id'];
+
+			
+			//existing images if update method
+			if($email_send_type == "update"){
+				$email_template_id = $fields['email_template_id'];
+				$existing_img = DB::table('email_template_img')->select('*')->where('header_id',$email_template_id)->get();
+				
+				$existing_filename = [];
+				foreach($existing_img as $exist_img){
+					$existing_filename[]= $exist_img->file_name;
+				}
+			}
+			
+			//dd($existing_filename);
+		
 			$files 	= $fields['mail_img'];
 			$counter = 0;
 			$html_email_img = [];
-			foreach($files as $file){
-				$counter++;
-				$name = $file->getClientOriginalName().'.'.$file->getClientOriginalExtension();
-				$filename = $name;
-				$file->move('uploaded_item/send_test_images',$filename);
-				// $image = Image::make($file);
-				// $image->encode($file->getClientOriginalExtension(), 100);
-				// $image->save(public_path('uploaded_item/send_test_images/' . $filename));
-				$html_email_img[]= $filename;
+		
+			if (!empty($files)) {
+				foreach($files as $file){
+					$counter++;
+					$name = $file->getClientOriginalName().'.'.$file->getClientOriginalExtension();
+					$filename = $name;
+					$file->move('uploaded_item/send_test_images',$filename);
+					// $image = Image::make($file);
+					// $image->encode($file->getClientOriginalExtension(), 100);
+					// $image->save(public_path('uploaded_item/send_test_images/' . $filename));
+					$html_email_img[]= $filename;
+				}
 			}
-	
+
+			
 			$html_email = str_replace(
 				['[name]', '[campaign_id]', '[gc_description]'],
 				['Test Name', 'Test Campaign ID', 'Test Description'],
@@ -614,11 +635,13 @@ use Session;
 			);
 			
 			$data = array(
-				'html_email' => $html_email,
+				'html_email'           => $html_email,
 				'subject_of_the_email' => $subject_of_the_email,
-				'html_email_img' => $html_email_img,
-				'test_email' => $test_email,
-				'store_logo_id' => $store_logo_id
+				'html_email_img'       => $html_email_img,
+				'test_email'           => $test_email,
+				'store_logo_id'        => $store_logo_id,
+				'email_send_type'      => $email_send_type,
+				'existing_filename'    => $existing_filename	
 			);
 
 			Mail::send(['html' => 'email_testing.send-test-email'], $data, function($message) use ($test_email, $data) {
