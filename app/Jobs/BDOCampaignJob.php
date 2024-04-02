@@ -38,6 +38,7 @@ class BDOCampaignJob implements ShouldQueue
      */
     public function handle()
     {
+        // Max
         try{
             $total_row = $this->gc_list['total_rows'];
             
