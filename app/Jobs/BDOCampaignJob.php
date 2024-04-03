@@ -54,6 +54,8 @@ class BDOCampaignJob implements ShouldQueue
                     'is_fetch' => 0,
                     'created_by' => $gc_list['created_by']
                 ]);
+
+                sleep(1);
             }
         }catch(MaxAttemptsExceededException $e){
             $this->retryUntil(now()->addSeconds(pow(2, $this->attempts())));
