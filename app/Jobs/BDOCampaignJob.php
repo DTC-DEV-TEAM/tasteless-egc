@@ -38,28 +38,51 @@ class BDOCampaignJob implements ShouldQueue
      */
     public function handle()
     {
-        // Max
-        try{
+        try {
             $total_row = $this->gc_list['total_rows'];
-            
+        
+            // Define an array to store the data to be inserted
+            $dataToInsert = [];
+        
             for ($i = 0; $i < $total_row; $i++) {
+                // Generate a unique QR code
                 do {
                     $generated_qr_code = Str::upper(Str::random(7));
-                } while (GCList::where('qr_reference_number', "BDO$generated_qr_code")->exists());
-            
-                GCList::create([
+                    $gc = GCList::where('qr_reference_number', "BDO$generated_qr_code")->exists();
+                } while ($gc);
+        
+                // Prepare the data to be inserted
+                $dataToInsert[] = [
                     'campaign_id' => $this->gc_list['qr_creations']->id,
                     'name' => 'BDO CUSTOMER',
                     'qr_reference_number' => "BDO$generated_qr_code",
                     'is_fetch' => 0,
                     'created_by' => $gc_list['created_by']
-                ]);
-
-                sleep(1);
+                ];
+        
+                // Check if the number of generated QR codes matches the total rows
+                if (count($dataToInsert) >= $total_row) {
+                    break;
+                }
+        
+                // Insert data in batches to optimize performance
+                if (count($dataToInsert) >= 1000) {
+                    GCList::insert($dataToInsert);
+                    // Reset the array for the next batch
+                    $dataToInsert = [];
+                }
             }
-        }catch(MaxAttemptsExceededException $e){
+        
+            // Insert any remaining data
+            if (!empty($dataToInsert)) {
+                GCList::insert($dataToInsert);
+            }
+        } catch (MaxAttemptsExceededException $e) {
+            // Retry the job until a certain time
             $this->retryUntil(now()->addSeconds(pow(2, $this->attempts())));
         }
+        
+
     }
     
 }
