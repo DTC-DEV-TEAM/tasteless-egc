@@ -726,15 +726,36 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 				unlink($filePath);
 			}
 
-			$data = [];
-			$data['qr_creations'] = $campaign;
-			$data['total_rows'] = $total_rows;
-			$data['created_by'] = CRUDBooster::myId();
+			// $data = [];
+			// $data['qr_creations'] = $campaign;
+			// $data['total_rows'] = $total_rows;
+			// $data['created_by'] = CRUDBooster::myId();
 
-			// $bdoCampaignJob = new BDOCampaignJob($data);
-			// $bdoCampaignJob->handle();
+			// BDOCampaignJob::dispatch($data);
 
-			BDOCampaignJob::dispatch($data);
+			// GPT
+			// Determine the total number of rows and calculate the number of batches
+			$row = $total_rows;
+			$batch_size = 1000;
+			$num_batches = ceil($row / $batch_size);
+
+			// Loop through the batches and dispatch a job for each batch
+			for ($batch = 0; $batch < $num_batches; $batch++) {
+				// Calculate the start index and the number of rows for this batch
+				$start_index = $batch * $batch_size;
+				$batch_rows = min($batch_size, $row - $start_index);
+
+				// Prepare the data for this batch
+				$batch_data = [
+					'qr_creations' => $campaign,
+					'total_rows' => $batch_rows,
+					'created_by' => CRUDBooster::myId(),
+				];
+
+				// Dispatch the job for this batch
+				BDOCampaignJob::dispatch($batch_data);
+			}
+			// End of GPT
 
 			if ($campaign->upload_limit_control) {
 				$upload_limit_control = $campaign->upload_limit_control - $total_rows;
