@@ -42,7 +42,8 @@ class RunJobs extends Command
     {
         // EmailScheduler::dispatch();
         Artisan::call('queue:restart');
-        Artisan::call('queue:work');
+        // Artisan::call('queue:work');
+        Artisan::call('queue:work --timeout=600');
         // Retry all failed jobs
         // $failedJobs = DB::table('failed_jobs')->get();
         // foreach ($failedJobs as $failedJob) {
