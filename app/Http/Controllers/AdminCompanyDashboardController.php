@@ -20,10 +20,10 @@ use App\QrCreation;
 
 		function __construct(){
 
-			StoreConceptFetchApi::dispatch();
-			CompanyIdsJob::dispatch();
+			// StoreConceptFetchApi::dispatch();
+			// CompanyIdsJob::dispatch();
 			CampaignCreationFetchApi::dispatch();
-			GCListFetchJob::dispatch();
+			// GCListFetchJob::dispatch();
 		}
 
 		public function cbInit() {

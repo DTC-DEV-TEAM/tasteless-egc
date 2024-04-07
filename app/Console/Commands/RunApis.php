@@ -47,7 +47,7 @@ class RunApis extends Command
         StoreConceptFetchApi::dispatch();
         CompanyIdsJob::dispatch();
         CampaignCreationFetchApi::dispatch();
-        GCListFetchJob::dispatch();
+        // GCListFetchJob::dispatch();
 
         $path = public_path('e_gift_card/img');
         $files = File::files($path);
