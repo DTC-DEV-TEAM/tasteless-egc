@@ -39,8 +39,17 @@ class ApiGCIsFetchJob implements ShouldQueue
             $url = 'https://devp.digitstrading.ph/api/egc_campaign_fetch';
             $secretKey = env('EGC_SECRET_KEY');
             
-            $data = json_decode(file_get_contents("$url/'.$secretKey"));
-            
+            $ch = curl_init();
+
+            // Set cURL options
+            curl_setopt($ch, CURLOPT_URL, "$url/$secretKey");
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    
+            // Execute cURL request
+            $data = json_decode(curl_exec($ch));
+    
+            curl_close($ch);
+
             if ((bool) $data){
                 
                 GCList::whereIn('id', $data)->update(['is_fetch' => 1]);
