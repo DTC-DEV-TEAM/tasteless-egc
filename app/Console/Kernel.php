@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('command:apigc')->everyTwoMinutes();
+        // $schedule->command('command:apigc')->everyTwoMinutes();
         $schedule->command('command:emailjobs')->everyMinute();
         $schedule->command('command:runapis')->daily();
         $schedule->command('command:runjobs')->everyMinute();
