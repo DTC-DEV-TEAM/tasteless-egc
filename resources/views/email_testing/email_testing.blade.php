@@ -118,25 +118,10 @@
     @if ($html_email_img)
     <table cellpadding="0" cellspacing="0" style="border-collapse: collapse; width: 800px; margin: auto;">
         @if($store_logo == 1)
-        {{-- <tr>
-            <td align="center">
-                <div class="test" style="margin: auto;">
-                    <div class="position">
-                        {!! $qr_code !!}
-                    </div>
-                </div>
-                <div class="test1" style="margin: auto;">
-                    <div class="position_campaign_value">
-                        <span>₱{{ $gc_value }}</span>
-                    </div>
-                </div>
-            </td>
-        </tr> --}}
         <tr>
             <td align="center">
                 <div style="width: 100%; text-align:center;">
                     <img src="{{ $message->embed(public_path() . "/$qr_code_generated") }}" width="800" style="height: 300px; min-width: 800px; object-fit: contain; text-align: center; pointer-events: none;" />
-                    {{-- <img src="{{ $message->embed(public_path() . '/store_logo/img/digital_walker.png' ) }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" /> --}}
                 </div>
             </td>
         </tr>
@@ -149,25 +134,10 @@
         </tr>
         @endif
         @if($store_logo == 2)
-        {{-- <tr>
-            <td align="center">
-                <div class="test" style="margin: auto;">
-                    <div class="position2">
-                        {!! $qr_code !!}
-                    </div>
-                </div>
-                <div class="test1" style="margin: auto;">
-                    <div class="position_campaign_value2">
-                        <span style="color: black;">₱{{ $gc_value }}</span>
-                    </div>
-                </div>
-            </td>
-        </tr> --}}
         <tr>
             <td align="center">
                 <div style="width: 100%; text-align:center;">
                     <img src="{{ $message->embed(public_path() . "/$qr_code_generated") }}" width="800" style="height: 300px; min-width: 800px; object-fit: contain; text-align: center; pointer-events: none;" />
-                    {{-- <img src="{{ $message->embed(public_path() . '/store_logo/img/beyond_the_box.png') }}" width="800" style="height: 300px; min-width: 800px; object-fit: contain; text-align: center; pointer-events: none;" /> --}}
                 </div>
             </td>
         </tr>
@@ -179,55 +149,6 @@
             </td>
         </tr>
         @endif
-        @if($store_logo == 3)
-        {{-- <tr>
-            <td align="center">
-                <div class="test" style="margin: auto;">
-                    <div class="position3">
-                        {!! $qr_code !!}
-                    </div>
-                </div>
-                <div class="test1" style="margin: auto;">
-                    <div class="position_campaign_value3">
-                        <span>₱{{ $gc_value }}</span>
-                    </div>
-                </div>
-            </td>
-        </tr> --}}
-        <tr>
-            <td align="center">
-                <div style="width: 100%; text-align:center;">
-                    <img src="{{ $message->embed(public_path() . "/$qr_code_generated") }}" width="800" style="height: 300px; min-width: 800px; object-fit: contain; text-align: center; pointer-events: none;" />
-                    {{-- <img src="{{ $message->embed(public_path() . '/store_logo/img/btb_and_dw.png') }}" width="800" style="height: 300px; min-width: 800px; object-fit: contain; text-align: center; pointer-events: none;" /> --}}
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td align="center">
-                <div class="container">
-                    <img src="{{ $message->embed(public_path() . '/store_logo/img/beyond_the_box_claiming.png' ) }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
-                </div>
-            </td>
-        </tr>
-        @endif
-        <tr>
-            <td align="center">
-                <div class="container">
-                    <img src="{{ $message->embed(public_path() . '/uploaded_item/email_img/' . $html_email_img) }}" width="800" style="max-height: 800px; min-width: 800px; object-fit: contain; text-align: center; margin-top: 5px;" />
-                </div>
-            </td>
-        </tr>
-    </table>
-    <table cellpadding="0" cellspacing="0" width="800" style="border-collapse: collapse; min-width: 800px; margin: auto;">
-        <tr>
-            <td align="center" style="background-color: #EBEBEC;">
-                <div>
-                    <p style="font-weight: bold">This is an auto-generated email. Please do not reply to this message.</p>
-                    <p style="font-weight: bold">&copy; digitsph</p>
-                </div>
-            </td>
-        </tr>
-    </table>
 
     @else
     <div class="container1">

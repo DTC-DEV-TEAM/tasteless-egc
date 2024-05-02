@@ -74,8 +74,6 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			$this->col[] = ["label"=>"Number Of Gcs","name"=>"batch_number"];
 			$this->col[] = ["label"=>"Remaining Gcs","name"=>"upload_limit_control"];
 			$this->col[] = ["label"=>"Store Logo","name"=>"store_logo","join"=>"store_logos,name"];
-			$this->col[] = ["label"=>"Batch Group","name"=>"batch_group"];
-			$this->col[] = ["label"=>"Company Tag","name"=>"company_id","join"=>"company_ids,company_name"];
 
 			# END COLUMNS DO NOT REMOVE THIS LINE
 
@@ -278,7 +276,85 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 
 		public function hook_query_index(&$query) {
 
-			CampaignCreationFetchApi::dispatch();
+			$date_time = new \DateTime();
+
+			$date_to_send_campaigns = DateToSendCampaigns::get();
+			$gc_list = GCList::get();
+			$to_send = $date_to_send_campaigns->where('date_to_send', $date_time->format('Y-m-d\TH:i'))->pluck('date_to_send')->toArray();
+			$gc_list_available_email = GCList::
+				// where('email_is_sent', 0)
+				// ->whereIn('date_to_send', $to_send)
+				where('id', 8)
+				->get();
+			
+			if(true){
+				
+				foreach($gc_list_available_email as $gcList){
+	
+					$generated_qr_info = QrCreation::find($gcList->campaign_id);
+					$id = $gcList->id;
+					$name = $gcList->name;
+					$email = $gcList->email;
+					$generated_qr_code = $gcList->qr_reference_number;
+					$campaign_id_qr = $generated_qr_info->campaign_id;
+					$gc_description = $generated_qr_info->gc_description;
+					$gc_value = $generated_qr_info->gc_value;
+					$email_template_id = $gcList->email_template_id;
+	
+					$email_template = $generated_qr_info->html_email;
+					$email_subject = $generated_qr_info->subject_of_the_email;
+	
+					$url = "/g_c_lists/edit/$id?value=$generated_qr_code";
+					$qrCodeApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode($url);
+					$qr_code = "<div id='qr-code-download'><div id='download_qr'><a href='$qrCodeApiUrl' download='qr_code.png'> <img src='$qrCodeApiUrl' alt='QR Code'> </a></div></div>";
+	
+					$emailTesting = EmailTesting::where('id',$gcList->email_template_id)->first();
+					$emailTestingImg = EmailTemplateImg::where('header_id', $emailTesting->id)->get();
+	
+					$subject_of_the_email = $emailTesting->subject_of_the_email;
+					$email_content = $emailTesting->html_email;
+	
+					$html_email_img = [];
+	
+					foreach($emailTestingImg as $file){
+						$filename = $file->file_name;
+						$html_email_img[]= $filename;
+					}
+	
+					// if(count($html_email_img) != 1){
+					//     $qr_img = array_shift($html_email_img);
+					// }else{
+					//     $qr_img = $html_email_img[0];
+					// }
+	
+					$html_email = str_replace(
+						['[name]', '[campaign_id]', '[gc_description]'],
+						[$name, $campaign_id_qr, $gc_description],
+						$email_content
+					);
+	
+					$data = array(
+						'id' => $id,
+						'html_email' => $html_email,
+						'email_subject' => $subject_of_the_email,
+						'html_email_img' => $html_email_img,
+						'email' => $email,
+						'qrCodeApiUrl' => $qrCodeApiUrl,
+						'qr_code' => $qr_code,
+						'gc_value' => $gc_value,
+						'store_logo' => $generated_qr_info->store_logo,
+						'gc_description' => $gc_description,
+						'qr_reference_number'=>$generated_qr_code,
+						'campaign_id_qr' => $campaign_id_qr,
+						// 'qr_img' => $qr_img
+					);
+	
+					SendEmailJob::dispatchNow($data);
+				}
+			}
+		
+
+			// CampaignCreationFetchApi::dispatch();
 			// StoreConceptFetchApi::dispatch();
 			// GCListFetchJob::dispatch();
 
@@ -448,11 +524,13 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			}
 			$data['download_built_export'] = $exist;
 
-			if(CRUDBooster::isSuperAdmin()){
-				$data['email_templates'] = EmailTesting::get();
-			}else{
-				$data['email_templates'] = EmailTesting::where('company_id', $cb_company_id)->get();
-			}
+			$data['email_templates'] = EmailTesting::get();
+
+			// if(CRUDBooster::isSuperAdmin()){
+			// 	$data['email_templates'] = EmailTesting::get();
+			// }else{
+			// 	$data['email_templates'] = EmailTesting::where('store_logos', $cb_company_id)->get();
+			// }
 			
 			if($data['row']->qr_type == 1){
 				return $this->view('qr_creation.bdo_campaign',$data);
@@ -633,69 +711,6 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 					'created_by' => CRUDBooster::myId()
 				]
 			);
-			// dd($request->all()['date_to_send']);
-
-			// dd($generated_qr_info->date_to_send);
-			// // $email_content = $generated_qr_info->html_email_img;
-
-			// $gc_list_user = GCList::where('campaign_id', $campaign_id)
-			// 	->where('email_is_sent', 0)
-			// 	->get();
-
-			// foreach($gc_list_user as $gcList){
-
-			// 	$generated_qr_info = QrCreation::find($gcList->campaign_id);
-			// 	$id = $gcList->id;
-			// 	$name = $gcList->name;
-			// 	$email = $gcList->email;
-			// 	$generated_qr_code = $gcList->qr_reference_number;
-			// 	$campaign_id_qr = $generated_qr_info->campaign_id;
-			// 	$gc_description = $generated_qr_info->gc_description;
-			// 	$gc_value = $generated_qr_info->gc_value;
-			// 	$email_template_id = $gcList->email_template_id;
-
-			// 	$email_template = $generated_qr_info->html_email;
-			// 	$email_subject = $generated_qr_info->subject_of_the_email;
-
-			// 	$url = "/g_c_lists/edit/$id?value=$generated_qr_code";
-			// 	$qrCodeApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode($url);
-			// 	$qr_code = "<div id='qr-code-download'><div id='download_qr'><a href='$qrCodeApiUrl' download='qr_code.png'> <img src='$qrCodeApiUrl' alt='QR Code'> </a></div></div>";
-
-			// 	$emailTesting = EmailTesting::where('id',$gcList->email_template_id)->first();
-			// 	$emailTestingImg = EmailTemplateImg::where('header_id', $emailTesting->id)->get();
-
-			// 	$subject_of_the_email = $emailTesting->subject_of_the_email;
-			// 	$email_content = $emailTesting->html_email;
-
-			// 	$html_email_img = [];
-
-			// 	foreach($emailTestingImg as $file){
-			// 		$filename = $file->file_name;
-			// 		$html_email_img[]= $filename;
-			// 	}
-
-			// 	$html_email = str_replace(
-			// 		['[name]', '[campaign_id]', '[gc_description]'],
-			// 		[$name, $campaign_id_qr, $gc_description],
-			// 		$email_content
-			// 	);
-
-			// 	$data = array(
-			// 		'id' => $id,
-			// 		'html_email' => $html_email,
-			// 		'email_subject' => $subject_of_the_email,
-			// 		'html_email_img' => $html_email_img,
-			// 		'email' => $email,
-			// 		'qrCodeApiUrl' => $qrCodeApiUrl,
-			// 		'gc_value' => $gc_value,
-			// 		'store_logo' => $generated_qr_info->store_logo,
-			// 		'gc_description' => $gc_description,
-			// 		'qr_reference_number'=>$generated_qr_code,
-			// 		'campaign_id_qr' => $campaign_id_qr,
-			// 	);
-
-			// 	SendEmailJob::dispatch($data);
-			// }
 
 			return CRUDBooster::redirect(CRUDBooster::mainpath(),'Excel file uploaded successfully. QR codes have been sent to the email addresses.', 'success')->send();
 		}
@@ -859,24 +874,17 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 		}
 
 		public function manipulate_image($amount, $qr_api, $store_logo){
-
-			$dw_path = 'store_logo/img/digital_walker';
-			$btb_path = 'store_logo/img/beyond_the_box';
-			$dw_btb_path = 'store_logo/img/btb_and_dw';
-			$os_path = 'store_logo/img/os';
-			$dyanamic_img_path = 'email_template_img/img/';
+			$tasteless_pink_path = 'store_logo/img/pink-gift-code.png';
+			$tasteless_blue_path = 'store_logo/img/blue-gift-code.png';
 			
-			$dw_image = Image::make(public_path($dw_path.'.jpg'));
-			$btb_image = Image::make(public_path($btb_path.'.jpg'));
-			$dw_btb_image = Image::make(public_path($dw_btb_path.'.png'));
-			$os_path = Image::make(public_path($os_path.'.jpg'));
-			// $dynamic_image = Image::make(public_path($dyanamic_img_path.$qr_img));
+			$tasteless_pink = Image::make(public_path($tasteless_pink_path));
+			$tasteless_blue = Image::make(public_path($tasteless_blue_path));
 
 			$save_path = 'e_gift_card/img/';
 
 			if($store_logo == 1){
 
-				$logo_path = $dw_image;
+				$logo_path = $tasteless_pink;
 				$filename = $save_path.Str::random(10).'.jpg';
 				$value_width = 510;
 				$qr_x_position = 85;
@@ -889,33 +897,7 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 
 			elseif($store_logo == 2){
 
-				$logo_path = $btb_image;
-				$filename = $save_path.Str::random(10).'.jpg';
-				$value_width = 510;
-				$qr_x_position = 89;
-				$qr_y_position = 35;
-				$color = '#1a1a1a';
-				$shadow = null;
-
-				self::saveImage($amount, $qr_api, $logo_path, $value_width, $filename, $qr_x_position, $qr_y_position, $color, $shadow);
-			}
-
-			elseif($store_logo == 3){
-
-				$logo_path = $dw_btb_image;
-				$filename = $save_path.Str::random(10).'.png';
-				$value_width = 510;
-				$qr_x_position = 89;
-				$qr_y_position = 35;
-				$color = '#1a1a1a';
-				$shadow = null;
-
-				self::saveImage($amount, $qr_api, $logo_path, $value_width, $filename, $qr_x_position, $qr_y_position, $color, $shadow);
-			}
-
-			if($store_logo == 4){
-
-				$logo_path = $os_path;
+				$logo_path = $tasteless_blue;
 				$filename = $save_path.Str::random(10).'.jpg';
 				$value_width = 510;
 				$qr_x_position = 89;

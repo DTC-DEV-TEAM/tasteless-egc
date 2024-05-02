@@ -53,18 +53,11 @@
                         <select class="selected_template" data-placeholder="Please select email template"  style="width: 100%;" name="selected_template" id="selected_template">
                             <option value=""></option>
                             @foreach($email_templates as $template)                       
-                                {{-- <option value="{{$template->id}}">{{$template->title_of_the_email}}</option>      --}}
                                 <option value="{{$template->id}}" {{ $row->selected_template == $template->id ? 'selected':'' }}>{{ $template->title_of_the_email }}</option>
                             @endforeach
                         </select>
                     </div>
                 </div>
-                {{-- <div class="col-md-6">
-                    <div class="form-group">
-                        <label class="require control-label"> <span style="color: red">*</span> Date to send:</label>
-                        <input type="datetime-local" name="date_to_send" id="date_to_send" class="form-control" value="{{ $row->date_to_send }}">
-                    </div>
-                </div> --}}
             </div>
 
             <div class="email-content" id="email-content">
@@ -74,8 +67,6 @@
         </div>
             <div class='panel-footer'>
                 <a href="{{ CRUDBooster::mainpath() }}" class="btn btn-default">Cancel</a>
-                {{-- <input class='btn btn-success pull-right' id='create_email' value='Edit Email Template' name="selected_button" style="margin-left: 10px; width: 160px;" readonly/> --}}
-                {{-- <input class='btn btn-primary pull-right' id='testing' value='Send Test Email' name="selected_button" readonly/> --}}
                 <input class='btn btn-primary pull-right' id='create_email' value='Submit' name="selected_button" style="margin-left: 10px; width: 160px;" readonly/>
                 <button class="hide" id="hidden-submit" type="submit">submit</button>
             </div>
@@ -217,7 +208,6 @@
                     },
                     success: function(data) {
                         $('.email-content').empty().append(data.emailContent);
-                        // console.log(data);
                     },
                     error: function(e) {
                         alert(e);

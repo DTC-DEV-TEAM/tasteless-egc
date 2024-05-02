@@ -277,6 +277,7 @@ use Session;
 			$postdata['title_of_the_email'] = $email['title_of_the_email'];
 			$postdata['subject_of_the_email'] = $email['subject_of_the_email'];
 			$postdata['html_email'] = $email['email_content'];
+			$postdata['store_logo'] = $email['store_logo'];
 			$postdata['created_by'] = CRUDBooster::myId();
 			
 	    }
@@ -327,6 +328,7 @@ use Session;
 			$postdata['title_of_the_email'] = $email['title_of_the_email'];
 			$postdata['subject_of_the_email'] = $email['subject_of_the_email'];
 			$postdata['html_email'] = $email['email_content'];
+			$postdata['store_logo'] = $email['store_logo'];
 			date_default_timezone_set("Asia/Manila");
 			date_default_timezone_get();
 			$postdata['updated_by'] = CRUDBooster::myId();
@@ -396,7 +398,7 @@ use Session;
 			
 			$data = [];
 			$data['page_title'] = 'Create Email Template';
-			$data['store_logos'] = DB::table('store_logos')->where('status','ACTIVE')->get();
+			$data['store_logos'] = DB::table('email_template_logos')->where('status','ACTIVE')->get();
 			
 			//Please use view method instead view method from laravel
 			return $this->view('email_testing.add_email',$data);
@@ -412,7 +414,7 @@ use Session;
 
 			$data['email_template'] = EmailTesting::datas($id);
 			$data['email_template_imgs'] = EmailTemplateImg::images($id);
-			$data['store_logos'] = DB::table('store_logos')->where('status','ACTIVE')->get();
+			$data['store_logos'] = DB::table('email_template_logos')->where('status','ACTIVE')->get();
 			return $this->view('email_testing.edit-email',$data);
 		}
 
@@ -442,15 +444,17 @@ use Session;
 			$campaign_id = $fields['campaign_id'];
 	
 			$search 		= $fields['header_request_id'];
-
+			
 			$data['emailContent'] = '';
 
+			QrCreation::where('id', $campaign_id)->update(['selected_template' => $id]);
+
 			$data['CampaignId'] = QrCreation::where('id', $campaign_id)->first();
-			$data['EmailHeader'] = EmailTesting::where('id',$id)->first();
-			$data['EmailHeaderImgs'] = EmailTemplateImg::where('header_id',$id)->get();
-		
+			$data['EmailHeader'] = EmailTesting::where('id',$data['CampaignId']->selected_template)->first();
+			$data['EmailHeaderImgs'] = EmailTemplateImg::where('header_id',$data['EmailHeader']->id)->get();
+
 			$data['emailContent'] .= '
-			    <div style="border: 1px solid black; padding: 10px; border-radius:5px">
+			    <div style="border: 1px solid #605CA8; padding: 10px; border-radius:5px">
 					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
@@ -489,63 +493,28 @@ use Session;
 						<div class="col-md-12">
 			';
 
-			// DW
-			if($data['CampaignId']->store_logo == 1){
+			// Tasteless Pink
+			if($data['EmailHeader']->store_logo == 1){
 				$data['emailContent'] .='		
 					<div class="col-md-4">		
-						<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'digital_walker.jpg' .'"> 
+						<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'for-test-pink.jpg' .'"> 
 					</div>
 					<div class="col-md-4">		
-						<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'digital_walker_terms_and_conditions.jpg' .'"> 
-					</div>
-					<div class="col-md-4">		
-						<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'digital_walker_claiming.jpg' .'"> 
+						<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'pink-terms-and-conditions.jpg' .'"> 
 					</div>
 				';
 			}
-			// BTB
-			else if($data['CampaignId']->store_logo == 2){
+			// Tasteless Blue
+			else if($data['EmailHeader']->store_logo == 2){
 				$data['emailContent'] .='		
 					<div class="col-md-4">		
-						<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'beyond_the_box.jpg' .'"> 
+						<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'for-test-blue.jpg' .'"> 
 					</div>
 					<div class="col-md-4">		
-						<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'beyond_the_box_terms_and_conditions.jpg' .'"> 
-					</div>
-					<div class="col-md-4">		
-						<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'beyond_the_box_claiming.jpg' .'"> 
+						<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'blue-terms-and-conditions.jpg' .'"> 
 					</div>
 				';
 			}
-			// BTB and DW
-			else if($data['CampaignId']->store_logo == 3){
-				$data['emailContent'] .='		
-				<div class="col-md-4">		
-					<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'btb_and_dw.png' .'"> 
-				</div>
-				<div class="col-md-4">		
-					<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'beyond_the_box_terms_and_conditions.jpg' .'"> 
-				</div>
-				<div class="col-md-4">		
-					<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'beyond_the_box_claiming.jpg' .'"> 
-				</div>
-				';
-			}
-			// Open Source
-			else if($data['CampaignId']->store_logo == 4){
-				$data['emailContent'] .='		
-				<div class="col-md-4">		
-					<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'os.jpg' .'"> 
-				</div>
-				<div class="col-md-4">		
-					<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'os_terms_and_conditions.jpg' .'"> 
-				</div>
-				<div class="col-md-4">		
-					<img id="uploaded_img" style="max-height: 500px; width: 100%; max-width: 500px; object-fit: contain; text-align: center; margin-top: 5px;" src="'.URL::to('store_logo/img').'/'.'os_claiming.jpg' .'"> 
-				</div>
-				';
-			}
-
 
 			foreach($data['EmailHeaderImgs'] as $image){
 				$tableRow++;
@@ -580,8 +549,6 @@ use Session;
 			";
 
 			return $data;
-			
-
 		}
 
 		public function sendEmailTesting(Request $request){

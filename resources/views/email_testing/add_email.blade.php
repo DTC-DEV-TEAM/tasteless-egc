@@ -139,8 +139,8 @@
                                 <img src="{{URL::to('store_logo/img/pink-terms-and-conditions.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">                    
                             </div>
                             <div id="tasteless-blue" style="margin-bottom:5px; margin-top:15px; text-align:center; display:none">
-                                <img src="{{URL::to('store_logo/img/for-test-pink.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10"><br>
-                                <img src="{{URL::to('store_logo/img/pink-terms-and-conditions.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">        
+                                <img src="{{URL::to('store_logo/img/for-test-blue.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10"><br>
+                                <img src="{{URL::to('store_logo/img/blue-terms-and-conditions.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">        
                             </div>
                         </div>
                     </div>
