@@ -36,7 +36,7 @@ class ApiGCIsFetchJob implements ShouldQueue
     {
         try{
 
-            $url = 'https://devp.digitstrading.ph/api/egc_campaign_fetch';
+            $url = 'http://127.0.0.1:1000/api/egc_campaign_fetch';
             $secretKey = env('EGC_SECRET_KEY');
             
             $ch = curl_init();

@@ -134,25 +134,13 @@
                             @endforeach
                         </select>
                         <div class="col-md-6">
-                            <div id="btb" style="margin-bottom:5px; margin-top:15px; text-align:center; display:none">
-                                <img src="{{URL::to('store_logo/img/for-test-btb.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10"><br>
-                                <img src="{{URL::to('store_logo/img/beyond_the_box_terms_and_conditions.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">                    
-                                <img src="{{URL::to('store_logo/img/beyond_the_box_claiming.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">
+                            <div id="tasteless-pink" style="margin-bottom:5px; margin-top:15px; text-align:center; display:none">
+                                <img src="{{URL::to('store_logo/img/for-test-pink.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10"><br>
+                                <img src="{{URL::to('store_logo/img/pink-terms-and-conditions.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">                    
                             </div>
-                            <div id="dw" style="margin-bottom:5px; margin-top:15px; text-align:center; display:none">
-                                <img src="{{URL::to('store_logo/img/for-test-dw.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">
-                                <img src="{{URL::to('store_logo/img/digital_walker_terms_and_conditions.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">         
-                                <img src="{{URL::to('store_logo/img/digital_walker_claiming.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">
-                            </div>
-                            <div id="btb_dw" style="margin-bottom:5px; margin-top:15px; text-align:center; display:none">
-                                <img src="{{URL::to('store_logo/img/for-test-btb-dw.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">
-                                <img src="{{URL::to('store_logo/img/os_terms_and_conditions.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">            
-                                <img src="{{URL::to('store_logo/img/beyond_the_box_claiming.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">
-                            </div>
-                            <div id="open_source" style="margin-bottom:5px; margin-top:15px; text-align:center; display:none">
-                                <img src="{{URL::to('store_logo/img/for-test-os.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">
-                                <img src="{{URL::to('store_logo/img/os_terms_and_conditions.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">                          
-                                <img src="{{URL::to('store_logo/img/os_claiming.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">
+                            <div id="tasteless-blue" style="margin-bottom:5px; margin-top:15px; text-align:center; display:none">
+                                <img src="{{URL::to('store_logo/img/for-test-pink.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10"><br>
+                                <img src="{{URL::to('store_logo/img/pink-terms-and-conditions.jpg')}}" style="max-width: 500px; max-width: 500px; object-fit: contain;" class="btb" hspace="10">        
                             </div>
                         </div>
                     </div>
@@ -164,7 +152,7 @@
                             <a class="btn btn-xs btn-danger" style="display:none; margin-left:10px" id="removeImageHeader" href="#"><i class="fa fa-remove"></i></a>
                         </div>
                     </div>
-                   
+                
                 </div>
             </div>
             <div class='panel-footer'>
@@ -331,21 +319,6 @@
             }
         })
 
-        // $('#email_option').on('change',function(){
-        //     const email_content_val = $(this).val();
-
-        //     if(email_content_val == 1){
-        //         $('.show_email').show();
-        //         $('.mail_img_content').hide();
-        //         $("input[name='mail_img']").removeAttr('required');
-        //     }else{
-        //         $('.show_email').hide();
-        //         $('.mail_img_content').show();
-        //         $('.note-editable').eq(0).text('');
-        //         $("input[name='mail_img']").attr('required');
-        //     }
-        // });
-
         if("{{ $row->html_email_img }}"){
             $('.mail_img_content').show();
         }else if("{{ $row->html_email }}"){
@@ -355,25 +328,11 @@
 
         $('#store_logo').change(function () {
             if(this.value == 1){
-                $('#dw').show();
-                $('#btb').hide();
-                $('#btb_dw').hide();
-                $('#open_source').hide();
+                $('#tasteless-pink').show();
+                $('#tasteless-blue').hide();
             }else if(this.value == 2){
-                $('#dw').hide();
-                $('#btb').show();
-                $('#btb_dw').hide();
-                $('#open_source').hide();
-            }else if(this.value == 3){
-                $('#dw').hide();
-                $('#btb').hide();
-                $('#btb_dw').show();
-                $('#open_source').hide();
-            }else if(this.value == 4){
-                $('#dw').hide();
-                $('#btb').hide();
-                $('#btb_dw').hide();
-                $('#open_source').show();
+                $('#tasteless-pink').hide();
+                $('#tasteless-blue').show();
             }
         });
     });

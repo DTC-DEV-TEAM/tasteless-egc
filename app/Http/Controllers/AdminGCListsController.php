@@ -19,6 +19,7 @@ use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 use Spatie\ImageOptimizer\OptimizerChainFactory;
 use App\EmailTesting;
+use App\Jobs\ApiGCIsFetchJob;
 use App\Jobs\GCListFetchJob;
 
 
@@ -261,7 +262,7 @@ use App\Jobs\GCListFetchJob;
 	    */
 	    public function hook_query_index(&$query) {;
 
-			GCListFetchJob::dispatch();
+			ApiGCIsFetchJob::dispatch();
 
 			$cb_id = CRUDBooster::myId(); 
 			$cb_companyId = DB::table('cms_users')

@@ -61,7 +61,9 @@
 
     #welcome-img {
         height: 300px;
+        width: 100%;
         max-width: 400px;
+        object-fit: contain;
         position: relative;
         right: 10px;
         filter: drop-shadow(0 0 0.75rem #6c5ce7);    
