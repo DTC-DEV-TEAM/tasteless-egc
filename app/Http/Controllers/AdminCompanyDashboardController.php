@@ -22,7 +22,7 @@ use App\QrCreation;
 		function __construct(){
 
 			// StoreConceptFetchApi::dispatch();
-			// CompanyIdsJob::dispatch();
+			CompanyIdsJob::dispatch();
 			CampaignCreationFetchApi::dispatch();
 			ApiGCIsFetchJob::dispatch();
 			// GCListFetchJob::dispatch();

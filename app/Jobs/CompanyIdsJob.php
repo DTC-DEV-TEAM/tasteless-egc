@@ -36,12 +36,14 @@ class CompanyIdsJob implements ShouldQueue
     {
 
         try {
+            $localhost = 'http://127.0.0.1:1000';
+            $ip_address = 'http://192.168.4.93:1000';
             
             sleep(1);
             // Localhost fetch CompanyIds
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
-            ])->post('https://devp.digitstrading.ph/api/get-token', [
+            ])->post("$ip_address/api/get-token", [
                 'secret' => '9384c81fb1f9e661946976585fb0d75a',
             ]);
 
@@ -49,7 +51,7 @@ class CompanyIdsJob implements ShouldQueue
 
             $company_ids = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $get_token['data']['access_token'],
-            ])->get('https://devp.digitstrading.ph/api/company_ids');
+            ])->get("$ip_address/api/company_ids");
             
             $company_fetch = $company_ids->json();
             

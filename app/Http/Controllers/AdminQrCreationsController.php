@@ -275,86 +275,7 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 		*/
 
 		public function hook_query_index(&$query) {
-
-			$date_time = new \DateTime();
-
-			$date_to_send_campaigns = DateToSendCampaigns::get();
-			$gc_list = GCList::get();
-			$to_send = $date_to_send_campaigns->where('date_to_send', $date_time->format('Y-m-d\TH:i'))->pluck('date_to_send')->toArray();
-			$gc_list_available_email = GCList::
-				// where('email_is_sent', 0)
-				// ->whereIn('date_to_send', $to_send)
-				where('id', 8)
-				->get();
-			
-			if(true){
-				
-				foreach($gc_list_available_email as $gcList){
-	
-					$generated_qr_info = QrCreation::find($gcList->campaign_id);
-					$id = $gcList->id;
-					$name = $gcList->name;
-					$email = $gcList->email;
-					$generated_qr_code = $gcList->qr_reference_number;
-					$campaign_id_qr = $generated_qr_info->campaign_id;
-					$gc_description = $generated_qr_info->gc_description;
-					$gc_value = $generated_qr_info->gc_value;
-					$email_template_id = $gcList->email_template_id;
-	
-					$email_template = $generated_qr_info->html_email;
-					$email_subject = $generated_qr_info->subject_of_the_email;
-	
-					$url = "/g_c_lists/edit/$id?value=$generated_qr_code";
-					$qrCodeApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode($url);
-					$qr_code = "<div id='qr-code-download'><div id='download_qr'><a href='$qrCodeApiUrl' download='qr_code.png'> <img src='$qrCodeApiUrl' alt='QR Code'> </a></div></div>";
-	
-					$emailTesting = EmailTesting::where('id',$gcList->email_template_id)->first();
-					$emailTestingImg = EmailTemplateImg::where('header_id', $emailTesting->id)->get();
-	
-					$subject_of_the_email = $emailTesting->subject_of_the_email;
-					$email_content = $emailTesting->html_email;
-	
-					$html_email_img = [];
-	
-					foreach($emailTestingImg as $file){
-						$filename = $file->file_name;
-						$html_email_img[]= $filename;
-					}
-	
-					// if(count($html_email_img) != 1){
-					//     $qr_img = array_shift($html_email_img);
-					// }else{
-					//     $qr_img = $html_email_img[0];
-					// }
-	
-					$html_email = str_replace(
-						['[name]', '[campaign_id]', '[gc_description]'],
-						[$name, $campaign_id_qr, $gc_description],
-						$email_content
-					);
-	
-					$data = array(
-						'id' => $id,
-						'html_email' => $html_email,
-						'email_subject' => $subject_of_the_email,
-						'html_email_img' => $html_email_img,
-						'email' => $email,
-						'qrCodeApiUrl' => $qrCodeApiUrl,
-						'qr_code' => $qr_code,
-						'gc_value' => $gc_value,
-						'store_logo' => $generated_qr_info->store_logo,
-						'gc_description' => $gc_description,
-						'qr_reference_number'=>$generated_qr_code,
-						'campaign_id_qr' => $campaign_id_qr,
-						// 'qr_img' => $qr_img
-					);
-	
-					SendEmailJob::dispatchNow($data);
-				}
-			}
-		
-
-			// CampaignCreationFetchApi::dispatch();
+			CampaignCreationFetchApi::dispatch();
 			// StoreConceptFetchApi::dispatch();
 			// GCListFetchJob::dispatch();
 
@@ -368,7 +289,6 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			}else{
 				$query->where('campaign_status', 3);
 			}
-			
 		}
 
 		/*
@@ -886,10 +806,10 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 
 				$logo_path = $tasteless_pink;
 				$filename = $save_path.Str::random(10).'.jpg';
-				$value_width = 510;
-				$qr_x_position = 85;
-				$qr_y_position = 35;
-				$color = '#d85a5f';
+				$value_width = 200;
+				$qr_x_position = -140;
+				$qr_y_position = 0;
+				$color = '#eeead1';
 				$shadow = '#000000';
 
 				self::saveImage($amount, $qr_api, $logo_path, $value_width, $filename, $qr_x_position, $qr_y_position, $color, $shadow);
@@ -899,10 +819,10 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 
 				$logo_path = $tasteless_blue;
 				$filename = $save_path.Str::random(10).'.jpg';
-				$value_width = 510;
-				$qr_x_position = 89;
-				$qr_y_position = 35;
-				$color = '#1a1a1a';
+				$value_width = 200;
+				$qr_x_position = -140;
+				$qr_y_position = 0;
+				$color = '#eeead1';
 				$shadow = null;
 
 				self::saveImage($amount, $qr_api, $logo_path, $value_width, $filename, $qr_x_position, $qr_y_position, $color, $shadow);
@@ -917,7 +837,8 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 	
 			$logo_path->text('P'.$amount, 0, -10, function($font) use (&$text_width, $value_width) {
 				$font->file(public_path('font/OpenSans-ExtraBold.ttf'));
-				$font->size(55);
+				$font->size(65);
+				$font->angle(90);
 				
 				$textSize = $font->getBoxSize()['width'];
 				
@@ -925,17 +846,10 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 				$text_width = $calculate_position; // Modify the value inside the closure
 			});
 
-			if($shadow){
-				$real_image = $logo_path->text('P'.$amount, $text_width, 240, function($font) use ($color, $shadow){
-					$font->file(public_path('font/OpenSans-ExtraBold.ttf'));
-					$font->size(55);
-					$font->color($shadow);
-				});
-			}
-
-			$real_image = $logo_path->text('P'.$amount, $text_width, 237, function($font) use ($color, $shadow){
+			$real_image = $logo_path->text('P'.$amount, $text_width, 265, function($font) use ($color, $shadow){
 				$font->file(public_path('font/OpenSans-ExtraBold.ttf'));
-				$font->size(55);
+				$font->size(65);
+				$font->angle(90);
 				$font->color($color);
 			});
 
@@ -944,14 +858,14 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 				$draw->border(1, '#000');
 			});
 
-			$real_image->insert($rectangleImage, 'bottom-right', $qr_x_position-5, $qr_y_position-5);
+			// $real_image->insert($rectangleImage, 'center', $qr_x_position-5, $qr_y_position-5);
 
 			$qrCodeApiLink = $qr_api;
 			$content = file_get_contents($qrCodeApiLink);
 			$qrCodeImage = Image::make($content);
 
 			// Overlay the QR code onto the main image as a watermark
-			$real_image->insert($qrCodeImage, 'bottom-right', $qr_x_position, $qr_y_position)
+			$real_image->insert($qrCodeImage, 'center', $qr_x_position, $qr_y_position)
 				->save(public_path($filename));
 		}
 

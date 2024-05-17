@@ -63,7 +63,7 @@ class EmailScheduler implements ShouldQueue
                 $email_subject = $generated_qr_info->subject_of_the_email;
 
                 $url = "/g_c_lists/edit/$id?value=$generated_qr_code";
-                $qrCodeApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode($url);
+                $qrCodeApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' . urlencode($url);
                 $qr_code = "<div id='qr-code-download'><div id='download_qr'><a href='$qrCodeApiUrl' download='qr_code.png'> <img src='$qrCodeApiUrl' alt='QR Code'> </a></div></div>";
 
                 $emailTesting = EmailTesting::where('id',$gcList->email_template_id)->first();
@@ -100,7 +100,7 @@ class EmailScheduler implements ShouldQueue
                     'qrCodeApiUrl' => $qrCodeApiUrl,
                     'qr_code' => $qr_code,
                     'gc_value' => $gc_value,
-                    'store_logo' => $generated_qr_info->store_logo,
+                    'store_logo' => $emailTesting->store_logo,
                     'gc_description' => $gc_description,
                     'qr_reference_number'=>$generated_qr_code,
                     'campaign_id_qr' => $campaign_id_qr,

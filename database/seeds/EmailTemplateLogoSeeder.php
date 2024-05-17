@@ -12,7 +12,7 @@ class EmailTemplateLogoSeeder extends Seeder
     public function run()
     {
         DB::table('email_template_logos')->updateOrInsert([
-            'name' => 'Tasteless',
+            'name' => 'Tasteless (Pink)',
             ],
             [
                 'name' => 'Tasteless (Pink)',
