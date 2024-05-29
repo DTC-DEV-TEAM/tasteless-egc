@@ -37,8 +37,9 @@ class ApiGCIsFetchJob implements ShouldQueue
         try{
             $localhost = 'http://127.0.0.1:1000';
             $ip_address = 'http://192.168.4.101:1000';
+            $prod = 'https://tevp.tasteless.com.ph';
 
-            $url = "$ip_address/api/egc_campaign_fetch";
+            $url = "$prod/api/egc_campaign_fetch";
             $secretKey = env('EGC_SECRET_KEY');
             
             $ch = curl_init();

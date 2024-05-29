@@ -38,19 +38,20 @@ class StoreConceptFetchApi implements ShouldQueue
         try{
             $localhost = 'http://127.0.0.1:1000';
             $ip_address = 'http://192.168.4.101:1000';
+            $prod = 'https://tevp.tasteless.com.ph';
 
             sleep(1);
             // Localhost fetch campaign
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
-            ])->post("$ip_address/api/get-token", [
+            ])->post("$prod/api/get-token", [
                 'secret' => '9384c81fb1f9e661946976585fb0d75a',
             ]);
             $get_token = $response->json('data.access_token');
             
             $redemption_list = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $get_token['data']['access_token'],
-            ])->get("$ip_address/api/store_concept");
+            ])->get("$prod/api/store_concept");
 
             $gc_list_fetch = $redemption_list->json();
             
