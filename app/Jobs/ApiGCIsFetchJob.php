@@ -35,12 +35,10 @@ class ApiGCIsFetchJob implements ShouldQueue
     public function handle()
     {
         try{
-            $localhost = 'http://127.0.0.1:1000';
-            $ip_address = 'http://192.168.4.101:1000';
-            $prod = 'https://tevp.tasteless.com.ph';
+            $prod = config("jobs-url.api.egc_campaign_URL");
 
-            $url = "$prod/api/egc_campaign_fetch";
-            $secretKey = env('EGC_SECRET_KEY');
+            $url = "$prod/egc_campaign_fetch";
+            $secretKey = config("jobs-url.api.egc_campaign_fetch_key");
             
             $ch = curl_init();
 

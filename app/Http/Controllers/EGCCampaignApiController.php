@@ -39,9 +39,10 @@ class EGCCampaignApiController extends Controller
 
     public function campaignfetchApi() 
     {
-        $secretKey = env('EGC_SECRET_KEY');
+        $secretKey = config('jobs-url.api.egc_campaign_fetch_key');
         
-        $data = json_decode(file_get_contents('http://127.0.0.1:1000/api/egc_campaign_fetch/'.$secretKey));
+        $url = config('jobs-url.api.egc_campaign_URL');
+        $data = json_decode(file_get_contents($url.'/egc_campaign_fetch/'.$secretKey));
         
         if ((bool) $data){
             

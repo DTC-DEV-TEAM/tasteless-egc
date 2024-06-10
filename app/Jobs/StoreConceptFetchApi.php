@@ -36,22 +36,21 @@ class StoreConceptFetchApi implements ShouldQueue
     {
 
         try{
-            $localhost = 'http://127.0.0.1:1000';
-            $ip_address = 'http://192.168.4.101:1000';
-            $prod = 'https://tevp.tasteless.com.ph';
+    
+            $prod = config("jobs-url.api.egc_campaign_URL");
 
             sleep(1);
             // Localhost fetch campaign
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
-            ])->post("$prod/api/get-token", [
-                'secret' => '9384c81fb1f9e661946976585fb0d75a',
+            ])->post("$prod/get-token", [
+                'secret' => config("jobs-url.api.egc_token_key"),
             ]);
             $get_token = $response->json('data.access_token');
             
             $redemption_list = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $get_token['data']['access_token'],
-            ])->get("$prod/api/store_concept");
+            ])->get("$prod/store_concept");
 
             $gc_list_fetch = $redemption_list->json();
             

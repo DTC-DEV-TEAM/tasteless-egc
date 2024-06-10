@@ -55,7 +55,7 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			$this->button_bulk_action = true;
 			$this->button_action_style = "button_icon";
 			$this->button_add = false;
-			$this->button_edit = true;
+			$this->button_edit = false;
 			$this->button_delete = false;
 			$this->button_detail = true;
 			$this->button_show = true;
@@ -117,6 +117,10 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 			| 
 			*/
 			$this->addaction = array();
+			if(!in_array(CRUDBooster::myPrivilegeId(), [8,9])){
+				$this->addaction[] = ['title' => 'Edit Data',  'url' => CRUDBooster::mainpath('edit/[id]'), 'icon' => 'fa fa-pencil', 'color' => 'success'];
+			}
+			
 
 
 			/* 
@@ -419,7 +423,6 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 		| 
 		*/
 		public function hook_after_delete($id) {
-			//Your code here
 		}
 
 		public function getEdit($id){
@@ -870,4 +873,3 @@ class AdminQrCreationsController extends \crocodicstudio\crudbooster\controllers
 		}
 
 	}
-
